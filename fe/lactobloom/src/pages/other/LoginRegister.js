@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import MetaTags from "react-meta-tags";
 import { Link } from "react-router-dom";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
@@ -7,21 +7,30 @@ import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { loginApi } from "../../services/UserService";
 
 const LoginRegister = ({ location }) => {
   const { pathname } = location;
+  const [username, setUsername ] = useState("");
+  const [password, setPassword ] = useState("");
+  const handleLogin = async () => {
+    if(!username || !password){
+      alert("Email/Password is required");
+      return;
+    }
+
+    let res = await loginApi(username, password);
+    console.log(">>> Check Login: ", res);
+  }
 
   return (
     <Fragment>
       <MetaTags>
         <title>LactoBloom Store | Login</title>
-        <meta
-          name="description"
-          content="Login page of LactoBloom Store"
-        />
+        <meta name="description" content="Login page of LactoBloom Store" />
       </MetaTags>
       <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
       <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
@@ -52,28 +61,36 @@ const LoginRegister = ({ location }) => {
                       <Tab.Pane eventKey="login">
                         <div className="login-form-container">
                           <div className="login-register-form">
-                            <form>
+                            {/* <form> */}
                               <input
                                 type="text"
                                 name="user-name"
                                 placeholder="Username"
+                                value={username}
+                                onChange={(event) => setUsername(event.target.value)}
                               />
+                              <div>
                               <input
                                 type="password"
                                 name="user-password"
                                 placeholder="Password"
+                                value={password}
+                                onChange={(event) => setPassword(event.target.value)}
                               />
+                              </div>
                               <div>
-                              <GoogleOAuthProvider clientId="64377350964-84072rsp206n3hqumg4fmt3em36s8a8g.apps.googleusercontent.com">
-                              <GoogleLogin
-  onSuccess={credentialResponse => {
-    const decoded = jwtDecode(credentialResponse?.credential);
-    console.log(decoded);
-  }}
-  onError={() => {
-    console.log('Login Failed');
-  }}
-/>
+                                <GoogleOAuthProvider clientId="64377350964-84072rsp206n3hqumg4fmt3em36s8a8g.apps.googleusercontent.com">
+                                  <GoogleLogin
+                                    onSuccess={(credentialResponse) => {
+                                      const decoded = jwtDecode(
+                                        credentialResponse?.credential
+                                      );
+                                      console.log(decoded);
+                                    }}
+                                    onError={() => {
+                                      console.log("Login Failed");
+                                    }}
+                                  />
                                 </GoogleOAuthProvider>
                               </div>
                               <div className="button-box">
@@ -85,19 +102,22 @@ const LoginRegister = ({ location }) => {
                                   </Link>
                                 </div>
                                 <div class="button-wrapper">
-                                <button type="submit">
-                                  <span>Login</span>
-                                </button>
+                                  <button 
+                                  type="submit"
+                                  onClick={() => handleLogin()}
+                                  >
+                                    <span>Login</span>
+                                  </button>
                                 </div>
                               </div>
-                            </form>
+                            {/* </form> */}
                           </div>
                         </div>
                       </Tab.Pane>
                       <Tab.Pane eventKey="register">
                         <div className="login-form-container">
                           <div className="login-register-form">
-                            <form>
+                            {/* <form> */}
                               <input
                                 type="text"
                                 name="user-name"
@@ -114,13 +134,13 @@ const LoginRegister = ({ location }) => {
                                 type="email"
                               />
                               <div className="button-box">
-                              <div class="button-wrapper">
-                                <button type="submit">
-                                  <span>Register</span>
-                                </button>
+                                <div class="button-wrapper">
+                                  <button type="submit">
+                                    <span>Register</span>
+                                  </button>
+                                </div>
                               </div>
-                              </div>
-                            </form>
+                            {/* </form> */}
                           </div>
                         </div>
                       </Tab.Pane>
@@ -137,7 +157,7 @@ const LoginRegister = ({ location }) => {
 };
 
 LoginRegister.propTypes = {
-  location: PropTypes.object
+  location: PropTypes.object,
 };
 
 export default LoginRegister;

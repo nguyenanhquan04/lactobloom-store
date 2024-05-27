@@ -57,7 +57,7 @@ const ProductGridListSingle = ({
             {product.discount || product.new ? (
               <div className="product-img-badges">
                 {product.discount ? (
-                  <span className="red">-{product.discount}%</span>
+                  <span className="pink">-{product.discount}%</span>
                 ) : (
                   ""
                 )}

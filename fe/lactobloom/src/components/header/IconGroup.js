@@ -54,11 +54,6 @@ const IconGroup = ({
               <Link to={process.env.PUBLIC_URL + "/login-register"}>Login</Link>
             </li>
             <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                Register
-              </Link>
-            </li>
-            <li>
               <Link to={process.env.PUBLIC_URL + "/my-account"}>
                 My Account
               </Link>

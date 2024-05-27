@@ -6,7 +6,7 @@ import FeatureIcon from "../../wrappers/feature-icon/FeatureIcon";
 import TabProduct from "../../wrappers/product/TabProduct";
 import BlogFeatured from "../../wrappers/blog-featured/BlogFeatured";
 
-const HomeFashion = () => {
+const Home = () => {
   return (
     <Fragment>
       <MetaTags>
@@ -27,7 +27,7 @@ const HomeFashion = () => {
         <FeatureIcon spaceTopClass="pt-100" spaceBottomClass="pb-60" />
 
         {/* tab product */}
-        <TabProduct spaceBottomClass="pb-60" category="fashion" />
+        <TabProduct spaceBottomClass="pb-60" category="Milk" />
 
         {/* blog featured */}
         <BlogFeatured spaceBottomClass="pb-55" />
@@ -36,4 +36,4 @@ const HomeFashion = () => {
   );
 };
 
-export default HomeFashion;
+export default Home;

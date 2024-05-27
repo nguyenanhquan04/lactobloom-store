@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { BreadcrumbsProvider } from "react-breadcrumbs-dynamic";
 
 // home pages
-const HomeFashion = lazy(() => import("./pages/home/HomeFashion"));
+const Home = lazy(() => import("./pages/home/Home"));
 
 // shop pages
 const Shop = lazy(() => import("./pages/shop/Shop"));
@@ -77,14 +77,14 @@ const App = (props) => {
                 <Route
                   exact
                   path={process.env.PUBLIC_URL + "/"}
-                  component={HomeFashion}
+                  component={Home}
                 />
 
-                {/* Homepages */}
+                {/* Homepages
                 <Route
                   path={process.env.PUBLIC_URL + "/home-fashion"}
-                  component={HomeFashion}
-                />
+                  component={Home}
+                /> */}
                 
                 {/* Shop pages */}
                 <Route
