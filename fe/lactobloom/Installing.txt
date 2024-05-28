@@ -1,0 +1,5 @@
+Open The Terminal
+
+Step 1: yarn install --check-files
+Step 2: $env:NODE_OPTIONS = "--openssl-legacy-provider"
+Step 3: yarn start
