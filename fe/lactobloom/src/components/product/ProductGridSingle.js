@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
-import { getDiscountPrice } from "../../helpers/product";
+import { getDiscountPrice } from "../../helpers/product2";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 
@@ -22,9 +22,9 @@ const ProductGridSingle = ({
   const { addToast } = useToasts();
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
+  const finalProductPrice = +(product.price).toFixed(2);
   const finalDiscountedPrice = +(
-    discountedPrice * currency.currencyRate
+    discountedPrice
   ).toFixed(2);
 
   return (
@@ -38,7 +38,7 @@ const ProductGridSingle = ({
           className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}
         >
           <div className="product-img">
-            <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+            <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
               <img
                 className="default-img"
                 src={process.env.PUBLIC_URL + product.image[0]}
@@ -93,7 +93,7 @@ const ProductGridSingle = ({
                     Buy now{" "}
                   </a>
                 ) : product.variation && product.variation.length >= 1 ? (
-                  <Link to={`${process.env.PUBLIC_URL}/product/${product.id}`}>
+                  <Link to={`${process.env.PUBLIC_URL}/product/${product.productId}`}>
                     Select Option
                   </Link>
                 ) : product.stock && product.stock > 0 ? (
@@ -130,7 +130,7 @@ const ProductGridSingle = ({
           </div>
           <div className="product-content text-center">
             <h3>
-              <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+              <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
                 {product.name}
               </Link>
             </h3>

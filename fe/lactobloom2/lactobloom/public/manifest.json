@@ -1,0 +1,8 @@
+{
+  "short_name": "LactoBloom",
+  "name": "LactoBloom Store",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

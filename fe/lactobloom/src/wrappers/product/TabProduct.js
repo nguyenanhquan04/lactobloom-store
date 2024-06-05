@@ -19,12 +19,12 @@ const TabProduct = ({
     >
       <div className="container">
         <SectionTitle titleText="DAILY DEALS!" positionClass="text-center" />
-        <Tab.Container defaultActiveKey="bestSeller">
+        <Tab.Container defaultActiveKey="saleItems">
           <Nav
             variant="pills"
             className="product-tab-list pt-30 pb-55 text-center"
           >
-            <Nav.Item>
+            {/* <Nav.Item>
               <Nav.Link eventKey="newArrival">
                 <h4>New Arrivals</h4>
               </Nav.Link>
@@ -33,7 +33,7 @@ const TabProduct = ({
               <Nav.Link eventKey="bestSeller">
                 <h4>Best Sellers</h4>
               </Nav.Link>
-            </Nav.Item>
+            </Nav.Item> */}
             <Nav.Item>
               <Nav.Link eventKey="saleItems">
                 <h4>Sale Items</h4>
@@ -41,10 +41,10 @@ const TabProduct = ({
             </Nav.Item>
           </Nav>
           <Tab.Content>
-            <Tab.Pane eventKey="newArrival">
+            {/* <Tab.Pane eventKey="newArrival">
               <div className="row">
                 <ProductGrid
-                  category={category}
+                  // category={category}
                   type="new"
                   limit={8}
                   spaceBottomClass="mb-25"
@@ -54,17 +54,17 @@ const TabProduct = ({
             <Tab.Pane eventKey="bestSeller">
               <div className="row">
                 <ProductGrid
-                  category={category}
+                  // category={category}
                   type="bestSeller"
                   limit={8}
                   spaceBottomClass="mb-25"
                 />
               </div>
-            </Tab.Pane>
+            </Tab.Pane> */}
             <Tab.Pane eventKey="saleItems">
               <div className="row">
                 <ProductGrid
-                  category={category}
+                  // category={category}
                   type="saleItems"
                   limit={8}
                   spaceBottomClass="mb-25"

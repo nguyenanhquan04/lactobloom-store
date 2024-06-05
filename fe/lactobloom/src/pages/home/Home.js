@@ -27,7 +27,7 @@ const Home = () => {
         <FeatureIcon spaceTopClass="pt-100" spaceBottomClass="pb-60" />
 
         {/* tab product */}
-        <TabProduct spaceBottomClass="pb-60" category="Milk" />
+        <TabProduct spaceBottomClass="pb-60"/>
 
         {/* blog featured */}
         <BlogFeatured spaceBottomClass="pb-55" />

@@ -60,10 +60,10 @@ ProductSticky.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const itemId = ownProps.match.params.id;
+  const itemId = ownProps.match.params.productId;
   return {
     product: state.productData.products.filter(
-      single => single.id === itemId
+      single => single.productId === itemId
     )[0]
   };
 };
