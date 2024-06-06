@@ -27,13 +27,13 @@ public class ProductService implements IProductService {
 
     @Override
     public Product getProductById(int id) {
-        return productRepository.findById((long) id).orElseThrow(() ->
+        return productRepository.findById((int) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
     }
 
     @Override
     public Product updateProduct(Product product, int id) {
-        Product existingProduct = productRepository.findById((long) id).orElseThrow(() ->
+        Product existingProduct = productRepository.findById((int) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
 
         existingProduct.setProductName(product.getProductName());
@@ -49,9 +49,9 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(int id) {
-        productRepository.findById((long) id).orElseThrow(() ->
+        productRepository.findById((int) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
-        productRepository.deleteById((long) id);
+        productRepository.deleteById((int) id);
     }
 
     @Override

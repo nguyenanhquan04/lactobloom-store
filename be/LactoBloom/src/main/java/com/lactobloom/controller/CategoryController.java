@@ -1,7 +1,6 @@
 package com.lactobloom.controller;
 
 import com.lactobloom.model.Category;
-import com.lactobloom.model.Product;
 import com.lactobloom.service.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -2,7 +2,6 @@ package com.lactobloom.service;
 
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Category;
-import com.lactobloom.model.Product;
 import com.lactobloom.repository.CategoryRepository;
 import com.lactobloom.service.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

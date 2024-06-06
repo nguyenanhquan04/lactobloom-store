@@ -1,7 +1,7 @@
 package com.lactobloom.service.interfaces;
 
 import com.lactobloom.model.Category;
-import com.lactobloom.model.Product;
+
 
 import java.util.List;
 
