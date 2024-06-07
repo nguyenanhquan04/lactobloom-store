@@ -6,9 +6,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
 
+
+
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "user", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"Username"}),
+    @UniqueConstraint(columnNames = {"Email"})
+})
 public class User {
 
     @Id
@@ -26,6 +31,9 @@ public class User {
 
     @Column(name = "Email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "Username", nullable = false)
+    private String username;
 
     @Column(name = "Password", nullable = false)
     private String password;
@@ -73,4 +81,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<PreOrder> preOrders;
+
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "Role",
+    joinColumns = @JoinColumn(name = "User_id", referencedColumnName = "userId"),
+    inverseJoinColumns = @JoinColumn(name = "Role_id", referencedColumnName = "roleId"))
+    private List<Role> roles;
 }
