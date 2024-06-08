@@ -4,12 +4,12 @@ import Logo from "../../components/header/Logo";
 import NavMenu from "../../components/header/NavMenu";
 import IconGroup from "../../components/header/IconGroup";
 import MobileMenu from "../../components/header/MobileMenu";
-import HeaderTop from "../../components/header/HeaderTop";
+// import HeaderTop from "../../components/header/HeaderTop";
 
 const HeaderOne = ({
   layout,
-  top,
-  borderStyle,
+  // top,
+  // borderStyle,
   headerPaddingClass,
   headerPositionClass,
   headerBgClass

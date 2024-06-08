@@ -39,11 +39,13 @@ const ProductGridListSingle = ({
         >
           <div className="product-img">
             <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
-              {/* <img
+               <img
                 className="default-img"
-                src={process.env.PUBLIC_URL + product.image[0]}
+                //src={process.env.PUBLIC_URL + product.image[0]}
+                src="https://img.freepik.com/free-photo/gradient-iphone-wallpaper-oil-bubble-water-background_53876-176849.jpg"
                 alt=""
               />
+              {/*
               {product.image.length > 1 ? (
                 <img
                   className="hover-img"

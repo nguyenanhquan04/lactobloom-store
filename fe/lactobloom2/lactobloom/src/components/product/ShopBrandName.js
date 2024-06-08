@@ -13,7 +13,7 @@ const ShopBrandName = ({ brandNames, getSortParams }) => {
               <div className="sidebar-widget-list-left">
                 <button
                   onClick={e => {
-                    getSortParams("brandName", "");
+                    getSortParams("brandName", "");                   
                     setActiveSort(e);
                   }}
                 >

@@ -58,6 +58,7 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
 };
 
 //get products based on category
+
 export const getSortedProducts = (products, sortType, sortValue) => {
   if (products && sortType && sortValue) {
     if (sortType === "categoryName") {
@@ -68,22 +69,6 @@ export const getSortedProducts = (products, sortType, sortValue) => {
     if (sortType === "brandName") {
       return products.filter(
         product => product.brandName.filter(single => single === sortValue)[0]
-      );
-    }
-    if (sortType === "color") {
-      return products.filter(
-        product =>
-          product.variation &&
-          product.variation.filter(single => single.color === sortValue)[0]
-      );
-    }
-    if (sortType === "size") {
-      return products.filter(
-        product =>
-          product.variation &&
-          product.variation.filter(
-            single => single.size.filter(single => single.name === sortValue)[0]
-          )[0]
       );
     }
     if (sortType === "filterSort") {
