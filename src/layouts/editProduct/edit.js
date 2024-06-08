@@ -1,5 +1,10 @@
+/* eslint-disable react/prop-types */
 // @mui material components
 import Card from "@mui/material/Card";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { FormControl, FormLabel } from '@mui/material'
+import Icon from "@mui/material/Icon";
 
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
@@ -13,13 +18,17 @@ import Table from "examples/Tables/Table";
 
 // Data
 
-import ProductsTable from "layouts/tables1/data/productsTableData";
 
-function Tables1() {
-  
-  const rows = ProductsTable(); // Gọi ProductsTable để lấy dữ liệu
 
-  const productsTableData = {
+function EditForm() {
+
+    const action = (
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
+          more_vert
+        </Icon>
+      ); 
+
+  const EForm = {
     columns: [
       { name: "productId", align: "center" },
       { name: "brandName", align: "center" },
@@ -29,7 +38,30 @@ function Tables1() {
       { name: "stock", align: "center" },
       { name: "action", align: "center" },
     ],
-    rows: rows,
+     rows: [
+        {
+          
+          productId: (
+            <TextField></TextField>
+          ),
+          brandName: (
+            <TextField></TextField>
+          ),
+          productName: (
+            <TextField></TextField>
+          ),
+          categoryName:(
+            <TextField></TextField>
+          ),
+          price: (
+            <TextField></TextField>
+          ),
+          stock: (
+            <TextField></TextField>
+          ),
+          action
+        },
+      ],
   };
 
   return (
@@ -50,7 +82,7 @@ function Tables1() {
               },
             }}
           >
-            <Table columns={productsTableData.columns} rows={productsTableData.rows} />
+            <Table columns={EForm.columns} rows={EForm.rows} />
           </SoftBox>
         </Card>
       </SoftBox>
@@ -59,4 +91,4 @@ function Tables1() {
   );
 }
 
-export default Tables1;
+export default EditForm;

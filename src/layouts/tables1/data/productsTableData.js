@@ -53,6 +53,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Icon from "@mui/material/Icon";
 import SoftTypography from "components/SoftTypography";
+import SoftButton from "components/SoftButton";
 
 const action = (
   <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
@@ -84,6 +85,17 @@ const ProductsTable = () => {
             </SoftTypography>
           ),
           action
+          // action: (
+          //   <SoftButton
+          //   component={Link}
+          //   href="http://localhost:3000/products/1"
+          //   target="_blank"
+          //   rel="noreferrer"
+          //   color="dark"
+          //   variant="outlined"
+          //   fullWidth
+          // ></SoftButton>
+          // ),
         }));
 
         setRows(formattedData);
