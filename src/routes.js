@@ -75,9 +75,9 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables1",
+    name: "Products Management",
     key: "tables1",
-    route: "/tables1",
+    route: "/products",
     icon: <Office size="12px" />,
     component: <Tables1 />,
     noCollapse: true,

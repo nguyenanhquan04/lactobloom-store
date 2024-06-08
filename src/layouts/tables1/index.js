@@ -27,36 +27,30 @@ import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
 
-function Tables() {
-  const { columns, rows } = authorsTableData;
-  const { columns: prCols, rows: prRows } = projectsTableData;
+import ProductsTable from "layouts/tables1/data/productsTableData";
+
+function Tables1() {
+  
+  const rows = ProductsTable(); // Gọi ProductsTable để lấy dữ liệu
+
+  const productsTableData = {
+    columns: [
+      { name: "productId", align: "left" },
+      { name: "brandName", align: "left" },
+      { name: "productName", align: "left" },
+      { name: "categoryName", align: "left" },
+      { name: "price", align: "left" },
+      { name: "stock", align: "left" },
+      { name: "action", align: "center" },
+    ],
+    rows: rows,
+  };
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <SoftBox py={3}>
-        <SoftBox mb={3}>
-          <Card>
-            <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">Authors table</SoftTypography>
-            </SoftBox>
-            <SoftBox
-              sx={{
-                "& .MuiTableRow-root:not(:last-child)": {
-                  "& td": {
-                    borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                      `${borderWidth[1]} solid ${borderColor}`,
-                  },
-                },
-              }}
-            >
-              <Table columns={columns} rows={rows} />
-            </SoftBox>
-          </Card>
-        </SoftBox>
         <Card>
           <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
             <SoftTypography variant="h6">Projects table</SoftTypography>
@@ -71,7 +65,7 @@ function Tables() {
               },
             }}
           >
-            <Table columns={prCols} rows={prRows} />
+            <Table columns={productsTableData.columns} rows={productsTableData.rows} />
           </SoftBox>
         </Card>
       </SoftBox>
@@ -80,4 +74,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default Tables1;
