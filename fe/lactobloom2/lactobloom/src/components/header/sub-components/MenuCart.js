@@ -4,9 +4,12 @@ import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice } from "../../../helpers/product";
 
+const defaultImage = "/assets/img/no-image.png";
+
 const MenuCart = ({ cartData, currency, deleteFromCart }) => {
   let cartTotalPrice = 0;
   const { addToast } = useToasts();
+
   return (
     <div className="shopping-cart-content">
       {cartData && cartData.length > 0 ? (
@@ -28,16 +31,20 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
                 ? (cartTotalPrice += finalDiscountedPrice * single.quantity).toLocaleString("vi-VN")
                 : (cartTotalPrice += finalProductPrice * single.quantity).toLocaleString("vi-VN");
 
+                const singleImage = single.images && single.images.length > 0 
+                ? single.images[0].imageUrl 
+                : defaultImage;
+
               return (
                 <li className="single-shopping-cart" key={key}>
                   <div className="shopping-cart-img">
-                    {/* <Link to={process.env.PUBLIC_URL + "/product/" + single.productId}>
+                    <Link to={process.env.PUBLIC_URL + "/product/" + single.productId}>
                       <img
                         alt=""
-                        src={process.env.PUBLIC_URL + single.image[0]}
+                        src={process.env.PUBLIC_URL + singleImage}
                         className="img-fluid"
                       />
-                    </Link> */}
+                    </Link>
                   </div>
                   <div className="shopping-cart-title">
                     <h4>
@@ -54,15 +61,6 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
                         ? finalDiscountedPrice.toLocaleString("vi-VN") + " VND"
                         : finalProductPrice.toLocaleString("vi-VN") + " VND"}
                     </span>
-                    {/* {single.selectedProductColor &&
-                    single.selectedProductSize ? (
-                      <div className="cart-item-variation">
-                        <span>Color: {single.selectedProductColor}</span>
-                        <span>Size: {single.selectedProductSize}</span>
-                      </div>
-                    ) : (
-                      ""
-                    )} */}
                   </div>
                   <div className="shopping-cart-delete">
                     <button onClick={() => deleteFromCart(single, addToast)}>

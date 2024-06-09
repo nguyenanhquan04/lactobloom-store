@@ -27,6 +27,10 @@ const ProductGridListSingle = ({
     discountedPrice * 1
   );
 
+  const defaultImage = "/assets/img/no-image.png";
+  const productImage = product.images && product.images.length > 0 ? product.images[0].imageUrl : defaultImage;
+  const hoverImage = product.images && product.images.length > 1 ? product.images[1].imageUrl : defaultImage;
+
   return (
     <Fragment>
       <div
@@ -41,15 +45,15 @@ const ProductGridListSingle = ({
             <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
                <img
                 className="default-img"
-                //src={process.env.PUBLIC_URL + product.image[0]}
-                src="https://img.freepik.com/free-photo/gradient-iphone-wallpaper-oil-bubble-water-background_53876-176849.jpg"
+                src={process.env.PUBLIC_URL + productImage}
+                // src="/assets/img/no-image.png"
                 alt=""
               />
-              {/*
-              {product.image.length > 1 ? (
+              
+              {/* {product.image.length > 1 ? (
                 <img
                   className="hover-img"
-                  src={process.env.PUBLIC_URL + product.image[1]}
+                  src={process.env.PUBLIC_URL + hoverImage}
                   alt=""
                 />
               ) : (
@@ -164,11 +168,12 @@ const ProductGridListSingle = ({
               <div className="product-list-image-wrap">
                 <div className="product-img">
                   <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
-                    {/* <img
+                     <img
                       className="default-img img-fluid"
-                      src={process.env.PUBLIC_URL + product.image[0]}
+                      src={process.env.PUBLIC_URL + productImage}
                       alt=""
                     />
+                    {/*
                     {product.image.length > 1 ? (
                       <img
                         className="hover-img img-fluid"

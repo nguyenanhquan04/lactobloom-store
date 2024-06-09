@@ -27,6 +27,9 @@ const ProductGridSingle = ({
     discountedPrice * 1
   );
 
+  const defaultImage = "/assets/img/no-image.png";
+  const productImage = product.images && product.images.length > 0 ? product.images[0].imageUrl : defaultImage;
+
   return (
     <Fragment>
       <div
@@ -39,11 +42,12 @@ const ProductGridSingle = ({
         >
           <div className="product-img">
             <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
-              {/* <img
+              <img
                 className="default-img"
-                src={process.env.PUBLIC_URL + product.image[0]}
+                src={process.env.PUBLIC_URL + productImage}
                 alt=""
               />
+              {/* 
               {product.image.length > 1 ? (
                 <img
                   className="hover-img"
