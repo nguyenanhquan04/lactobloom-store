@@ -32,8 +32,7 @@ public class BlogCategoryController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<BlogCategory> updateBlogCategory(@PathVariable int id,
-                                                           @RequestBody BlogCategory blogCategory) {
+    public ResponseEntity<BlogCategory> updateBlogCategory(@PathVariable int id, @RequestBody BlogCategory blogCategory) {
         return new ResponseEntity<>(blogCategoryService.updateBlogCategory(blogCategory, id), HttpStatus.OK);
     }
 

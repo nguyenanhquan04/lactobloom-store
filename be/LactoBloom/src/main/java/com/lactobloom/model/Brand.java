@@ -1,8 +1,10 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+
 import java.util.List;
 
 @Data
@@ -19,6 +21,7 @@ public class Brand {
     private String brandName;
 
     @OneToMany(mappedBy = "brand")
-    @JsonManagedReference
+    @JsonBackReference
     private List<Product> products;
+
 }

@@ -2,7 +2,7 @@
 export const getProducts = (products, category, type, limit) => {
   const finalProducts = category
     ? products.filter(
-        product => product.category.filter(single => single === category)[0]
+        product => product.categoryName.filter(single => single === category)[0]
       )
     : products;
 
@@ -35,7 +35,7 @@ export const getDiscountPrice = (price, discount) => {
 export const getProductCartQuantity = (cartItems, product, color, size) => {
   let productInCart = cartItems.filter(
     single =>
-      single.id === product.id &&
+      single.productId === product.productId &&
       (single.selectedProductColor
         ? single.selectedProductColor === color
         : true) &&
@@ -45,12 +45,12 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
     if (product.variation) {
       return cartItems.filter(
         single =>
-          single.id === product.id &&
+          single.productId === product.productId &&
           single.selectedProductColor === color &&
           single.selectedProductSize === size
-      )[0].quantity;
+      )[0].cartQuantity;
     } else {
-      return cartItems.filter(single => product.id === single.id)[0].quantity;
+      return cartItems.filter(single => product.productId === single.productId)[0].cartQuantity;
     }
   } else {
     return 0;
@@ -58,32 +58,17 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
 };
 
 //get products based on category
+
 export const getSortedProducts = (products, sortType, sortValue) => {
   if (products && sortType && sortValue) {
-    if (sortType === "category") {
+    if (sortType === "categoryName") {
       return products.filter(
-        product => product.category.filter(single => single === sortValue)[0]
+        product => product.categoryName.filter(single => single === sortValue)[0]
       );
     }
-    if (sortType === "tag") {
+    if (sortType === "brandName") {
       return products.filter(
-        product => product.tag.filter(single => single === sortValue)[0]
-      );
-    }
-    if (sortType === "color") {
-      return products.filter(
-        product =>
-          product.variation &&
-          product.variation.filter(single => single.color === sortValue)[0]
-      );
-    }
-    if (sortType === "size") {
-      return products.filter(
-        product =>
-          product.variation &&
-          product.variation.filter(
-            single => single.size.filter(single => single.name === sortValue)[0]
-          )[0]
+        product => product.brandName.filter(single => single === sortValue)[0]
       );
     }
     if (sortType === "filterSort") {
@@ -115,35 +100,35 @@ const getIndividualItemArray = array => {
 };
 
 // get individual categories
-export const getIndividualCategories = products => {
-  let productCategories = [];
+export const getIndividualCategoryNames = products => {
+  let productCategoryNames = [];
   products &&
     products.map(product => {
       return (
-        product.category &&
-        product.category.map(single => {
-          return productCategories.push(single);
+        product.categoryName &&
+        product.categoryName.map(single => {
+          return productCategoryNames.push(single);
         })
       );
     });
-  const individualProductCategories = getIndividualItemArray(productCategories);
-  return individualProductCategories;
+  const individualProductCategoryNames = getIndividualItemArray(productCategoryNames);
+  return individualProductCategoryNames;
 };
 
 // get individual tags
-export const getIndividualTags = products => {
-  let productTags = [];
+export const getIndividualBrandNames = products => {
+  let productBrandNames = [];
   products &&
     products.map(product => {
       return (
-        product.tag &&
-        product.tag.map(single => {
-          return productTags.push(single);
+        product.brandName &&
+        product.brandName.map(single => {
+          return productBrandNames.push(single);
         })
       );
     });
-  const individualProductTags = getIndividualItemArray(productTags);
-  return individualProductTags;
+  const individualProductBrandNames = getIndividualItemArray(productBrandNames);
+  return individualProductBrandNames;
 };
 
 // get individual colors

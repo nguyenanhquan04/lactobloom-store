@@ -16,7 +16,6 @@ CREATE TABLE User (
     Password VARCHAR(255) NOT NULL,
     Address TEXT,
     Phone VARCHAR(15),
-    Avatar VARCHAR(255),
     Point INT DEFAULT 0,
     FOREIGN KEY (Role_id) REFERENCES Role(Role_id)
 );
@@ -65,7 +64,7 @@ CREATE TABLE Product (
     Description TEXT,
     Price DECIMAL(10, 2) NOT NULL,
     Discount DECIMAL(5, 2) DEFAULT 0,
-    Quantity INT NOT NULL,
+    Stock INT NOT NULL,
     FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id),
     FOREIGN KEY (Category_id) REFERENCES Category(Category_id)
 );
@@ -129,17 +128,6 @@ CREATE TABLE OrderDetail (
     FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
 );
 
-CREATE TABLE PreOrder (
-    PreOrder_id INT AUTO_INCREMENT PRIMARY KEY,
-    User_id INT,
-    Product_id INT,
-    Quantity INT NOT NULL,
-    PreOrder_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Status ENUM('Pending', 'Confirmed', 'Cancelled') DEFAULT 'Pending',
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
-);
-
 -- Insert data into tables
 
 -- Role table
@@ -147,17 +135,17 @@ INSERT INTO Role (Role_name) VALUES
 ('Member'), ('Admin'), ('Staff');
 
 -- User table
-INSERT INTO User (Full_name, Role_id, Email, Password, Address, Phone, Avatar, Point) VALUES
-('John Doe', 1, 'john.doe@example.com', 'password123', '123 Main St', '1234567890', 'avatar1.jpg', 10),
-('Jane Smith', 2, 'jane.smith@example.com', 'password123', '456 Elm St', '0987654321', 'avatar2.jpg', 20),
-('Michael Brown', 3, 'michael.brown@example.com', 'password123', '789 Maple St', '1231231234', 'avatar3.jpg', 30),
-('Emily Davis', 1, 'emily.davis@example.com', 'password123', '101 Oak St', '9879879876', 'avatar4.jpg', 40),
-('Chris Wilson', 2, 'chris.wilson@example.com', 'password123', '102 Pine St', '6546546543', 'avatar5.jpg', 50),
-('Amanda Taylor', 3, 'amanda.taylor@example.com', 'password123', '103 Birch St', '3213213211', 'avatar6.jpg', 60),
-('Joshua Moore', 1, 'joshua.moore@example.com', 'password123', '104 Cedar St', '5555555555', 'avatar7.jpg', 70),
-('Megan Jackson', 2, 'megan.jackson@example.com', 'password123', '105 Spruce St', '4444444444', 'avatar8.jpg', 80),
-('Matthew White', 3, 'matthew.white@example.com', 'password123', '106 Fir St', '3333333333', 'avatar9.jpg', 90),
-('Laura Harris', 1, 'laura.harris@example.com', 'password123', '107 Ash St', '2222222222', 'avatar10.jpg', 100);
+INSERT INTO User (Full_name, Role_id, Email, Password, Address, Phone, Point) VALUES
+('John Doe', 1, 'john.doe@example.com', 'password123', '123 Main St', '1234567890', 10),
+('Jane Smith', 2, 'jane.smith@example.com', 'password123', '456 Elm St', '0987654321', 20),
+('Michael Brown', 3, 'michael.brown@example.com', 'password123', '789 Maple St', '1231231234', 30),
+('Emily Davis', 1, 'emily.davis@example.com', 'password123', '101 Oak St', '9879879876', 40),
+('Chris Wilson', 2, 'chris.wilson@example.com', 'password123', '102 Pine St', '6546546543', 50),
+('Amanda Taylor', 3, 'amanda.taylor@example.com', 'password123', '103 Birch St', '3213213211', 60),
+('Joshua Moore', 1, 'joshua.moore@example.com', 'password123', '104 Cedar St', '5555555555', 70),
+('Megan Jackson', 2, 'megan.jackson@example.com', 'password123', '105 Spruce St', '4444444444', 80),
+('Matthew White', 3, 'matthew.white@example.com', 'password123', '106 Fir St', '3333333333', 90),
+('Laura Harris', 1, 'laura.harris@example.com', 'password123', '107 Ash St', '2222222222', 100);
 
 -- Chat table
 INSERT INTO Chat (User_id, Staff_id, Message, Timestamp) VALUES
@@ -219,7 +207,7 @@ INSERT INTO Category (Category_name) VALUES
 ('Sữa Mỹ'), ('Sữa Nhật'), ('Sữa Úc'), ('Sữa Châu Âu'), ('Sữa Việt Nam'), ('Sữa bầu');
 
 -- Product table
-INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Price, Discount, Quantity) VALUES
+INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Price, Discount, Stock) VALUES
 -- Similac products
 ('Sữa Similac 5G số 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac 5G số 2 là sản phẩm dinh dưỡng cho bé từ 6-12 tháng đến từ thương hiệu uy tín Abbott.', 559000, 0, 50),
 ('Sữa Similac Total Protection 1 400g (0 - 6 tháng)', 1, 1, 'Sữa Similac Total Protection 1 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 0-6 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 329000, 0, 20),
@@ -342,16 +330,3 @@ INSERT INTO OrderDetail (Order_id, Product_id, Quantity, Total_price) VALUES
 (4, 19, 1, 384750),
 (5, 5, 2, 910000),
 (5, 16, 1, 553520);
-
--- PreOrder table with 10 entries
-INSERT INTO PreOrder (User_id, Product_id, Quantity, Status) VALUES
-(1, 11, 2, 'Pending'),
-(1, 22, 1, 'Confirmed'),
-(1, 3, 3, 'Cancelled'),
-(4, 4, 4, 'Pending'),
-(4, 15, 5, 'Confirmed'),
-(7, 6, 2, 'Cancelled'),
-(7, 7, 1, 'Pending'),
-(10, 18, 2, 'Confirmed'),
-(10, 9, 1, 'Cancelled'),
-(10, 10, 4, 'Pending');

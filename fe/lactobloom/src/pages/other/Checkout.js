@@ -16,10 +16,7 @@ const Checkout = ({ location, cartItems, currency }) => {
     <Fragment>
       <MetaTags>
         <title>LactoBloom Store | Checkout</title>
-        <meta
-          name="description"
-          content="Checkout page of LactoBloom Store"
-        />
+        <meta name="description" content="Checkout page of LactoBloom Store" />
       </MetaTags>
       <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
       <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
@@ -48,13 +45,13 @@ const Checkout = ({ location, cartItems, currency }) => {
                           <input type="text" />
                         </div>
                       </div>
-                      <div className="col-lg-12">
+                      {/* <div className="col-lg-12">
                         <div className="billing-info mb-20">
                           <label>Company Name</label>
                           <input type="text" />
                         </div>
-                      </div>
-                      <div className="col-lg-12">
+                      </div> */}
+                      {/* <div className="col-lg-12">
                         <div className="billing-select mb-20">
                           <label>Country</label>
                           <select>
@@ -66,7 +63,7 @@ const Checkout = ({ location, cartItems, currency }) => {
                             <option>Barbados</option>
                           </select>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
                           <label>Street Address</label>
@@ -83,34 +80,34 @@ const Checkout = ({ location, cartItems, currency }) => {
                       </div>
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>Town / City</label>
+                          <label>District / City</label>
                           <input type="text" />
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
-                          <label>State / County</label>
+                          <label>Province / City</label>
                           <input type="text" />
                         </div>
                       </div>
-                      <div className="col-lg-6 col-md-6">
+                      {/* <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Postcode / ZIP</label>
                           <input type="text" />
                         </div>
-                      </div>
+                      </div> */}
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Phone</label>
                           <input type="text" />
                         </div>
                       </div>
-                      <div className="col-lg-6 col-md-6">
+                      {/* <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Email Address</label>
                           <input type="text" />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="additional-info-wrap">
@@ -145,34 +142,33 @@ const Checkout = ({ location, cartItems, currency }) => {
                                 cartItem.price,
                                 cartItem.discount
                               );
-                              const finalProductPrice = (
-                                cartItem.price * currency.currencyRate
-                              ).toFixed(2);
+                              const finalProductPrice =
+                                cartItem.price;
                               const finalDiscountedPrice = (
-                                discountedPrice * currency.currencyRate
-                              ).toFixed(2);
+                                discountedPrice * 1
+                              );
 
                               discountedPrice != null
                                 ? (cartTotalPrice +=
-                                    finalDiscountedPrice * cartItem.quantity)
+                                    finalDiscountedPrice * cartItem.quantity).toLocaleString("vi-VN")
                                 : (cartTotalPrice +=
-                                    finalProductPrice * cartItem.quantity);
+                                    finalProductPrice * cartItem.quantity).toLocaleString("vi-VN");
                               return (
                                 <li key={key}>
-                                  <span className="order-middle-left">
-                                    {cartItem.name} X {cartItem.quantity}
+                                  <span
+                                    className="order-middle-left"
+                                  >
+                                    {cartItem.productName} X {cartItem.quantity}
                                   </span>{" "}
                                   <span className="order-price">
                                     {discountedPrice !== null
-                                      ? currency.currencySymbol +
-                                        (
+                                      ? (
                                           finalDiscountedPrice *
                                           cartItem.quantity
-                                        ).toFixed(2)
-                                      : currency.currencySymbol +
-                                        (
+                                        ).toLocaleString("vi-VN") + " VND"
+                                      : (
                                           finalProductPrice * cartItem.quantity
-                                        ).toFixed(2)}
+                                        ).toLocaleString("vi-VN") + " VND"}
                                   </span>
                                 </li>
                               );
@@ -189,8 +185,7 @@ const Checkout = ({ location, cartItems, currency }) => {
                           <ul>
                             <li className="order-total">Total</li>
                             <li>
-                              {currency.currencySymbol +
-                                cartTotalPrice.toFixed(2)}
+                              {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                             </li>
                           </ul>
                         </div>
@@ -230,13 +225,13 @@ const Checkout = ({ location, cartItems, currency }) => {
 Checkout.propTypes = {
   cartItems: PropTypes.array,
   currency: PropTypes.object,
-  location: PropTypes.object
+  location: PropTypes.object,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     cartItems: state.cartData,
-    currency: state.currencyData
+    currency: state.currencyData,
   };
 };
 

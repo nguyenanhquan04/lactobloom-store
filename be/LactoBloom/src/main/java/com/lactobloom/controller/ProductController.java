@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product")
+@CrossOrigin(origins = "*") // Chỉ cho phép truy cập từ origin này
 public class ProductController {
 
     @Autowired
@@ -50,5 +51,17 @@ public class ProductController {
     @GetMapping("/search/{productName}")
     public List<Product> searchProductsByName(@PathVariable String productName) {
         return productService.searchProductsByName(productName);
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable int categoryId) {
+        List<Product> products = productService.getProductsByCategoryId(categoryId);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/brand/{brandId}")
+    public ResponseEntity<List<Product>> getProductsByBrandId(@PathVariable int brandId) {
+        List<Product> products = productService.getProductsByBrandId(brandId);
+        return ResponseEntity.ok(products);
     }
 }

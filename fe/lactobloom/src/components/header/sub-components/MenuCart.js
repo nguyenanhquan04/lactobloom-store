@@ -4,9 +4,12 @@ import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice } from "../../../helpers/product";
 
+const defaultImage = "/assets/img/no-image.png";
+
 const MenuCart = ({ cartData, currency, deleteFromCart }) => {
   let cartTotalPrice = 0;
   const { addToast } = useToasts();
+
   return (
     <div className="shopping-cart-content">
       {cartData && cartData.length > 0 ? (
@@ -18,23 +21,27 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
                 single.discount
               );
               const finalProductPrice = (
-                single.price * currency.currencyRate
-              ).toFixed(2);
+                single.price 
+              );
               const finalDiscountedPrice = (
-                discountedPrice * currency.currencyRate
-              ).toFixed(2);
+                discountedPrice * 1
+              );
 
               discountedPrice != null
-                ? (cartTotalPrice += finalDiscountedPrice * single.quantity)
-                : (cartTotalPrice += finalProductPrice * single.quantity);
+                ? (cartTotalPrice += finalDiscountedPrice * single.quantity).toLocaleString("vi-VN")
+                : (cartTotalPrice += finalProductPrice * single.quantity).toLocaleString("vi-VN");
+
+                const singleImage = single.images && single.images.length > 0 
+                ? single.images[0].imageUrl 
+                : defaultImage;
 
               return (
                 <li className="single-shopping-cart" key={key}>
                   <div className="shopping-cart-img">
-                    <Link to={process.env.PUBLIC_URL + "/product/" + single.id}>
+                    <Link to={process.env.PUBLIC_URL + "/product/" + single.productId}>
                       <img
                         alt=""
-                        src={process.env.PUBLIC_URL + single.image[0]}
+                        src={process.env.PUBLIC_URL + singleImage}
                         className="img-fluid"
                       />
                     </Link>
@@ -42,27 +49,18 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
                   <div className="shopping-cart-title">
                     <h4>
                       <Link
-                        to={process.env.PUBLIC_URL + "/product/" + single.id}
+                        to={process.env.PUBLIC_URL + "/product/" + single.productId}
                       >
                         {" "}
-                        {single.name}{" "}
+                        {single.productName}{" "}
                       </Link>
                     </h4>
                     <h6>Qty: {single.quantity}</h6>
                     <span>
                       {discountedPrice !== null
-                        ? currency.currencySymbol + finalDiscountedPrice
-                        : currency.currencySymbol + finalProductPrice}
+                        ? finalDiscountedPrice.toLocaleString("vi-VN") + " VND"
+                        : finalProductPrice.toLocaleString("vi-VN") + " VND"}
                     </span>
-                    {single.selectedProductColor &&
-                    single.selectedProductSize ? (
-                      <div className="cart-item-variation">
-                        <span>Color: {single.selectedProductColor}</span>
-                        <span>Size: {single.selectedProductSize}</span>
-                      </div>
-                    ) : (
-                      ""
-                    )}
                   </div>
                   <div className="shopping-cart-delete">
                     <button onClick={() => deleteFromCart(single, addToast)}>
@@ -77,7 +75,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
             <h4>
               Total :{" "}
               <span className="shop-total">
-                {currency.currencySymbol + cartTotalPrice.toFixed(2)}
+                {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
               </span>
             </h4>
           </div>

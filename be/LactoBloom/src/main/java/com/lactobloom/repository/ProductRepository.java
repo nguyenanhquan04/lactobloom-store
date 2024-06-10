@@ -5,6 +5,8 @@ import com.lactobloom.model.Product;
 
 import java.util.List;
 
-public interface ProductRepository extends JpaRepository<Product, Integer>{
+public interface ProductRepository extends JpaRepository<Product, Long>{
     List<Product> findByProductNameContaining(String productName);
+    List<Product> findByCategoryCategoryId(int categoryId);
+    List<Product> findByBrandBrandId(int brandId);
 }

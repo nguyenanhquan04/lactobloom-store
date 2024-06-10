@@ -29,7 +29,7 @@ const ShopTopFilter = ({ products, getSortParams }) => {
                       <li key={key}>
                         <button
                           onClick={e => {
-                            getSortParams("category", category);
+                            getSortParams("categoryName", category);
                             setActiveSort(e);
                           }}
                         >
@@ -109,7 +109,7 @@ const ShopTopFilter = ({ products, getSortParams }) => {
                       <li key={key}>
                         <button
                           onClick={e => {
-                            getSortParams("tag", tag);
+                            getSortParams("brandName", tag);
                             setActiveSort(e);
                           }}
                         >

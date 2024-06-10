@@ -1,9 +1,13 @@
 package com.lactobloom.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -29,6 +33,18 @@ public class Product {
     @JsonBackReference
     private Category category;
 
+    // Getter mới cho brandName
+    @JsonProperty("brandName")
+    public List<String> getBrandName() {
+        return brand != null ? Collections.singletonList(brand.getBrandName()) : null;
+    }
+
+    // Getter mới cho categoryName
+    @JsonProperty("categoryName")
+    public List<String> getCategoryName() {
+        return category != null ? Collections.singletonList(category.getCategoryName()) : null;
+    }
+
     @Column(name = "Description", length = 1000)
     private String description;
 
@@ -38,8 +54,8 @@ public class Product {
     @Column(name = "Discount", columnDefinition = "DECIMAL(5, 2) DEFAULT 0")
     private double discount;
 
-    @Column(name = "Quantity", nullable = false)
-    private int quantity;
+    @Column(name = "Stock", nullable = false)
+    private int stock;
 
     @OneToMany(mappedBy = "product")
     @JsonManagedReference

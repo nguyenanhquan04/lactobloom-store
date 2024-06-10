@@ -19,7 +19,6 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 const Cart = ({
   location,
   cartItems,
-  currency,
   decreaseQuantity,
   addToCart,
   deleteFromCart,
@@ -29,6 +28,8 @@ const Cart = ({
   const { addToast } = useToasts();
   const { pathname } = location;
   let cartTotalPrice = 0;
+
+  const defaultImage = "/assets/img/no-image.png";
 
   return (
     <Fragment>
@@ -74,17 +75,19 @@ const Cart = ({
                               cartItem.discount
                             );
                             const finalProductPrice = (
-                              cartItem.price * currency.currencyRate
-                            ).toFixed(2);
+                              cartItem.price 
+                            );
                             const finalDiscountedPrice = (
-                              discountedPrice * currency.currencyRate
-                            ).toFixed(2);
+                              discountedPrice * 1
+                            );
+
+                            const cartItemImage = cartItem.images && cartItem.images.length > 0 ? cartItem.images[0].imageUrl : defaultImage;
 
                             discountedPrice != null
                               ? (cartTotalPrice +=
-                                  finalDiscountedPrice * cartItem.quantity)
+                                  finalDiscountedPrice * cartItem.quantity).toLocaleString("vi-VN")
                               : (cartTotalPrice +=
-                                  finalProductPrice * cartItem.quantity);
+                                  finalProductPrice * cartItem.quantity).toLocaleString("vi-VN");
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -92,14 +95,14 @@ const Cart = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      cartItem.id
+                                      cartItem.productId
                                     }
                                   >
                                     <img
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        cartItem.image[0]
+                                        cartItemImage
                                       }
                                       alt=""
                                     />
@@ -111,42 +114,26 @@ const Cart = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      cartItem.id
+                                      cartItem.productId
                                     }
                                   >
-                                    {cartItem.name}
-                                  </Link>
-                                  {cartItem.selectedProductColor &&
-                                  cartItem.selectedProductSize ? (
-                                    <div className="cart-item-variation">
-                                      <span>
-                                        Color: {cartItem.selectedProductColor}
-                                      </span>
-                                      <span>
-                                        Size: {cartItem.selectedProductSize}
-                                      </span>
-                                    </div>
-                                  ) : (
-                                    ""
-                                  )}
+                                    {cartItem.productName}
+                                  </Link>                             
                                 </td>
 
                                 <td className="product-price-cart">
                                   {discountedPrice !== null ? (
                                     <Fragment>
                                       <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
+                                        {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                       <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
+                                        {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                     </Fragment>
                                   ) : (
                                     <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
+                                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                     </span>
                                   )}
                                 </td>
@@ -181,9 +168,7 @@ const Cart = ({
                                         cartItem.quantity &&
                                         cartItem.quantity >=
                                           cartItemStock(
-                                            cartItem,
-                                            cartItem.selectedProductColor,
-                                            cartItem.selectedProductSize
+                                            cartItem
                                           )
                                       }
                                     >
@@ -193,14 +178,12 @@ const Cart = ({
                                 </td>
                                 <td className="product-subtotal">
                                   {discountedPrice !== null
-                                    ? currency.currencySymbol +
-                                      (
+                                    ? (
                                         finalDiscountedPrice * cartItem.quantity
-                                      ).toFixed(2)
-                                    : currency.currencySymbol +
-                                      (
+                                      ).toLocaleString("vi-VN") + " VND"
+                                    : (
                                         finalProductPrice * cartItem.quantity
-                                      ).toFixed(2)}
+                                      ).toLocaleString("vi-VN") + " VND"}
                                 </td>
 
                                 <td className="product-remove">
@@ -240,51 +223,7 @@ const Cart = ({
                 </div>
 
                 <div className="row">
-                <div className="col-lg-4 col-md-6"></div>
-                  {/* <div className="col-lg-4 col-md-6">
-                    <div className="cart-tax">
-                      <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">
-                          Estimate Shipping And Tax
-                        </h4>
-                      </div>
-                      <div className="tax-wrapper">
-                        <p>
-                          Enter your destination to get a shipping estimate.
-                        </p>
-                        <div className="tax-select-wrapper">
-                          <div className="tax-select">
-                            <label>* Country</label>
-                            <select className="email s-email s-wid">
-                              <option>Bangladesh</option>
-                              <option>Albania</option>
-                              <option>Åland Islands</option>
-                              <option>Afghanistan</option>
-                              <option>Belgium</option>
-                            </select>
-                          </div>
-                          <div className="tax-select">
-                            <label>* Region / State</label>
-                            <select className="email s-email s-wid">
-                              <option>Bangladesh</option>
-                              <option>Albania</option>
-                              <option>Åland Islands</option>
-                              <option>Afghanistan</option>
-                              <option>Belgium</option>
-                            </select>
-                          </div>
-                          <div className="tax-select">
-                            <label>* Zip/Postal Code</label>
-                            <input type="text" />
-                          </div>
-                          <button className="cart-btn-2" type="submit">
-                            Get A Quote
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-
+                <div className="col-lg-4 col-md-6"></div>                 
                   <div className="col-lg-4 col-md-6">
                     <div className="discount-code-wrapper">
                       <div className="title-wrap">
@@ -314,14 +253,14 @@ const Cart = ({
                       <h5>
                         Total products{" "}
                         <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
+                          {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h5>
 
                       <h4 className="grand-totall-title">
                         Grand Total{" "}
                         <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
+                          {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h4>
                       <Link to={process.env.PUBLIC_URL + "/checkout"}>

@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
 
-
-
 @Data
 @Entity
 @Table(name = "user")
@@ -28,9 +26,6 @@ public class User {
 
     @Column(name = "Email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "Username", nullable = false)
-    private String username;
 
     @Column(name = "Password", nullable = false)
     private String password;
@@ -78,6 +73,4 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<PreOrder> preOrders;
-
-   
 }

@@ -33,8 +33,7 @@ const NotFound = ({ location }) => {
                   <h1>404</h1>
                   <h2>OOPS! PAGE NOT FOUND</h2>
                   <p>
-                    Sorry but the page you are looking for does not exist, have
-                    been removed, name changed or is temporarity unavailable.
+                  Sorry but the page you are looking for does not exist, have been removed, name changed or is temporarily unavailable.
                   </p>
                   <form className="searchform mb-50">
                     <input

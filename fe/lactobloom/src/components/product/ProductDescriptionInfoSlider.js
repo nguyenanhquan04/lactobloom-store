@@ -30,29 +30,30 @@ const ProductDescriptionInfoSlider = ({
   );
   const [productStock, setProductStock] = useState(
     product.variation ? product.variation[0].size[0].stock : product.stock
+    //product.variation ? product.variation[0].size[0].quantity : product.quantity
   );
   const [quantityCount, setQuantityCount] = useState(1);
 
   const productCartQty = getProductCartQuantity(
     cartItems,
-    product,
-    selectedProductColor,
-    selectedProductSize
+    product
+    // selectedProductColor,
+    // selectedProductSize
   );
 
   return (
     <div className="product-details-content pro-details-slider-content">
-      <h2>{product.name}</h2>
+      <h2>{product.productName}</h2>
       <div className="product-details-price justify-content-center">
         {discountedPrice !== null ? (
           <Fragment>
-            <span>{currency.currencySymbol + finalDiscountedPrice}</span>{" "}
+            <span>{finalDiscountedPrice + " VND"}</span>{" "}
             <span className="old">
-              {currency.currencySymbol + finalProductPrice}
+              {finalProductPrice + " VND"}
             </span>
           </Fragment>
         ) : (
-          <span>{currency.currencySymbol + finalProductPrice} </span>
+          <span>{finalProductPrice + " VND"} </span>
         )}
       </div>
       {product.rating && product.rating > 0 ? (
@@ -65,7 +66,7 @@ const ProductDescriptionInfoSlider = ({
         ""
       )}
       <div className="pro-details-list">
-        <p>{product.shortDescription}</p>
+        <p>{product.description}</p>
       </div>
 
       {product.variation ? (
@@ -90,6 +91,7 @@ const ProductDescriptionInfoSlider = ({
                         setSelectedProductColor(single.color);
                         setSelectedProductSize(single.size[0].name);
                         setProductStock(single.size[0].stock);
+                        //setProductStock(single.size[0].quantity);
                         setQuantityCount(1);
                       }}
                     />
@@ -122,6 +124,7 @@ const ProductDescriptionInfoSlider = ({
                               onChange={() => {
                                 setSelectedProductSize(singleSize.name);
                                 setProductStock(singleSize.stock);
+                                //setProductStock(singleSize.quantity);
                                 setQuantityCount(1);
                               }}
                             />
@@ -230,11 +233,11 @@ const ProductDescriptionInfoSlider = ({
           </div>
         </div>
       )}
-      {product.category ? (
+      {product.categoryName ? (
         <div className="pro-details-meta justify-content-center">
           <span>Categories :</span>
           <ul>
-            {product.category.map((single, key) => {
+            {product.categoryName.map((single, key) => {
               return (
                 <li key={key}>
                   <Link to={process.env.PUBLIC_URL + "/shop"}>
@@ -248,11 +251,11 @@ const ProductDescriptionInfoSlider = ({
       ) : (
         ""
       )}
-      {product.tag ? (
+      {product.brandName ? (
         <div className="pro-details-meta justify-content-center">
-          <span>Tags :</span>
+          <span>Brand :</span>
           <ul>
-            {product.tag.map((single, key) => {
+            {product.brandName.map((single, key) => {
               return (
                 <li key={key}>
                   <Link to={process.env.PUBLIC_URL + "/shop"}>

@@ -27,13 +27,13 @@ public class ProductService implements IProductService {
 
     @Override
     public Product getProductById(int id) {
-        return productRepository.findById((int) id).orElseThrow(() ->
+        return productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
     }
 
     @Override
     public Product updateProduct(Product product, int id) {
-        Product existingProduct = productRepository.findById((int) id).orElseThrow(() ->
+        Product existingProduct = productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
 
         existingProduct.setProductName(product.getProductName());
@@ -42,20 +42,30 @@ public class ProductService implements IProductService {
         existingProduct.setDescription(product.getDescription());
         existingProduct.setPrice(product.getPrice());
         existingProduct.setDiscount(product.getDiscount());
-        existingProduct.setQuantity(product.getQuantity());
+        existingProduct.setStock(product.getStock());
         // Update other fields as needed
         return productRepository.save(existingProduct);
     }
 
     @Override
     public void deleteProduct(int id) {
-        productRepository.findById((int) id).orElseThrow(() ->
+        productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
-        productRepository.deleteById((int) id);
+        productRepository.deleteById((long) id);
     }
 
     @Override
     public List<Product> searchProductsByName(String productName) {
         return productRepository.findByProductNameContaining(productName);
+    }
+
+    @Override
+    public List<Product> getProductsByCategoryId(int categoryId) {
+        return productRepository.findByCategoryCategoryId(categoryId);
+    }
+
+    @Override
+    public List<Product> getProductsByBrandId(int brandId) {
+        return productRepository.findByBrandBrandId(brandId);
     }
 }
