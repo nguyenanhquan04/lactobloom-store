@@ -14,8 +14,8 @@ CREATE TABLE User (
     Role_id INT,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    Address TEXT,
     Phone VARCHAR(15),
+    Address TEXT,
     Point INT DEFAULT 0,
     FOREIGN KEY (Role_id) REFERENCES Role(Role_id)
 );
@@ -108,12 +108,15 @@ CREATE TABLE Voucher (
 CREATE TABLE `Order` (
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
     User_id INT,
+    Full_name NVARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Phone VARCHAR(15) NOT NULL,
+    Address TEXT NOT NULL,
     Voucher_id INT,
     Shipping_fee DECIMAL(10, 2) NOT NULL,
     Total_price DECIMAL(10, 2) NOT NULL,
     Order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     Payment_method VARCHAR(50) NOT NULL,
-    Shipping_address TEXT NOT NULL,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Voucher_id) REFERENCES Voucher(Voucher_id)
 );
@@ -135,17 +138,17 @@ INSERT INTO Role (Role_name) VALUES
 ('Member'), ('Admin'), ('Staff');
 
 -- User table
-INSERT INTO User (Full_name, Role_id, Email, Password, Address, Phone, Point) VALUES
-('John Doe', 1, 'john.doe@example.com', 'password123', '123 Main St', '1234567890', 10),
-('Jane Smith', 2, 'jane.smith@example.com', 'password123', '456 Elm St', '0987654321', 20),
-('Michael Brown', 3, 'michael.brown@example.com', 'password123', '789 Maple St', '1231231234', 30),
-('Emily Davis', 1, 'emily.davis@example.com', 'password123', '101 Oak St', '9879879876', 40),
-('Chris Wilson', 2, 'chris.wilson@example.com', 'password123', '102 Pine St', '6546546543', 50),
-('Amanda Taylor', 3, 'amanda.taylor@example.com', 'password123', '103 Birch St', '3213213211', 60),
-('Joshua Moore', 1, 'joshua.moore@example.com', 'password123', '104 Cedar St', '5555555555', 70),
-('Megan Jackson', 2, 'megan.jackson@example.com', 'password123', '105 Spruce St', '4444444444', 80),
-('Matthew White', 3, 'matthew.white@example.com', 'password123', '106 Fir St', '3333333333', 90),
-('Laura Harris', 1, 'laura.harris@example.com', 'password123', '107 Ash St', '2222222222', 100);
+INSERT INTO User (Full_name, Role_id, Email, Password, Phone, Address, Point) VALUES
+('John Doe', 1, 'john.doe@example.com', '123', '1234567890', '123 Main St', 10),
+('Jane Smith', 2, 'jane.smith@example.com', '123', '0987654321', '456 Elm St', 20),
+('Michael Brown', 3, 'michael.brown@example.com', '123', '1231231234', '789 Maple St', 30),
+('Emily Davis', 1, 'emily.davis@example.com', '123', '9879879876', '101 Oak St', 40),
+('Chris Wilson', 2, 'chris.wilson@example.com', '123', '6546546543', '102 Pine St', 50),
+('Amanda Taylor', 3, 'amanda.taylor@example.com', '123', '3213213211', '103 Birch St', 60),
+('Joshua Moore', 1, 'joshua.moore@example.com', '123', '5555555555', '104 Cedar St', 70),
+('Megan Jackson', 2, 'megan.jackson@example.com', '123', '4444444444', '105 Spruce St', 80),
+('Matthew White', 3, 'matthew.white@example.com', '123', '3333333333', '106 Fir St', 90),
+('Laura Harris', 1, 'laura.harris@example.com', '123', '2222222222', '107 Ash St', 100);
 
 -- Chat table
 INSERT INTO Chat (User_id, Staff_id, Message, Timestamp) VALUES
@@ -311,12 +314,12 @@ INSERT INTO Voucher (User_id, Discount, Start_date, Expiration_date, Status) VAL
 (7, 20.00, '2023-12-31', '2024-10-01', 1);
 
 -- Order table
-INSERT INTO `Order` (User_id, Voucher_id, Shipping_fee, Total_price, Order_date, Payment_method, Shipping_address) VALUES
-(1, 7, 15000, 1300350, '2023-07-21', 'Credit Card', '123 Main St'),
-(4, 3, 30000, 606300, '2024-04-05', 'PayPal', '456 Elm St'),
-(7, NULL, 10000, 687000, '2024-05-23', 'VnPay', '101 Oak St'),
-(1, NULL, 0, 1944750 , '2024-03-27', 'PayPal', '102 Pine St'),
-(10, 5, 20000, 1117640, '2024-01-22', 'Momo', '103 Birch St');
+INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Voucher_id, Shipping_fee, Total_price, Order_date, Payment_method) VALUES
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 7, 15000, 1300350, '2023-07-21', 'Credit Card'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 3, 30000, 606300, '2024-04-05', 'PayPal'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', NULL, 10000, 687000, '2024-05-23', 'VnPay'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', NULL, 0, 1944750 , '2024-03-27', 'PayPal'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 5, 20000, 1117640, '2024-01-22', 'Momo');
 
 -- OrderDetail table with 10 entries
 INSERT INTO OrderDetail (Order_id, Product_id, Quantity, Total_price) VALUES

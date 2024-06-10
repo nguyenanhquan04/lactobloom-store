@@ -2,6 +2,7 @@ package com.lactobloom.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.util.List;
 
@@ -16,9 +17,10 @@ public class Brand {
     private int brandId;
 
     @Column(name = "Brand_name", nullable = false)
+    @NotNull(message = "Brand name must not be null")
     private String brandName;
 
-    @OneToMany(mappedBy = "brand")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     @JsonManagedReference
     private List<Product> products;
 }

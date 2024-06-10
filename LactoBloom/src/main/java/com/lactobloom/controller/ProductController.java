@@ -1,6 +1,6 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.model.Product;
+import com.lactobloom.dto.ProductDto;
 import com.lactobloom.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,24 +16,24 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
-        return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
+    @PostMapping("/save/brand/{brandId}/category/{categoryId}")
+    public ResponseEntity<ProductDto> saveProduct(@PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductDto productDto) {
+        return new ResponseEntity<>(productService.saveProduct(brandId, categoryId, productDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<Product> getAllProducts() {
+    public List<ProductDto> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable int id) {
+    public ResponseEntity<ProductDto> getProductById(@PathVariable int id) {
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
-        return new ResponseEntity<>(productService.updateProduct(product, id), HttpStatus.OK);
+    @PutMapping("/update/{id}/brand/{brandId}/category/{categoryId}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductDto productDto) {
+        return new ResponseEntity<>(productService.updateProduct(id, brandId, categoryId, productDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -43,19 +43,19 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public List<Product> searchProductsByName(@RequestParam String productName) {
+    public List<ProductDto> searchProductsByName(@RequestParam String productName) {
         return productService.searchProductsByName(productName);
     }
 
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable int categoryId) {
-        List<Product> products = productService.getProductsByCategoryId(categoryId);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/brand/{brandId}")
-    public ResponseEntity<List<Product>> getProductsByBrandId(@PathVariable int brandId) {
-        List<Product> products = productService.getProductsByBrandId(brandId);
-        return ResponseEntity.ok(products);
-    }
+//    @GetMapping("/category/{categoryId}")
+//    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable int categoryId) {
+//        List<Product> products = productService.getProductsByCategoryId(categoryId);
+//        return ResponseEntity.ok(products);
+//    }
+//
+//    @GetMapping("/brand/{brandId}")
+//    public ResponseEntity<List<Product>> getProductsByBrandId(@PathVariable int brandId) {
+//        List<Product> products = productService.getProductsByBrandId(brandId);
+//        return ResponseEntity.ok(products);
+//    }
 }

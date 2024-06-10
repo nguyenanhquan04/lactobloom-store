@@ -2,6 +2,7 @@ package com.lactobloom.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -18,17 +19,21 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "User_id")
     @JsonBackReference
+    @NotNull(message = "User must not be null")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "Product_id")
     @JsonBackReference
+    @NotNull(message = "Product must not be null")
     private Product product;
 
     @Column(name = "Rate", nullable = false)
+    @NotNull(message = "Rate must not be null")
     private int rate;
 
     @Column(name = "Comment")
+    @NotNull(message = "Comment must not be null")
     private String comment;
 
     @Column(name = "Review_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")

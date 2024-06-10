@@ -3,6 +3,7 @@ package com.lactobloom.controller;
 import com.lactobloom.model.JwtRequest;
 import com.lactobloom.model.JwtResponse;
 import com.lactobloom.model.User;
+import com.lactobloom.service.interfaces.IRoleService;
 import com.lactobloom.service.interfaces.IUserService;
 import com.lactobloom.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IRoleService roleService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -50,9 +54,10 @@ public class UserController {
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    @PostMapping("/register/{roleId}")
+    public ResponseEntity<?> registerUser(@RequestBody User user, @PathVariable int roleId) {
         // Encode the user's password before saving
+        user.setRole(roleService.getRoleById(roleId));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }

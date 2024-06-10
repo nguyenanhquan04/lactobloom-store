@@ -39,7 +39,7 @@ public class OrderService implements IOrderService {
         existingOrder.setShippingFee(order.getShippingFee());
         existingOrder.setTotalPrice(order.getTotalPrice());
         existingOrder.setPaymentMethod(order.getPaymentMethod());
-        existingOrder.setShippingAddress(order.getShippingAddress());
+        existingOrder.setAddress(order.getAddress());
         // Update other fields as needed
         return orderRepository.save(existingOrder);
     }

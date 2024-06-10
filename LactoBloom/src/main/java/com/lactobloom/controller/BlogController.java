@@ -1,7 +1,11 @@
 package com.lactobloom.controller;
 
 import com.lactobloom.model.Blog;
+import com.lactobloom.model.BlogCategory;
+import com.lactobloom.model.User;
+import com.lactobloom.service.interfaces.IBlogCategoryService;
 import com.lactobloom.service.interfaces.IBlogService;
+import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +20,9 @@ public class BlogController {
     @Autowired
     private IBlogService blogService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Blog> saveBlog(@RequestBody Blog blog) {
-        return new ResponseEntity<>(blogService.saveBlog(blog), HttpStatus.CREATED);
+    @PostMapping("/save/category/{categoryId}/user/{userId}")
+    public ResponseEntity<Blog> saveBlog(@PathVariable int categoryId, @PathVariable int userId, @RequestBody Blog blog) {
+        return new ResponseEntity<>(blogService.saveBlog(blog, categoryId, userId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
