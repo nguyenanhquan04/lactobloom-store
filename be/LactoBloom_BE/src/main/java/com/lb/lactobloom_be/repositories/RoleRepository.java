@@ -1,7 +1,6 @@
-package com.lactobloom.repository;
-
+import com.example.demo.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.lactobloom.model.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
+    Role findByRoleName(String roleName);
 }
