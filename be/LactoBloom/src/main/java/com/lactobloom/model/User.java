@@ -10,10 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "user", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"Username"}),
-    @UniqueConstraint(columnNames = {"Email"})
-})
+@Table(name = "user")
 public class User {
 
     @Id
@@ -82,9 +79,5 @@ public class User {
     @JsonManagedReference
     private List<PreOrder> preOrders;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(name = "Role",
-    joinColumns = @JoinColumn(name = "User_id", referencedColumnName = "userId"),
-    inverseJoinColumns = @JoinColumn(name = "Role_id", referencedColumnName = "roleId"))
-    private List<Role> roles;
+   
 }
