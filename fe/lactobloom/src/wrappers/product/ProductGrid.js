@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { getProducts } from "../../helpers/product2";
+import { getProducts } from "../../helpers/product";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
@@ -69,7 +69,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     products: getProducts(
       state.productData.products,
-      ownProps.category,
+      ownProps.categoryName,
       ownProps.type,
       ownProps.limit
     ),

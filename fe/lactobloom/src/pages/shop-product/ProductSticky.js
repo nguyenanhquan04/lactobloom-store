@@ -41,13 +41,13 @@ const ProductSticky = ({ location, product }) => {
         {/* product description tab */}
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
-          productFullDesc={product.fullDescription}
+          productFullDesc={product.description}
         />
 
         {/* related product slider */}
         <RelatedProductSlider
           spaceBottomClass="pb-95"
-          category={product.category[0]}
+          category={product.categoryName[0]}
         />
       </LayoutOne>
     </Fragment>
@@ -60,7 +60,7 @@ ProductSticky.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const itemId = ownProps.match.params.productId;
+  const itemId = ownProps.match.params.id;
   return {
     product: state.productData.products.filter(
       single => single.productId === itemId

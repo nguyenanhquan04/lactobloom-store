@@ -30,29 +30,32 @@ const ProductDescriptionInfo = ({
   );
   const [productStock, setProductStock] = useState(
     product.variation ? product.variation[0].size[0].stock : product.stock
+    //product.variation ? product.variation[0].size[0].quantity : product.quantity
+
   );
   const [quantityCount, setQuantityCount] = useState(1);
 
   const productCartQty = getProductCartQuantity(
     cartItems,
-    product,
-    selectedProductColor,
-    selectedProductSize
+    product
+    // product,
+    // selectedProductColor,
+    // selectedProductSize
   );
 
   return (
     <div className="product-details-content ml-70">
-      <h2>{product.name}</h2>
+      <h2>{product.productName}</h2>
       <div className="product-details-price">
         {discountedPrice !== null ? (
           <Fragment>
-            <span>{currency.currencySymbol + finalDiscountedPrice}</span>{" "}
+            <span>{finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}</span>{" "}
             <span className="old">
-              {currency.currencySymbol + finalProductPrice}
+              {finalProductPrice.toLocaleString("vi-VN") + " VND"}
             </span>
           </Fragment>
         ) : (
-          <span>{currency.currencySymbol + finalProductPrice} </span>
+          <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
         )}
       </div>
       {product.rating && product.rating > 0 ? (
@@ -65,7 +68,7 @@ const ProductDescriptionInfo = ({
         ""
       )}
       <div className="pro-details-list">
-        <p>{product.shortDescription}</p>
+        <p>{product.description}</p>
       </div>
 
       {product.variation ? (
@@ -90,6 +93,7 @@ const ProductDescriptionInfo = ({
                         setSelectedProductColor(single.color);
                         setSelectedProductSize(single.size[0].name);
                         setProductStock(single.size[0].stock);
+                        //setProductStock(single.size[0].quantity);
                         setQuantityCount(1);
                       }}
                     />
@@ -122,6 +126,7 @@ const ProductDescriptionInfo = ({
                               onChange={() => {
                                 setSelectedProductSize(singleSize.name);
                                 setProductStock(singleSize.stock);
+                                //setProductStock(singleSize.quantity);
                                 setQuantityCount(1);
                               }}
                             />
@@ -186,9 +191,9 @@ const ProductDescriptionInfo = ({
                   addToCart(
                     product,
                     addToast,
-                    quantityCount,
-                    selectedProductColor,
-                    selectedProductSize
+                    quantityCount
+                    //selectedProductColor,
+                    //selectedProductSize
                   )
                 }
                 disabled={productCartQty >= productStock}
@@ -230,11 +235,11 @@ const ProductDescriptionInfo = ({
           </div>
         </div>
       )}
-      {product.category ? (
+      {product.categoryName ? (
         <div className="pro-details-meta">
           <span>Categories :</span>
           <ul>
-            {product.category.map((single, key) => {
+            {product.categoryName.map((single, key) => {
               return (
                 <li key={key}>
                   <Link to={process.env.PUBLIC_URL + "/shop"}>
@@ -248,11 +253,11 @@ const ProductDescriptionInfo = ({
       ) : (
         ""
       )}
-      {product.tag ? (
+      {product.brandName ? (
         <div className="pro-details-meta">
-          <span>Tags :</span>
+          <span>Brand :</span>
           <ul>
-            {product.tag.map((single, key) => {
+            {product.brandName.map((single, key) => {
               return (
                 <li key={key}>
                   <Link to={process.env.PUBLIC_URL + "/shop"}>

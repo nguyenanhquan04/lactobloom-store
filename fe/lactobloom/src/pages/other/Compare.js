@@ -23,6 +23,8 @@ const Compare = ({
   const { pathname } = location;
   const { addToast } = useToasts();
 
+  const defaultImage = "/assets/img/no-image.png";
+
   return (
     <Fragment>
       <MetaTags>
@@ -52,8 +54,9 @@ const Compare = ({
                             <th className="title-column">Product Info</th>
                             {compareItems.map((compareItem, key) => {
                               const cartItem = cartItems.filter(
-                                item => item.id === compareItem.id
+                                item => item.productId === compareItem.productId
                               )[0];
+                              const compareItemImage = compareItem.images && compareItem.images.length > 0 ? compareItem.images[0].imageUrl : defaultImage;
                               return (
                                 <td className="product-image-title" key={key}>
                                   <div className="compare-remove">
@@ -69,7 +72,7 @@ const Compare = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      compareItem.id
+                                      compareItem.productId
                                     }
                                     className="image"
                                   >
@@ -77,7 +80,7 @@ const Compare = ({
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        compareItem.image[0]
+                                        compareItemImage
                                       }
                                       alt=""
                                     />
@@ -87,10 +90,10 @@ const Compare = ({
                                       to={
                                         process.env.PUBLIC_URL +
                                         "/product/" +
-                                        compareItem.id
+                                        compareItem.productId
                                       }
                                     >
-                                      {compareItem.name}
+                                      {compareItem.productName}
                                     </Link>
                                   </div>
                                   <div className="compare-btn">
@@ -106,25 +109,27 @@ const Compare = ({
                                     ) : compareItem.variation &&
                                       compareItem.variation.length >= 1 ? (
                                       <Link
-                                        to={`${process.env.PUBLIC_URL}/product/${compareItem.id}`}
+                                        to={`${process.env.PUBLIC_URL}/product/${compareItem.productId}`}
                                       >
                                         Select Option
                                       </Link>
                                     ) : compareItem.stock &&
                                       compareItem.stock > 0 ? (
+                                    //  ) : compareItem.quantity &&
+                                    //  compareItem.quantity > 0 ? (
                                       <button
                                         onClick={() =>
                                           addToCart(compareItem, addToast)
                                         }
                                         className={
                                           cartItem !== undefined &&
-                                          cartItem.quantity > 0
+                                          cartItem.cartQuantity > 0
                                             ? "active"
                                             : ""
                                         }
                                         disabled={
                                           cartItem !== undefined &&
-                                          cartItem.quantity > 0
+                                          cartItem.cartQuantity > 0
                                         }
                                         title={
                                           compareItem !== undefined
@@ -133,7 +138,7 @@ const Compare = ({
                                         }
                                       >
                                         {cartItem !== undefined &&
-                                        cartItem.quantity > 0
+                                        cartItem.cartQuantity > 0
                                           ? "Added"
                                           : "Add to cart"}
                                       </button>
@@ -155,28 +160,25 @@ const Compare = ({
                                 compareItem.discount
                               );
                               const finalProductPrice = (
-                                compareItem.price * currency.currencyRate
-                              ).toFixed(2);
+                                compareItem.price 
+                              );
                               const finalDiscountedPrice = (
-                                discountedPrice * currency.currencyRate
-                              ).toFixed(2);
+                                discountedPrice * 1
+                              );
                               return (
                                 <td className="product-price" key={key}>
                                   {discountedPrice !== null ? (
                                     <Fragment>
                                       <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
+                                        {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                       <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
+                                        {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                     </Fragment>
                                   ) : (
                                     <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
+                                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                     </span>
                                   )}
                                 </td>
@@ -190,8 +192,8 @@ const Compare = ({
                               return (
                                 <td className="product-desc" key={key}>
                                   <p>
-                                    {compareItem.shortDescription
-                                      ? compareItem.shortDescription
+                                    {compareItem.description
+                                      ? compareItem.description
                                       : "N/A"}
                                   </p>
                                 </td>

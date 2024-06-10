@@ -8,7 +8,7 @@ import { save, load } from "redux-localstorage-simple";
 import { Provider } from "react-redux";
 import { fetchProducts } from "./redux/actions/productActions";
 import rootReducer from "./redux/reducers/rootReducer";
-import products from "./data/products.json";
+// import products from "./data/products.json";
 import App from "./App";
 import "./assets/scss/style.scss";
 import * as serviceWorker from "./serviceWorker";
@@ -22,7 +22,10 @@ const store = createStore(
 );
 
 // fetch products from json file
-store.dispatch(fetchProducts(products));
+//store.dispatch(fetchProducts(products));
+
+// Bỏ dòng này và chỉ cần gọi fetchProducts() mà không truyền tham số
+store.dispatch(fetchProducts())
 
 ReactDOM.render(
   <Provider store={store}>

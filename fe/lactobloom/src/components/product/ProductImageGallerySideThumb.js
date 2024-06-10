@@ -87,13 +87,13 @@ const ProductImageGalleryLeftThumb = ({ product, thumbPosition }) => {
             )}
             <LightgalleryProvider>
               <Swiper {...gallerySwiperParams}>
-                {product.image &&
-                  product.image.map((single, key) => {
+                {product.images &&
+                  product.images.map((single, key) => {
                     return (
                       <div key={key}>
                         <LightgalleryItem
                           group="any"
-                          src={process.env.PUBLIC_URL + single}
+                          src={process.env.PUBLIC_URL + single.imageUrl}
                         >
                           <button>
                             <i className="pe-7s-expand1"></i>
@@ -101,7 +101,7 @@ const ProductImageGalleryLeftThumb = ({ product, thumbPosition }) => {
                         </LightgalleryItem>
                         <div className="single-image">
                           <img
-                            src={process.env.PUBLIC_URL + single}
+                            src={process.env.PUBLIC_URL + single.imageUrl}
                             className="img-fluid"
                             alt=""
                           />
@@ -122,13 +122,13 @@ const ProductImageGalleryLeftThumb = ({ product, thumbPosition }) => {
         >
           <div className="product-small-image-wrapper product-small-image-wrapper--side-thumb">
             <Swiper {...thumbnailSwiperParams}>
-              {product.image &&
-                product.image.map((single, key) => {
+              {product.images &&
+                product.images.map((single, key) => {
                   return (
                     <div key={key}>
                       <div className="single-image">
                         <img
-                          src={process.env.PUBLIC_URL + single}
+                          src={process.env.PUBLIC_URL + single.imageUrl}
                           className="img-fluid"
                           alt=""
                         />

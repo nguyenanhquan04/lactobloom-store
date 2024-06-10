@@ -26,6 +26,8 @@ const Wishlist = ({
 }) => {
   const { addToast } = useToasts();
   const { pathname } = location;
+  const defaultImage = "/assets/img/no-image.png";
+  
 
   return (
     <Fragment>
@@ -70,14 +72,15 @@ const Wishlist = ({
                               wishlistItem.discount
                             );
                             const finalProductPrice = (
-                              wishlistItem.price * currency.currencyRate
-                            ).toFixed(2);
+                              wishlistItem.price 
+                            );
                             const finalDiscountedPrice = (
-                              discountedPrice * currency.currencyRate
-                            ).toFixed(2);
+                              discountedPrice * 1
+                            );
                             const cartItem = cartItems.filter(
-                              item => item.id === wishlistItem.id
+                              item => item.productId === wishlistItem.productId
                             )[0];
+                            const wishlistItemImage = wishlistItem.images && wishlistItem.images.length > 0 ? wishlistItem.images[0].imageUrl : defaultImage;
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -85,14 +88,14 @@ const Wishlist = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.id
+                                      wishlistItem.productId
                                     }
                                   >
                                     <img
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        wishlistItem.image[0]
+                                        wishlistItemImage
                                       }
                                       alt=""
                                     />
@@ -104,10 +107,10 @@ const Wishlist = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.id
+                                      wishlistItem.productId
                                     }
                                   >
-                                    {wishlistItem.name}
+                                    {wishlistItem.productName}
                                   </Link>
                                 </td>
 
@@ -115,18 +118,15 @@ const Wishlist = ({
                                   {discountedPrice !== null ? (
                                     <Fragment>
                                       <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
+                                        {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                       <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
+                                        {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                     </Fragment>
                                   ) : (
                                     <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
+                                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                     </span>
                                   )}
                                 </td>
@@ -144,25 +144,27 @@ const Wishlist = ({
                                   ) : wishlistItem.variation &&
                                     wishlistItem.variation.length >= 1 ? (
                                     <Link
-                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.id}`}
+                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.productId}`}
                                     >
                                       Select option
                                     </Link>
                                   ) : wishlistItem.stock &&
                                     wishlistItem.stock > 0 ? (
+                                  // ) : wishlistItem.quantity &&
+                                  // wishlistItem.quantity > 0 ? (
                                     <button
                                       onClick={() =>
                                         addToCart(wishlistItem, addToast)
                                       }
                                       className={
                                         cartItem !== undefined &&
-                                        cartItem.quantity > 0
+                                        cartItem.cartQuantity > 0
                                           ? "active"
                                           : ""
                                       }
                                       disabled={
                                         cartItem !== undefined &&
-                                        cartItem.quantity > 0
+                                        cartItem.cartQuantity > 0
                                       }
                                       title={
                                         wishlistItem !== undefined
@@ -171,7 +173,7 @@ const Wishlist = ({
                                       }
                                     >
                                       {cartItem !== undefined &&
-                                      cartItem.quantity > 0
+                                      cartItem.cartQuantity > 0
                                         ? "Added"
                                         : "Add to cart"}
                                     </button>

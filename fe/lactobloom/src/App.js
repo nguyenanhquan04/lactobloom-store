@@ -96,7 +96,7 @@ const App = (props) => {
                 <Route
                   path={process.env.PUBLIC_URL + "/product/:id"}
                   render={(routeProps) => (
-                    <Product {...routeProps} key={routeProps.match.params.productId} />
+                    <Product {...routeProps} key={routeProps.match.params.id} />
                   )}
                 />
                 <Route

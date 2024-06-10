@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 
 function ProductModal(props) {
   const { product } = props;
-  const { currency } = props;
+  // const { currency } = props;
   const { discountedprice } = props;
   const { finalproductprice } = props;
   const { finaldiscountedprice } = props;
@@ -23,6 +23,7 @@ function ProductModal(props) {
   );
   const [productStock, setProductStock] = useState(
     product.variation ? product.variation[0].size[0].stock : product.stock
+    //product.variation ? product.variation[0].size[0].quantity : product.quantity
   );
   const [quantityCount, setQuantityCount] = useState(1);
 
@@ -138,19 +139,19 @@ function ProductModal(props) {
             </div>
             <div className="col-md-7 col-sm-12 col-xs-12">
               <div className="product-details-content quickview-content">
-                <h2>{product.name}</h2>
+                <h2>{product.productName}</h2>
                 <div className="product-details-price">
                   {discountedprice !== null ? (
                     <Fragment>
                       <span>
-                        {currency.currencySymbol + finaldiscountedprice}
+                        {finaldiscountedprice + " VND"}
                       </span>{" "}
                       <span className="old">
-                        {currency.currencySymbol + finalproductprice}
+                        {finalproductprice + " VND"}
                       </span>
                     </Fragment>
                   ) : (
-                    <span>{currency.currencySymbol + finalproductprice} </span>
+                    <span>{finalproductprice + " VND"} </span>
                   )}
                 </div>
                 {product.rating && product.rating > 0 ? (
@@ -163,7 +164,7 @@ function ProductModal(props) {
                   ""
                 )}
                 <div className="pro-details-list">
-                  <p>{product.shortDescription}</p>
+                  <p>{product.description}</p>
                 </div>
 
                 {product.variation ? (
@@ -190,6 +191,7 @@ function ProductModal(props) {
                                   setSelectedProductColor(single.color);
                                   setSelectedProductSize(single.size[0].name);
                                   setProductStock(single.size[0].stock);
+                                  //setProductStock(single.size[0].quantity);
                                   setQuantityCount(1);
                                 }}
                               />
@@ -225,6 +227,7 @@ function ProductModal(props) {
                                             singleSize.name
                                           );
                                           setProductStock(singleSize.stock);
+                                          //setProductStock(singleSize.quantity);
                                           setQuantityCount(1);
                                         }}
                                       />
@@ -353,7 +356,7 @@ ProductModal.propTypes = {
   addtowishlist: PropTypes.func,
   cartitems: PropTypes.array,
   compareitem: PropTypes.object,
-  currency: PropTypes.object,
+  // currency: PropTypes.object,
   discountedprice: PropTypes.number,
   finaldiscountedprice: PropTypes.number,
   finalproductprice: PropTypes.number,

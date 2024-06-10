@@ -22,10 +22,13 @@ const ProductGridListSingle = ({
   const { addToast } = useToasts();
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
+  const finalProductPrice = +(product.price);
   const finalDiscountedPrice = +(
-    discountedPrice * currency.currencyRate
-  ).toFixed(2);
+    discountedPrice * 1
+  );
+
+  const defaultImage = "/assets/img/no-image.png";
+  const productImage = product.images && product.images.length > 0 ? product.images[0].imageUrl : defaultImage;
 
   return (
     <Fragment>
@@ -39,20 +42,22 @@ const ProductGridListSingle = ({
         >
           <div className="product-img">
             <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
-              <img
+               <img
                 className="default-img"
-                src={process.env.PUBLIC_URL + product.image[0]}
+                src={process.env.PUBLIC_URL + productImage}
+                // src="/assets/img/no-image.png"
                 alt=""
               />
-              {product.image.length > 1 ? (
+              
+              {/* {product.image.length > 1 ? (
                 <img
                   className="hover-img"
-                  src={process.env.PUBLIC_URL + product.image[1]}
+                  src={process.env.PUBLIC_URL + hoverImage}
                   alt=""
                 />
               ) : (
                 ""
-              )}
+              )} */}
             </Link>
             {product.discount || product.new ? (
               <div className="product-img-badges">
@@ -97,21 +102,22 @@ const ProductGridListSingle = ({
                     Select Option
                   </Link>
                 ) : product.stock && product.stock > 0 ? (
+                //) : product.quantity && product.quantity > 0 ? (
                   <button
                     onClick={() => addToCart(product, addToast)}
                     className={
-                      cartItem !== undefined && cartItem.quantity > 0
+                      cartItem !== undefined && cartItem.cartQuantity > 0
                         ? "active"
                         : ""
                     }
-                    disabled={cartItem !== undefined && cartItem.quantity > 0}
+                    disabled={cartItem !== undefined && cartItem.cartQuantity > 0}
                     title={
                       cartItem !== undefined ? "Added to cart" : "Add to cart"
                     }
                   >
                     {" "}
                     <i className="pe-7s-cart"></i>{" "}
-                    {cartItem !== undefined && cartItem.quantity > 0
+                    {cartItem !== undefined && cartItem.cartQuantity > 0
                       ? "Added"
                       : "Add to cart"}
                   </button>
@@ -131,7 +137,7 @@ const ProductGridListSingle = ({
           <div className="product-content text-center">
             <h3>
               <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
-                {product.name}
+                {product.productName}
               </Link>
             </h3>
             {product.rating && product.rating > 0 ? (
@@ -144,13 +150,13 @@ const ProductGridListSingle = ({
             <div className="product-price">
               {discountedPrice !== null ? (
                 <Fragment>
-                  <span>{currency.currencySymbol + finalDiscountedPrice}</span>{" "}
+                  <span>{finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}</span>{" "}
                   <span className="old">
-                    {currency.currencySymbol + finalProductPrice}
+                    {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                   </span>
                 </Fragment>
               ) : (
-                <span>{currency.currencySymbol + finalProductPrice} </span>
+                <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
               )}
             </div>
           </div>
@@ -161,11 +167,12 @@ const ProductGridListSingle = ({
               <div className="product-list-image-wrap">
                 <div className="product-img">
                   <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
-                    <img
+                     <img
                       className="default-img img-fluid"
-                      src={process.env.PUBLIC_URL + product.image[0]}
+                      src={process.env.PUBLIC_URL + productImage}
                       alt=""
                     />
+                    {/*
                     {product.image.length > 1 ? (
                       <img
                         className="hover-img img-fluid"
@@ -174,7 +181,7 @@ const ProductGridListSingle = ({
                       />
                     ) : (
                       ""
-                    )}
+                    )} */}
                   </Link>
                   {product.discount || product.new ? (
                     <div className="product-img-badges">
@@ -195,21 +202,21 @@ const ProductGridListSingle = ({
               <div className="shop-list-content">
                 <h3>
                   <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
-                    {product.name}
+                    {product.productName}
                   </Link>
                 </h3>
                 <div className="product-list-price">
                   {discountedPrice !== null ? (
                     <Fragment>
                       <span>
-                        {currency.currencySymbol + finalDiscountedPrice}
+                        {finalDiscountedPrice + " VND" }
                       </span>{" "}
                       <span className="old">
-                        {currency.currencySymbol + finalProductPrice}
+                        {finalProductPrice + " VND"}
                       </span>
                     </Fragment>
                   ) : (
-                    <span>{currency.currencySymbol + finalProductPrice} </span>
+                    <span>{finalProductPrice + " VND"} </span>
                   )}
                 </div>
                 {product.rating && product.rating > 0 ? (
@@ -221,8 +228,8 @@ const ProductGridListSingle = ({
                 ) : (
                   ""
                 )}
-                {product.shortDescription ? (
-                  <p>{product.shortDescription}</p>
+                {product.description ? (
+                  <p>{product.description}</p>
                 ) : (
                   ""
                 )}
@@ -245,15 +252,16 @@ const ProductGridListSingle = ({
                         Select Option
                       </Link>
                     ) : product.stock && product.stock > 0 ? (
+                    //) : product.quantity && product.quantity > 0 ? (
                       <button
                         onClick={() => addToCart(product, addToast)}
                         className={
-                          cartItem !== undefined && cartItem.quantity > 0
+                          cartItem !== undefined && cartItem.cartQuantity > 0
                             ? "active"
                             : ""
                         }
                         disabled={
-                          cartItem !== undefined && cartItem.quantity > 0
+                          cartItem !== undefined && cartItem.cartQuantity > 0
                         }
                         title={
                           cartItem !== undefined
@@ -263,7 +271,7 @@ const ProductGridListSingle = ({
                       >
                         {" "}
                         <i className="pe-7s-cart"></i>{" "}
-                        {cartItem !== undefined && cartItem.quantity > 0
+                        {cartItem !== undefined && cartItem.cartQuantity > 0
                           ? "Added"
                           : "Add to cart"}
                       </button>
