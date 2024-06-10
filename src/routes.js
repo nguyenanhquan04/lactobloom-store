@@ -61,7 +61,7 @@ const routes = [
     type: "collapse",
     name: "Edit Demo",
     key: "editProduct",
-    route: "/demo",
+    route: "/products/:productId",
     icon: <CreditCard size="12px" />,
     component: <EditForm />,
     noCollapse: true,

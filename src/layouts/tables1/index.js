@@ -23,7 +23,7 @@ function Tables1() {
     columns: [
       { name: "productId", align: "center" },
       { name: "brandName", align: "center" },
-      { name: "productName", align: "center" },
+      { name: "productName", align: "left" },
       { name: "categoryName", align: "center" },
       { name: "price", align: "center" },
       { name: "stock", align: "center" },

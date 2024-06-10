@@ -1,71 +1,17 @@
-// /* eslint-disable react/prop-types */
-// // @mui material components
-// import Icon from "@mui/material/Icon";
-
-// // Soft UI Dashboard React components
-
-// import SoftTypography from "components/SoftTypography";
-// import React,{useState,useEffect} from "react";
-
-// const action = (
-//   <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
-//     more_vert
-//   </Icon>
-// );
-
-// const productsTableData = {
-//   columns: [
-//     { name: "productId", align: "left" },
-//     { name: "brandName", align: "left" },
-//     { name: "productName", align: "left" },
-//     { name: "categoryName", align: "left" },
-//     { name: "price", align: "left" },
-//     { name: "stock", align: "left" },
-//     { name: "action", align: "center" },
-//   ],
-
-//   rows: [
-//     {
-      
-//       productId: "1",
-//       brandName: "Meiji",
-//       productName: " Sữa Meiji",
-//       categoryName:"Sữa Nhật",
-//       price: (
-//         <SoftTypography variant="button" color="text" fontWeight="medium">
-//           $2,500
-//         </SoftTypography>
-//       ),
-//       stock: (
-//         <SoftTypography variant="caption" color="text" fontWeight="medium">
-//           1111
-//         </SoftTypography>
-//       ),
-//       action
-//     },
-//   ],
-// };
-
-// export default productsTableData;
-
-
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Icon from "@mui/material/Icon";
-import SoftTypography from "components/SoftTypography";
-import SoftButton from "components/SoftButton";
-
-const action = (
-  <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
-    more_vert
-  </Icon>
-);
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import SoftTypography from 'components/SoftTypography';
+import { useNavigate } from 'react-router-dom';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ProductsTable = () => {
   const [rows, setRows] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:8080/product/all")
+    axios.get('http://localhost:8080/product/all')
       .then(response => {
         const dataFromAPI = response.data;
 
@@ -84,26 +30,28 @@ const ProductsTable = () => {
               {product.stock}
             </SoftTypography>
           ),
-          action
-          // action: (
-          //   <SoftButton
-          //   component={Link}
-          //   href="http://localhost:3000/products/1"
-          //   target="_blank"
-          //   rel="noreferrer"
-          //   color="dark"
-          //   variant="outlined"
-          //   fullWidth
-          // ></SoftButton>
-          // ),
+          action: (
+            <>
+              <IconButton onClick={() => handleEditClick(product.productId)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+            </>
+          ),
         }));
 
         setRows(formattedData);
       })
       .catch(error => {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       });
   }, []);
+
+  const handleEditClick = (productId) => {
+    navigate(`/products/${productId}?productId=${productId}`)
+  };
 
   return rows;
 };

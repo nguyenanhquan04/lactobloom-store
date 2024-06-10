@@ -1,90 +1,45 @@
+// EditForm.js
 /* eslint-disable react/prop-types */
 // @mui material components
 import Card from "@mui/material/Card";
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { FormControl, FormLabel } from '@mui/material'
-import Icon from "@mui/material/Icon";
-
-// Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
-
-// Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import Table from "examples/Tables/Table";
+import ProductEditForm from "./form";  // Import the ProductEditForm component
 
-// Data
-
-
+// Sample product data for demonstration
+const sampleProduct = {
+  id: '123',
+  brand: 'Sample Brand',
+  name: 'Sample Product',
+  category: 'Electronics',
+  price: 100,
+  stock: 50,
+  discount: 10,
+};
 
 function EditForm() {
-
-    const action = (
-        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
-          more_vert
-        </Icon>
-      ); 
-
-  const EForm = {
-    columns: [
-      { name: "productId", align: "center" },
-      { name: "brandName", align: "center" },
-      { name: "productName", align: "center" },
-      { name: "categoryName", align: "center" },
-      { name: "price", align: "center" },
-      { name: "stock", align: "center" },
-      { name: "action", align: "center" },
-    ],
-     rows: [
-        {
-          
-          productId: (
-            <TextField></TextField>
-          ),
-          brandName: (
-            <TextField></TextField>
-          ),
-          productName: (
-            <TextField></TextField>
-          ),
-          categoryName:(
-            <TextField></TextField>
-          ),
-          price: (
-            <TextField></TextField>
-          ),
-          stock: (
-            <TextField></TextField>
-          ),
-          action
-        },
-      ],
+  const handleSave = (updatedProduct) => {
+    console.log('Product saved:', updatedProduct);
+    // Handle save logic here, such as sending the updated product to a server
   };
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <SoftBox py={3}>
-        <Card>
-          <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SoftTypography variant="h6">Product table</SoftTypography>
-          </SoftBox>
-          <SoftBox
-            sx={{
-              "& .MuiTableRow-root:not(:last-child)": {
-                "& td": {
-                  borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                    `${borderWidth[1]} solid ${borderColor}`,
-                },
-              },
-            }}
-          >
-            <Table columns={EForm.columns} rows={EForm.rows} />
-          </SoftBox>
-        </Card>
+        <SoftBox mb={5}>
+          <Card>
+            <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+              <SoftTypography variant="h6">Edit Product</SoftTypography>
+            </SoftBox>
+            <SoftBox p={3}>
+              <ProductEditForm product={sampleProduct} onSave={handleSave} />  {/* Render the form */}
+            </SoftBox>
+          </Card>
+        </SoftBox>
       </SoftBox>
       <Footer />
     </DashboardLayout>
@@ -92,3 +47,61 @@ function EditForm() {
 }
 
 export default EditForm;
+
+
+// // EditForm.js
+// import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
+// import axios from "axios";
+// import Card from "@mui/material/Card";
+// import SoftBox from "components/SoftBox";
+// import SoftTypography from "components/SoftTypography";
+// import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+// import Footer from "examples/Footer";
+// import ProductEditForm from "./form";  // Import the ProductEditForm component
+
+// function EditForm() {
+//   const { id } = useParams();
+//   const [product, setProduct] = useState(null);
+
+//   useEffect(() => {
+//     axios.get(`http://localhost:8080/product/${id}`)
+//       .then(response => {
+//         setProduct(response.data);
+//       })
+//       .catch(error => {
+//         console.error("Error fetching product data:", error);
+//       });
+//   }, [id]);
+
+//   const handleSave = (updatedProduct) => {
+//     console.log('Product saved:', updatedProduct);
+//     // Handle save logic here, such as sending the updated product to a server
+//   };
+
+//   if (!product) {
+//     return <div>Loading...</div>;
+//   }
+
+//   return (
+//     <DashboardLayout>
+//       <DashboardNavbar />
+//       <SoftBox py={3}>
+//         <SoftBox mb={5}>
+//           <Card>
+//             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+//               <SoftTypography variant="h6">Edit Product</SoftTypography>
+//             </SoftBox>
+//             <SoftBox p={3}>
+//               <ProductEditForm product={product} onSave={handleSave} />  {/* Render the form */}
+//             </SoftBox>
+//           </Card>
+//         </SoftBox>
+//       </SoftBox>
+//       <Footer />
+//     </DashboardLayout>
+//   );
+// }
+
+// export default EditForm;

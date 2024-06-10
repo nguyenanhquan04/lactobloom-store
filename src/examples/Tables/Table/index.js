@@ -48,10 +48,10 @@ function Table({ columns, rows }) {
 
     if (key === 0) {
       pl = 3;
-      pr = 3;
+      pr = 2;
     } else if (key === columns.length - 1) {
       pl = 3;
-      pr = 3;
+      pr = 2;
     } else {
       pl = 1;
       pr = 1;
