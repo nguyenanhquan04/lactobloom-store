@@ -54,10 +54,10 @@ public class UserController {
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
-    @PostMapping("/register/{roleId}")
-    public ResponseEntity<?> registerUser(@RequestBody User user, @PathVariable int roleId) {
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         // Encode the user's password before saving
-        user.setRole(roleService.getRoleById(roleId));
+//        user.setRole(roleService.getRoleById(roleId));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
@@ -95,13 +95,13 @@ public class UserController {
         return new ResponseEntity<>("User deleted successfully!", HttpStatus.OK);
     }
 
-    @GetMapping("/search/{fullName}")
-    public List<User> searchUsersByFullName(@PathVariable String fullName) {
+    @GetMapping("/search")
+    public List<User> searchUsersByFullName(@RequestParam String fullName) {
         return userService.searchUsersByFullName(fullName);
     }
 
-    @GetMapping("/findByEmail/{email}")
-    public User searchUsersByEmail(@PathVariable String email) {
+    @GetMapping("/findByEmail")
+    public User searchUsersByEmail(@RequestParam String email) {
         return userService.findByEmail(email);
     }
 }

@@ -32,9 +32,9 @@ public class ProductService implements IProductService {
         Product product = mapToEntity(productDto);
         Brand brand = brandRepository.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", brandId));
-        product.setBrand(brand);
         Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", categoryId));
+        product.setBrand(brand);
         product.setCategory(category);
         Product newProduct = productRepository.save(product);
         return mapToDto(newProduct);
@@ -43,7 +43,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProducts() {
         List<Product> productList = productRepository.findAll();
-        return productList.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
+        return productList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -81,18 +81,18 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> searchProductsByName(String productName) {
         List<Product> productList = productRepository.findByProductNameContaining(productName);
-        return productList.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
+        return productList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
-//    @Override
-//    public List<Product> getProductsByCategoryId(int categoryId) {
-//        return productRepository.findByCategoryCategoryId(categoryId);
-//    }
-//
-//    @Override
-//    public List<Product> getProductsByBrandId(int brandId) {
-//        return productRepository.findByBrandBrandId(brandId);
-//    }
+    @Override
+    public List<ProductDto> getProductsByCategoryId(int categoryId) {
+        return productRepository.findByCategoryCategoryId(categoryId).stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> getProductsByBrandId(int brandId) {
+        return productRepository.findByBrandBrandId(brandId).stream().map(this::mapToDto).collect(Collectors.toList());
+    }
 
     private ProductDto mapToDto (Product product){
         ProductDto productResponse = new ProductDto();

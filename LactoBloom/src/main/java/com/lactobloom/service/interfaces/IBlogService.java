@@ -1,13 +1,14 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.Blog;
+import com.lactobloom.dto.BlogDto;
 
 import java.util.List;
 
 public interface IBlogService {
-    Blog saveBlog(Blog blog, int categoryId, int userId);
-    List<Blog> getAllBlogs();
-    Blog getBlogById(int id);
-    Blog updateBlog(Blog blog, int id);
+    BlogDto saveBlog(BlogDto blogDto, int categoryId, int userId);
+    List<BlogDto> getAllBlogs();
+    BlogDto getBlogById(int id);
+    BlogDto updateBlog(BlogDto blogDto, int id, int categoryId, int userId);
     void deleteBlog(int id);
+    List<BlogDto> searchBlogsByTitle(String title);
 }

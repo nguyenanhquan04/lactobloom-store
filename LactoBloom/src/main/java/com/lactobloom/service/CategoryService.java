@@ -1,5 +1,6 @@
 package com.lactobloom.service;
 
+import com.lactobloom.dto.CategoryDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Category;
 import com.lactobloom.repository.CategoryRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService implements ICategoryService {
@@ -16,29 +18,30 @@ public class CategoryService implements ICategoryService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public Category saveCategory(Category category) {
-        return categoryRepository.save(category);
+    public CategoryDto saveCategory(CategoryDto categoryDto) {
+        Category category = mapToEntity(categoryDto);
+        return mapToDto(categoryRepository.save(category));
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryDto> getAllCategories() {
+        List<Category> categoryList = categoryRepository.findAll();
+        return categoryList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
-    public Category getCategoryById(int id) {
-        return categoryRepository.findById(id).orElseThrow(() ->
+    public CategoryDto getCategoryById(int id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", id));
+        return mapToDto(category);
     }
 
     @Override
-    public Category updateCategory(Category category, int id) {
+    public CategoryDto updateCategory(CategoryDto categoryDto, int id) {
         Category existingCategory = categoryRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", id));
-
-        existingCategory.setCategoryName(category.getCategoryName());
-        // Update other fields as needed
-        return categoryRepository.save(existingCategory);
+        existingCategory.setCategoryName(categoryDto.getCategoryName());
+        return mapToDto(categoryRepository.save(existingCategory));
     }
 
     @Override
@@ -46,5 +49,21 @@ public class CategoryService implements ICategoryService {
         categoryRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", id));
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public CategoryDto findCategoryByProductId(int id) { return mapToDto(categoryRepository.findByProductsProductId(id));}
+
+    private CategoryDto mapToDto (Category category){
+        CategoryDto categoryResponse = new CategoryDto();
+        categoryResponse.setCategoryId(category.getCategoryId());
+        categoryResponse.setCategoryName(category.getCategoryName());
+        return categoryResponse;
+    }
+
+    private Category mapToEntity(CategoryDto categoryDto){
+        Category category = new Category();
+        category.setCategoryName(categoryDto.getCategoryName());
+        return category;
     }
 }

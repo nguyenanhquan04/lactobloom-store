@@ -1,5 +1,6 @@
 package com.lactobloom.controller;
 
+import com.lactobloom.dto.RoleDto;
 import com.lactobloom.model.Role;
 import com.lactobloom.service.interfaces.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +18,23 @@ public class RoleController {
     private IRoleService roleService;
 
     @PostMapping("/save")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        return new ResponseEntity<>(roleService.saveRole(role), HttpStatus.CREATED);
+    public ResponseEntity<RoleDto> saveRole(@RequestBody RoleDto roleDto) {
+        return new ResponseEntity<>(roleService.saveRole(roleDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<Role> getAllRoles() {
+    public List<RoleDto> getAllRoles() {
         return roleService.getAllRoles();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Role> getRoleById(@PathVariable int id) {
+    public ResponseEntity<RoleDto> getRoleById(@PathVariable int id) {
         return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Role> updateRole(@PathVariable int id, @RequestBody Role role) {
-        return new ResponseEntity<>(roleService.updateRole(role, id), HttpStatus.OK);
+    public ResponseEntity<RoleDto> updateRole(@PathVariable int id, @RequestBody RoleDto roleDto) {
+        return new ResponseEntity<>(roleService.updateRole(roleDto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

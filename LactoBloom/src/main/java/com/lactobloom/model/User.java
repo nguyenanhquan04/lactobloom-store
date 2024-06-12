@@ -24,7 +24,7 @@ public class User {
     private String fullName;
 
     @ManyToOne
-    @JoinColumn(name = "Role_id")
+    @JoinColumn(name = "Role_id", columnDefinition = "INT DEFAULT 1")
     @JsonBackReference
     @NotNull(message = "Role must not be null")
     private Role role;
@@ -50,13 +50,13 @@ public class User {
     @Column(name = "Point", columnDefinition = "INT DEFAULT 0")
     private int point;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user1")
     @JsonManagedReference
-    private List<Chat> chats;
+    private List<Chat> user1Chats;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "staff")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user2")
     @JsonManagedReference
-    private List<Chat> staffChats;
+    private List<Chat> user2Chats;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference

@@ -1,6 +1,6 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.model.BlogCategory;
+import com.lactobloom.dto.BlogCategoryDto;
 import com.lactobloom.service.interfaces.IBlogCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,23 +17,23 @@ public class BlogCategoryController {
     private IBlogCategoryService blogCategoryService;
 
     @PostMapping("/save")
-    public ResponseEntity<BlogCategory> saveBlogCategory(@RequestBody BlogCategory blogCategory) {
-        return new ResponseEntity<>(blogCategoryService.saveBlogCategory(blogCategory), HttpStatus.CREATED);
+    public ResponseEntity<BlogCategoryDto> saveBlogCategory(@RequestBody BlogCategoryDto blogCategoryDto) {
+        return new ResponseEntity<>(blogCategoryService.saveBlogCategory(blogCategoryDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<BlogCategory> getAllBlogCategories() {
+    public List<BlogCategoryDto> getAllBlogCategories() {
         return blogCategoryService.getAllBlogCategories();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<BlogCategory> getBlogCategoryById(@PathVariable int id) {
+    public ResponseEntity<BlogCategoryDto> getBlogCategoryById(@PathVariable int id) {
         return new ResponseEntity<>(blogCategoryService.getBlogCategoryById(id), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<BlogCategory> updateBlogCategory(@PathVariable int id, @RequestBody BlogCategory blogCategory) {
-        return new ResponseEntity<>(blogCategoryService.updateBlogCategory(blogCategory, id), HttpStatus.OK);
+    public ResponseEntity<BlogCategoryDto> updateBlogCategory(@PathVariable int id, @RequestBody BlogCategoryDto blogCategoryDto) {
+        return new ResponseEntity<>(blogCategoryService.updateBlogCategory(blogCategoryDto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

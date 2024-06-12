@@ -1,5 +1,6 @@
 package com.lactobloom.service;
 
+import com.lactobloom.dto.BlogDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Blog;
 import com.lactobloom.model.BlogCategory;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogService implements IBlogService {
@@ -27,7 +29,8 @@ public class BlogService implements IBlogService {
     private UserRepository userRepository;
 
     @Override
-    public Blog saveBlog(Blog blog, int categoryId, int userId) {
+    public BlogDto saveBlog(BlogDto blogDto, int categoryId, int userId) {
+        Blog blog = mapToEntity(blogDto);
         BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
             new ResourceNotFoundException("Blog", "Id", categoryId));
         User user = userRepository.findById(userId).orElseThrow(() ->
@@ -35,29 +38,37 @@ public class BlogService implements IBlogService {
         blog.setBlogCategory(blogCategory);
         blog.setUser(user);
         blog.setPublishDate(LocalDateTime.now());
-        return blogRepository.save(blog);
+        Blog newBlog = blogRepository.save(blog);
+        return mapToDto(newBlog);
     }
 
     @Override
-    public List<Blog> getAllBlogs() {
-        return blogRepository.findAll();
+    public List<BlogDto> getAllBlogs() {
+        List<Blog> blogList = blogRepository.findAll();
+        return blogList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
-    public Blog getBlogById(int id) {
-        return blogRepository.findById(id).orElseThrow(() ->
+    public BlogDto getBlogById(int id) {
+        Blog blog = blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
+        return mapToDto(blog);
     }
 
     @Override
-    public Blog updateBlog(Blog blog, int id) {
+    public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId, int userId) {
         Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
-
-        existingBlog.setTitle(blog.getTitle());
-        existingBlog.setContent(blog.getContent());
-        // Update other fields as needed
-        return blogRepository.save(existingBlog);
+        BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
+                new ResourceNotFoundException("Blog Category", "Id", categoryId));
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", userId));
+        existingBlog.setBlogCategory(blogCategory);
+        existingBlog.setUser(user);
+        existingBlog.setTitle(blogDto.getTitle());
+        existingBlog.setContent(blogDto.getContent());
+        existingBlog.setPublishDate(LocalDateTime.now());
+        return mapToDto(blogRepository.save(existingBlog));
     }
 
     @Override
@@ -65,5 +76,27 @@ public class BlogService implements IBlogService {
         blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
         blogRepository.deleteById(id);
+    }
+
+    @Override
+    public List<BlogDto> searchBlogsByTitle(String title) {
+        List<Blog> blogList = blogRepository.findByTitleContaining(title);
+        return blogList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    private BlogDto mapToDto (Blog blog){
+        BlogDto blogResponse = new BlogDto();
+        blogResponse.setBlogId(blog.getBlogId());
+        blogResponse.setTitle(blog.getTitle());
+        blogResponse.setContent(blog.getContent());
+        blogResponse.setPublishDate(blog.getPublishDate());
+        return blogResponse;
+    }
+
+    private Blog mapToEntity(BlogDto blogDto){
+        Blog blog = new Blog();
+        blog.setTitle(blogDto.getTitle());
+        blog.setContent(blogDto.getContent());
+        return blog;
     }
 }

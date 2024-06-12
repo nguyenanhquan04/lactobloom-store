@@ -1,13 +1,18 @@
 package com.lactobloom.service;
 
+import com.lactobloom.dto.OrderDto;
 import com.lactobloom.exception.ResourceNotFoundException;
-import com.lactobloom.model.Order;
+import com.lactobloom.model.*;
 import com.lactobloom.repository.OrderRepository;
+import com.lactobloom.repository.UserRepository;
+import com.lactobloom.repository.VoucherRepository;
 import com.lactobloom.service.interfaces.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService implements IOrderService {
@@ -15,33 +20,57 @@ public class OrderService implements IOrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private VoucherRepository voucherRepository;
+
     @Override
-    public Order saveOrder(Order order) {
-        return orderRepository.save(order);
+    public OrderDto saveOrder(OrderDto orderDto, int userId, int voucherId) {
+        Order order = mapToEntity(orderDto);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", userId));
+        Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(() ->
+                new ResourceNotFoundException("Voucher", "Id", voucherId));
+        order.setUser(user);
+        order.setVoucher(voucher);
+        order.setOrderDate(LocalDateTime.now());
+        Order newOrder = orderRepository.save(order);
+        return mapToDto(newOrder);
     }
 
     @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public List<OrderDto> getAllOrders() {
+        List<Order> orderList = orderRepository.findAll();
+        return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
-    public Order getOrderById(int id) {
-        return orderRepository.findById(id).orElseThrow(() ->
+    public OrderDto getOrderById(int id) {
+        Order order = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
+        return mapToDto(order);
     }
 
     @Override
-    public Order updateOrder(Order order, int id) {
+    public OrderDto updateOrder(OrderDto orderDto, int id, int userId, int voucherId) {
         Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
-
-        existingOrder.setShippingFee(order.getShippingFee());
-        existingOrder.setTotalPrice(order.getTotalPrice());
-        existingOrder.setPaymentMethod(order.getPaymentMethod());
-        existingOrder.setAddress(order.getAddress());
-        // Update other fields as needed
-        return orderRepository.save(existingOrder);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", userId));
+        Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(() ->
+                new ResourceNotFoundException("Voucher", "Id", voucherId));
+        existingOrder.setUser(user);
+        existingOrder.setFullName(orderDto.getFullName());
+        existingOrder.setEmail(orderDto.getEmail());
+        existingOrder.setPhone(orderDto.getPhone());
+        existingOrder.setAddress(orderDto.getAddress());
+        existingOrder.setVoucher(voucher);
+        existingOrder.setShippingFee(orderDto.getShippingFee());
+        existingOrder.setTotalPrice(orderDto.getTotalPrice());
+        existingOrder.setOrderDate(LocalDateTime.now());
+        return mapToDto(orderRepository.save(existingOrder));
     }
 
     @Override
@@ -49,5 +78,29 @@ public class OrderService implements IOrderService {
         orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
         orderRepository.deleteById(id);
+    }
+
+    private OrderDto mapToDto (Order order){
+        OrderDto orderResponse = new OrderDto();
+        orderResponse.setOrderId(order.getOrderId());
+        orderResponse.setFullName(order.getFullName());
+        orderResponse.setEmail(order.getEmail());
+        orderResponse.setPhone(order.getPhone());
+        orderResponse.setAddress(order.getAddress());
+        orderResponse.setShippingFee(order.getShippingFee());
+        orderResponse.setTotalPrice(orderResponse.getTotalPrice());
+        orderResponse.setOrderDate(order.getOrderDate());
+        return orderResponse;
+    }
+
+    private Order mapToEntity(OrderDto orderDto){
+        Order order = new Order();
+        order.setFullName(orderDto.getFullName());
+        order.setEmail(orderDto.getEmail());
+        order.setPhone(orderDto.getPhone());
+        order.setAddress(orderDto.getAddress());
+        order.setShippingFee(orderDto.getShippingFee());
+        order.setTotalPrice(orderDto.getTotalPrice());
+        return order;
     }
 }

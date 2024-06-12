@@ -23,7 +23,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "User_id")
     @JsonBackReference
-    @NotNull(message = "User must not be null")
     private User user;
 
     @Column(name = "Full_name", nullable = false)
@@ -47,7 +46,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "Voucher_id")
     @JsonBackReference
-    @NotNull(message = "Voucher must not be null")
     private Voucher voucher;
 
     @Column(name = "Shipping_fee", nullable = false)
@@ -60,10 +58,6 @@ public class Order {
 
     @Column(name = "Order_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime orderDate;
-
-    @Column(name = "Payment_method", nullable = false)
-    @NotNull(message = "Payment method must not be null")
-    private String paymentMethod;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     @JsonManagedReference

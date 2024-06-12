@@ -1,13 +1,13 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.Role;
+import com.lactobloom.dto.RoleDto;
 
 import java.util.List;
 
 public interface IRoleService {
-    Role saveRole(Role role);
-    List<Role> getAllRoles();
-    Role getRoleById(int id);
-    Role updateRole(Role role, int id);
+    RoleDto saveRole(RoleDto roleDto);
+    List<RoleDto> getAllRoles();
+    RoleDto getRoleById(int id);
+    RoleDto updateRole(RoleDto roleDto, int id);
     void deleteRole(int id);
 }

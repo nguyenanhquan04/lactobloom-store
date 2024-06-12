@@ -47,15 +47,13 @@ public class ProductController {
         return productService.searchProductsByName(productName);
     }
 
-//    @GetMapping("/category/{categoryId}")
-//    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable int categoryId) {
-//        List<Product> products = productService.getProductsByCategoryId(categoryId);
-//        return ResponseEntity.ok(products);
-//    }
-//
-//    @GetMapping("/brand/{brandId}")
-//    public ResponseEntity<List<Product>> getProductsByBrandId(@PathVariable int brandId) {
-//        List<Product> products = productService.getProductsByBrandId(brandId);
-//        return ResponseEntity.ok(products);
-//    }
+    @GetMapping("/category/{categoryId}")
+    public List<ProductDto> getProductsByCategoryId(@PathVariable int categoryId) {
+        return productService.getProductsByCategoryId(categoryId);
+    }
+
+    @GetMapping("/brand/{brandId}")
+    public List<ProductDto> getProductsByBrandId(@PathVariable int brandId) {
+        return productService.getProductsByBrandId(brandId);
+    }
 }

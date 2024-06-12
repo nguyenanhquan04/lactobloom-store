@@ -1,5 +1,6 @@
 package com.lactobloom.controller;
 
+import com.lactobloom.dto.WishlistDto;
 import com.lactobloom.model.Wishlist;
 import com.lactobloom.service.interfaces.IWishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +17,24 @@ public class WishlistController {
     @Autowired
     private IWishlistService wishlistService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Wishlist> saveWishlist(@RequestBody Wishlist wishlist) {
-        return new ResponseEntity<>(wishlistService.saveWishlist(wishlist), HttpStatus.CREATED);
+    @PostMapping("/save/user/{userId}/product/{productId}")
+    public ResponseEntity<WishlistDto> saveWishlist(@RequestBody WishlistDto wishlistDto, @PathVariable int userId, @PathVariable int productId) {
+        return new ResponseEntity<>(wishlistService.saveWishlist(wishlistDto, userId, productId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<Wishlist> getAllWishlists() {
+    public List<WishlistDto> getAllWishlists() {
         return wishlistService.getAllWishlists();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Wishlist> getWishlistById(@PathVariable int id) {
+    public ResponseEntity<WishlistDto> getWishlistById(@PathVariable int id) {
         return new ResponseEntity<>(wishlistService.getWishlistById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Wishlist> updateWishlist(@PathVariable int id, @RequestBody Wishlist wishlist) {
-        return new ResponseEntity<>(wishlistService.updateWishlist(wishlist, id), HttpStatus.OK);
+    @PutMapping("/update/{id}/user/{userId}/product/{productId}")
+    public ResponseEntity<WishlistDto> updateWishlist(@PathVariable int id, @PathVariable int userId, @PathVariable int productId, @RequestBody WishlistDto wishlistDto) {
+        return new ResponseEntity<>(wishlistService.updateWishlist(wishlistDto, id, userId, productId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -43,7 +44,7 @@ public class WishlistController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<Wishlist> getWishlistsByUserId(@PathVariable int userId) {
+    public List<WishlistDto> getWishlistsByUserId(@PathVariable int userId) {
         return wishlistService.getWishlistsByUserId(userId);
     }
 }

@@ -12,6 +12,6 @@ public interface IProductService {
     ProductDto updateProduct(int id, int brandId, int cateoryId, ProductDto productDto);
     void deleteProduct(int id);
     List<ProductDto> searchProductsByName(String productName);
-//    List<Product> getProductsByCategoryId(int categoryId);
-//    List<Product> getProductsByBrandId(int brandId);
+    List<ProductDto> getProductsByCategoryId(int categoryId);
+    List<ProductDto> getProductsByBrandId(int brandId);
 }

@@ -1,5 +1,6 @@
 package com.lactobloom.controller;
 
+import com.lactobloom.dto.ReviewDto;
 import com.lactobloom.model.Review;
 import com.lactobloom.service.interfaces.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +17,24 @@ public class ReviewController {
     @Autowired
     private IReviewService reviewService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Review> saveReview(@RequestBody Review review) {
-        return new ResponseEntity<>(reviewService.saveReview(review), HttpStatus.CREATED);
+    @PostMapping("/save/user/{userId}/product/{productId}")
+    public ResponseEntity<ReviewDto> saveReview(@RequestBody ReviewDto reviewDto, @PathVariable int userId, @PathVariable int productId) {
+        return new ResponseEntity<>(reviewService.saveReview(reviewDto, userId, productId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<Review> getAllReviews() {
+    public List<ReviewDto> getAllReviews() {
         return reviewService.getAllReviews();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Review> getReviewById(@PathVariable int id) {
+    public ResponseEntity<ReviewDto> getReviewById(@PathVariable int id) {
         return new ResponseEntity<>(reviewService.getReviewById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Review> updateReview(@PathVariable int id, @RequestBody Review review) {
-        return new ResponseEntity<>(reviewService.updateReview(review, id), HttpStatus.OK);
+    @PutMapping("/update/{id}/user/{userId}/product/{productId}")
+    public ResponseEntity<ReviewDto> updateReview(@PathVariable int id, @PathVariable int userId, @PathVariable int productId, @RequestBody ReviewDto reviewDto) {
+        return new ResponseEntity<>(reviewService.updateReview(reviewDto, id, userId, productId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -43,8 +44,7 @@ public class ReviewController {
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Review>> getReviewsByProductId(@PathVariable int productId) {
-        List<Review> reviews = reviewService.getReviewsByProductId(productId);
-        return ResponseEntity.ok(reviews);
+    public List<ReviewDto> getReviewsByProductId(@PathVariable int productId) {
+        return reviewService.getReviewsByProductId(productId);
     }
 }

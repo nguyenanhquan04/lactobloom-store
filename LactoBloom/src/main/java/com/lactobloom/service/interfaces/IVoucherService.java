@@ -1,13 +1,13 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.Voucher;
+import com.lactobloom.dto.VoucherDto;
 
 import java.util.List;
 
 public interface IVoucherService {
-    Voucher saveVoucher(Voucher voucher);
-    List<Voucher> getAllVouchers();
-    Voucher getVoucherById(int id);
-    Voucher updateVoucher(Voucher voucher, int id);
+    VoucherDto saveVoucher(VoucherDto voucherDto, int userId);
+    List<VoucherDto> getAllVouchers();
+    VoucherDto getVoucherById(int id);
+    VoucherDto updateVoucher(VoucherDto voucherDto, int id, int userId);
     void deleteVoucher(int id);
 }

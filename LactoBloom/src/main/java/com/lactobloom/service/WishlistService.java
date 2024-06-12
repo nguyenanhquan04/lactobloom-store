@@ -1,13 +1,19 @@
 package com.lactobloom.service;
 
+import com.lactobloom.dto.WishlistDto;
 import com.lactobloom.exception.ResourceNotFoundException;
+import com.lactobloom.model.Product;
+import com.lactobloom.model.User;
 import com.lactobloom.model.Wishlist;
+import com.lactobloom.repository.ProductRepository;
+import com.lactobloom.repository.UserRepository;
 import com.lactobloom.repository.WishlistRepository;
 import com.lactobloom.service.interfaces.IWishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WishlistService implements IWishlistService {
@@ -15,31 +21,48 @@ public class WishlistService implements IWishlistService {
     @Autowired
     private WishlistRepository wishlistRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
     @Override
-    public Wishlist saveWishlist(Wishlist wishlist) {
-        return wishlistRepository.save(wishlist);
+    public WishlistDto saveWishlist(WishlistDto wishlistDto, int userId, int productId) {
+        Wishlist wishlist = new Wishlist();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", userId));
+        Product product = productRepository.findById((long) productId).orElseThrow(() ->
+                new ResourceNotFoundException("Product", "Id", productId));
+        wishlist.setUser(user);
+        wishlist.setProduct(product);
+        Wishlist newWishList = wishlistRepository.save(wishlist);
+        return mapToDto(newWishList);
     }
 
     @Override
-    public List<Wishlist> getAllWishlists() {
-        return wishlistRepository.findAll();
+    public List<WishlistDto> getAllWishlists() {
+        return wishlistRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
-    public Wishlist getWishlistById(int id) {
-        return wishlistRepository.findById(id).orElseThrow(() ->
+    public WishlistDto getWishlistById(int id) {
+        Wishlist wishlist = wishlistRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Wishlist", "Id", id));
+        return mapToDto(wishlist);
     }
 
     @Override
-    public Wishlist updateWishlist(Wishlist wishlist, int id) {
+    public WishlistDto updateWishlist(WishlistDto wishlistDto, int id, int userId, int productId) {
         Wishlist existingWishlist = wishlistRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Wishlist", "Id", id));
-
-        existingWishlist.setUser(wishlist.getUser());
-        existingWishlist.setProduct(wishlist.getProduct());
-
-        return wishlistRepository.save(existingWishlist);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", userId));
+        Product product = productRepository.findById((long) productId).orElseThrow(() ->
+                new ResourceNotFoundException("Product", "Id", productId));
+        existingWishlist.setUser(user);
+        existingWishlist.setProduct(product);
+        return mapToDto(wishlistRepository.save(existingWishlist));
     }
 
     @Override
@@ -50,7 +73,13 @@ public class WishlistService implements IWishlistService {
     }
 
     @Override
-    public List<Wishlist> getWishlistsByUserId(int userId) {
-        return wishlistRepository.findByUserUserId(userId);
+    public List<WishlistDto> getWishlistsByUserId(int userId) {
+        return wishlistRepository.findByUserUserId(userId).stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    private WishlistDto mapToDto (Wishlist wishlist){
+        WishlistDto wishListResponse = new WishlistDto();
+        wishListResponse.setWishlistId(wishlist.getWishlistId());
+        return wishListResponse;
     }
 }

@@ -17,16 +17,16 @@ public class Chat {
     private int chatId;
 
     @ManyToOne
-    @JoinColumn(name = "User_id")
+    @JoinColumn(name = "User1_id")
     @JsonBackReference
-    @NotNull(message = "User must not be null")
-    private User user;
+    @NotNull(message = "User1 must not be null")
+    private User user1;
 
     @ManyToOne
-    @JoinColumn(name = "Staff_id")
+    @JoinColumn(name = "User2_id")
     @JsonBackReference
-    @NotNull(message = "Staff must not be null")
-    private User staff;
+    @NotNull(message = "User2 must not be null")
+    private User user2;
 
     @Column(name = "Message", nullable = false)
     @NotNull(message = "Message must not be null")

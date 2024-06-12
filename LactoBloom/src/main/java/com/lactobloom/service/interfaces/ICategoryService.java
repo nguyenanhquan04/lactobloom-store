@@ -1,14 +1,14 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.Category;
-import com.lactobloom.model.Product;
+import com.lactobloom.dto.CategoryDto;
 
 import java.util.List;
 
 public interface ICategoryService {
-    Category saveCategory(Category category);
-    List<Category> getAllCategories();
-    Category getCategoryById(int id);
-    Category updateCategory(Category category, int id);
+    CategoryDto saveCategory(CategoryDto categoryDto);
+    List<CategoryDto> getAllCategories();
+    CategoryDto getCategoryById(int id);
+    CategoryDto updateCategory(CategoryDto categoryDto, int id);
     void deleteCategory(int id);
+    CategoryDto findCategoryByProductId(int id);
 }

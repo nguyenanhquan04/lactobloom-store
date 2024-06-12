@@ -1,6 +1,6 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.model.Voucher;
+import com.lactobloom.dto.VoucherDto;
 import com.lactobloom.service.interfaces.IVoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,24 +16,24 @@ public class VoucherController {
     @Autowired
     private IVoucherService voucherService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Voucher> saveVoucher(@RequestBody Voucher voucher) {
-        return new ResponseEntity<>(voucherService.saveVoucher(voucher), HttpStatus.CREATED);
+    @PostMapping("/save/user/{userId}")
+    public ResponseEntity<VoucherDto> saveVoucher(@RequestBody VoucherDto voucherDto, @PathVariable int userId) {
+        return new ResponseEntity<>(voucherService.saveVoucher(voucherDto, userId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<Voucher> getAllVouchers() {
+    public List<VoucherDto> getAllVouchers() {
         return voucherService.getAllVouchers();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Voucher> getVoucherById(@PathVariable int id) {
+    public ResponseEntity<VoucherDto> getVoucherById(@PathVariable int id) {
         return new ResponseEntity<>(voucherService.getVoucherById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Voucher> updateVoucher(@PathVariable int id, @RequestBody Voucher voucher) {
-        return new ResponseEntity<>(voucherService.updateVoucher(voucher, id), HttpStatus.OK);
+    @PutMapping("/update/{id}/user/{userId}")
+    public ResponseEntity<VoucherDto> updateVoucher(@PathVariable int id, @PathVariable int userId, @RequestBody VoucherDto voucherDto) {
+        return new ResponseEntity<>(voucherService.updateVoucher(voucherDto, id, userId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

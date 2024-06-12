@@ -1,5 +1,6 @@
 package com.lactobloom.controller;
 
+import com.lactobloom.dto.OrderDto;
 import com.lactobloom.model.Order;
 import com.lactobloom.service.interfaces.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +17,24 @@ public class OrderController {
     @Autowired
     private IOrderService orderService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Order> saveOrder(@RequestBody Order order) {
-        return new ResponseEntity<>(orderService.saveOrder(order), HttpStatus.CREATED);
+    @PostMapping("/save/user/{userId}/voucher/{voucherId}")
+    public ResponseEntity<OrderDto> saveOrder(@RequestBody OrderDto orderDto, @PathVariable int userId, @PathVariable int voucherId) {
+        return new ResponseEntity<>(orderService.saveOrder(orderDto, userId, voucherId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<Order> getAllOrders() {
+    public List<OrderDto> getAllOrders() {
         return orderService.getAllOrders();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable int id) {
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable int id) {
         return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable int id, @RequestBody Order order) {
-        return new ResponseEntity<>(orderService.updateOrder(order, id), HttpStatus.OK);
+    @PutMapping("/update/{id}/user/{userId}/voucher/{voucherId}")
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable int id, @PathVariable int userId, @PathVariable int voucherId, @RequestBody OrderDto orderDto) {
+        return new ResponseEntity<>(orderService.updateOrder(orderDto, id, userId, voucherId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -1,13 +1,14 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.Brand;
+import com.lactobloom.dto.BrandDto;
 
 import java.util.List;
 
 public interface IBrandService {
-    Brand saveBrand(Brand brand);
-    List<Brand> getAllBrands();
-    Brand getBrandById(int id);
-    Brand updateBrand(Brand brand, int id);
+    BrandDto saveBrand(BrandDto brandDto);
+    List<BrandDto> getAllBrands();
+    BrandDto getBrandById(int id);
+    BrandDto updateBrand(BrandDto brandDto, int id);
     void deleteBrand(int id);
+    BrandDto findBrandByProductId(int id);
 }

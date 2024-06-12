@@ -2,7 +2,6 @@ package com.lactobloom.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -28,21 +27,11 @@ public class Product {
     @NotNull(message = "Brand must not be null")
     private Brand brand;
 
-    @JsonProperty("brandName")
-    public String getBrandName() {
-        return brand != null ? brand.getBrandName() : null;
-    }
-
     @ManyToOne
     @JoinColumn(name = "Category_id")
     @JsonBackReference
     @NotNull(message = "Category must not be null")
     private Category category;
-
-    @JsonProperty("categoryName")
-    public String getCategoryName() {
-        return category != null ? category.getCategoryName() : null;
-    }
 
     @Column(name = "Description", length = 10000)
     @NotNull(message = "Description must not be null")

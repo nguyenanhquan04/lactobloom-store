@@ -18,5 +18,4 @@ public class OrderDto {
     private double shippingFee;
     private double totalPrice;
     private LocalDateTime orderDate;
-    private String paymentMethod;
 }

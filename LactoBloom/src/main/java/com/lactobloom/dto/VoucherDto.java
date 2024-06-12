@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class VoucherDto {
     private int voucherId;
+    private int point;
     private double discount;
-    private LocalDate startDate;
     private LocalDate expirationDate;
-    private boolean status;
+    private boolean available;
 }

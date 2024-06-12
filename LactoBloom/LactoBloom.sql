@@ -1,4 +1,4 @@
--- DROP DATABASE LactoBloom;
+DROP DATABASE IF EXISTS LactoBloom;
 CREATE DATABASE LactoBloom;
 
 USE LactoBloom;
@@ -11,7 +11,7 @@ CREATE TABLE Role (
 CREATE TABLE User (
     User_id INT AUTO_INCREMENT PRIMARY KEY,
     Full_name NVARCHAR(100) NOT NULL,
-    Role_id INT,
+    Role_id INT NOT NULL DEFAULT 1,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     Phone VARCHAR(15),
@@ -22,12 +22,12 @@ CREATE TABLE User (
 
 CREATE TABLE Chat (
     Chat_id INT AUTO_INCREMENT PRIMARY KEY,
-    User_id INT,
-    Staff_id INT,
+    User1_id INT NOT NULL,
+    User2_id INT NOT NULL,
     Message TEXT NOT NULL,
     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Staff_id) REFERENCES User(User_id)
+    FOREIGN KEY (User1_id) REFERENCES User(User_id),
+    FOREIGN KEY (User2_id) REFERENCES User(User_id)
 );
 
 CREATE TABLE BlogCategory (
@@ -62,7 +62,7 @@ CREATE TABLE Product (
     Brand_id INT,
     Category_id INT,
     Description TEXT,
-    Price DECIMAL(10, 2) NOT NULL,
+    Price DECIMAL(15, 2) NOT NULL,
     Discount DECIMAL(5, 2) DEFAULT 0,
     Stock INT NOT NULL,
     FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id),
@@ -97,11 +97,11 @@ CREATE TABLE Wishlist (
 
 CREATE TABLE Voucher (
     Voucher_id INT AUTO_INCREMENT PRIMARY KEY,
+    Point INT NOT NULL,
     User_id INT,
     Discount DECIMAL(5, 2) NOT NULL,
-    Start_date DATE NOT NULL,
     Expiration_date DATE NOT NULL,
-    Status BIT,
+    Available BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (User_id) REFERENCES User(User_id)
 );
 
@@ -114,9 +114,9 @@ CREATE TABLE `Order` (
     Address TEXT NOT NULL,
     Voucher_id INT,
     Shipping_fee DECIMAL(10, 2) NOT NULL,
-    Total_price DECIMAL(10, 2) NOT NULL,
+    Total_price DECIMAL(15, 2) NOT NULL,
+    Status BIT NOT NULL DEFAULT 0,
     Order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Payment_method VARCHAR(50) NOT NULL,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Voucher_id) REFERENCES Voucher(Voucher_id)
 );
@@ -151,7 +151,7 @@ INSERT INTO User (Full_name, Role_id, Email, Password, Phone, Address, Point) VA
 ('Laura Harris', 1, 'laura.harris@example.com', '123', '2222222222', '107 Ash St', 100);
 
 -- Chat table
-INSERT INTO Chat (User_id, Staff_id, Message, Timestamp) VALUES
+INSERT INTO Chat (User1_id, User2_id, Message, Timestamp) VALUES
 (1, 3, 'I need help finding the right milk for my baby.', '2023-05-10 11:00:00'),
 (3, 1, 'Sure, what age is your baby?', '2023-05-10 11:01:00'),
 (1, 3, 'She is 6 months old.', '2023-05-10 11:02:00'),
@@ -282,16 +282,36 @@ INSERT INTO Review (User_id, Product_id, Rate, Comment, Review_date) VALUES
 
 -- Image table
 INSERT INTO Image (Product_id, Image_url) VALUES
-(1, 'milk.jpg'),
-(2, 'bread.jpg'),
-(3, 'juice.jpg'),
-(4, 'chips.jpg'),
-(5, 'apples.jpg'),
-(6, 'icecream.jpg'),
-(7, 'detergent.jpg'),
-(8, 'shampoo.jpg'),
-(9, 'dogfood.jpg'),
-(10, 'pasta.jpg');
+(1, 'https://cdn1.concung.com/2023/04/43264-99868/sua-similac-5g-so-2-900g-6-12-thang.png'),
+(2, 'https://cdn1.concung.com/2022/06/57793-89274-large_mobile/sua-similac-total-protection-1-5-hmo-400g-0-6-thang.jpg'),
+(3, 'https://cdn1.concung.com/2024/01/65020-107920-large_mobile/sua-similac-5g-so-4-1-7kg-2-6-tuoi.png'),
+(4, 'https://cdn1.concung.com/2023/04/57792-99852-large_mobile/sua-similac-total-protection-2-5-hmo-900g-6-12-thang.png'),
+(5, 'https://cdn1.concung.com/2021/10/25412-75708-large_mobile/similac-mom-huong-vani-900g.jpg'),
+(6, 'https://cdn1.concung.com/2019/01/25411-45806-large_mobile/similac-mom-huong-vani-400g.jpg'),
+(7, 'https://cdn1.concung.com/2021/04/27426-72037-large_mobile/meiji-infant-formula-800g-0-12-thang.jpg'),
+(8, 'https://cdn1.concung.com/2021/04/27427-72039/meiji-growing-up-formula-800g-1-3-tuoi.jpg'),
+(9, 'https://cdn1.concung.com/2023/10/64137-105389-large_mobile/san-pham-dinh-duong-cong-thuc-cho-tre-tu-0-12-thang-meiji-0-1-year-old-infant-formula-ezcube-540g.png'),
+(10, 'https://cdn1.concung.com/2024/04/66308-109691-large_mobile/san-pham-dinh-duong-cong-thuc-cho-tre-tu-1-3-tuoi-meiji-1-3-years-old-growing-up-formula-ezcube-560g.png'),
+(11, 'https://cdn1.concung.com/2015/05/27423-31742-large_mobile/sua-bau-meiji-mama-milk-350g.jpg'),
+(12, 'https://cdn1.concung.com/2023/09/61772-104859-large_mobile/san-pham-dinh-duong-cong-thuc-voi-muc-dich-an-bo-sung-danh-cho-tre-tu-12-36-thang-tuoi-bubs-supreme-toddler-milk-drink-3.png'),
+(13, 'https://cdn1.concung.com/2023/03/61773-98457-large_mobile/thuc-pham-bo-sung-bubs-supreme-junior-nutrition.png'),
+(14, 'https://cdn1.concung.com/2023/04/53324-100516-large_mobile/sua-kid-essentials-australia-800g-huong-vani-1-10-tuoi.jpg'),
+(15, 'https://cdn1.concung.com/2023/07/60332-102783-large_mobile/sua-kid-essentials-australia-800g-huong-vani-1-10-tuoi.png'),
+(16, 'https://cdn1.concung.com/2023/03/25418-99316/sua-abbott-pediasure-1-10-tuoi-850g.png'),
+(17, 'https://cdn1.concung.com/2024/05/66496-110494-large_mobile/thuc-pham-dinh-duong-y-hoc-cho-tre-1-10-tuoi-pediasure-dang-long-huong-vani-237ml-loc-6-chai.png'),
+(18, 'https://cdn1.concung.com/2024/06/55037-110822/sua-nan-a2-infinipro-800g-so-1-0-1-tuoi.png'),
+(19, 'https://cdn1.concung.com/2024/04/66280-109655-large_mobile/thuc-pham-bo-sung-nestle-nangrow-6-8x110ml-mua-6-tang-2.png'),
+(20, 'https://cdn1.concung.com/2023/04/52750-100260-large_mobile/nan-supreme-pro-2-800g.png'),
+(21, 'https://cdn1.concung.com/2023/08/61838-104160-large_mobile/san-pham-dinh-duong-cong-thuc-nestle-nan-optipro-plus-2-800g.png'),
+(22, 'https://cdn1.concung.com/2024/05/64566-110434/spddct-aptamil-profutura-cesarbiotik-2-follow-on-formula-danh-cho-tre-tu-12--24-thang-tuoi-800g.png'),
+(23, 'https://cdn1.concung.com/2024/05/64567-110438-large_mobile/tpbs-aptamil-profutura-kid-cesarbiotik-3-growing-up-milk-formula-tre-tu-24-thang-tuoi-tro-len-800g.png'),
+(24, 'https://cdn1.concung.com/2022/05/57287-88169-large_mobile/vinamilk-optimum-gold-4-850g-2-6-tuoi.jpg'),
+(25, 'https://cdn1.concung.com/2022/05/57288-88175-large_mobile/sua-uong-dinh-duong-optimum-gold-110ml-loc-4-hop.jpg'),
+(26, 'https://cdn1.concung.com/2022/05/57289-88180-large_mobile/sua-uong-dinh-duong-optimum-gold-180ml-loc-4-hop.jpg'),
+(27, 'https://cdn1.concung.com/2022/01/59986-94820-large_mobile/sua-non-vinamilk-colosgold-110ml-tu-1-tuoi-loc-4-hop.jpg'),
+(28, 'https://cdn1.concung.com/2022/01/54559-79245-large_mobile/sua-vinamilk-colosgold-so-3-800g-2-6-tuoi.jpg'),
+(29, 'https://cdn1.concung.com/2020/06/25354-62108-large_mobile/friso-mum-gold-huong-cam-900g.jpg'),
+(30, 'https://cdn1.concung.com/2021/10/51147-75767-large_mobile/friso-gold-4-2-6-tuoi-850gr.jpg');
 
 -- Wishlist table
 INSERT INTO Wishlist (User_id, Product_id) VALUES
@@ -301,25 +321,25 @@ INSERT INTO Wishlist (User_id, Product_id) VALUES
 (10, 4), (10, 8), (10, 12);
 
 -- Voucher table
-INSERT INTO Voucher (User_id, Discount, Start_date, Expiration_date, Status) VALUES
-(1, 10.00, '2023-12-01', '2024-08-01', 1),
-(4, 20.00, '2024-01-01', '2025-01-01', 1),
-(4, 15.00, '2024-3-30', '2024-04-30', 0),
-(7, 5.00, '2023-06-01', '2023-09-30', 0),
-(10, 25.00, '2024-01-01', '2024-02-28', 0),
-(10, 10.00, '2024-03-30', '2024-09-30', 1),
-(1, 10.00, '2024-03-30', '2024-10-31', 0),
-(7, 5.00, '2024-01-30', '2024-08-29', 1),
-(1, 5.00, '2023-12-31', '2024-01-02', 0),
-(7, 20.00, '2023-12-31', '2024-10-01', 1);
+INSERT INTO Voucher (Point, User_id, Discount, Expiration_date, Available) VALUES
+(100, 1, 10.00, '2024-08-01', 1),
+(200, 4, 20.00, '2025-01-01', 1),
+(150, 4, 15.00, '2024-04-30', 0),
+(50, 7, 5.00, '2023-09-30', 0),
+(250, NULL, 25.00, '2024-02-28', 0),
+(100, 10, 10.00, '2024-09-30', 1),
+(100, NULL, 10.00, '2024-10-31', 0),
+(50, 7, 5.00, '2024-08-29', 1),
+(50, NULL, 5.00, '2024-01-02', 0),
+(200, 7, 20.00, '2024-10-01', 1);
 
 -- Order table
-INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Voucher_id, Shipping_fee, Total_price, Order_date, Payment_method) VALUES
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 7, 15000, 1300350, '2023-07-21', 'Credit Card'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 3, 30000, 606300, '2024-04-05', 'PayPal'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', NULL, 10000, 687000, '2024-05-23', 'VnPay'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', NULL, 0, 1944750 , '2024-03-27', 'PayPal'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 5, 20000, 1117640, '2024-01-22', 'Momo');
+INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Voucher_id, Shipping_fee, Total_price, Status, Order_date) VALUES
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 7, 15000, 1300350, 0, '2023-07-21'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 3, 30000, 606300, 1,'2024-04-05'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', NULL, 10000, 687000, 1,'2024-05-23'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', NULL, 0, 1944750 , 0,'2024-03-27'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 5, 20000, 1117640, 1, '2024-01-22');
 
 -- OrderDetail table with 10 entries
 INSERT INTO OrderDetail (Order_id, Product_id, Quantity, Total_price) VALUES

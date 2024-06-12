@@ -1,6 +1,6 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.model.OrderDetail;
+import com.lactobloom.dto.OrderDetailDto;
 import com.lactobloom.service.interfaces.IOrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,24 +16,24 @@ public class OrderDetailController {
     @Autowired
     private IOrderDetailService orderDetailService;
 
-    @PostMapping("/save")
-    public ResponseEntity<OrderDetail> saveOrderDetail(@RequestBody OrderDetail orderDetail) {
-        return new ResponseEntity<>(orderDetailService.saveOrderDetail(orderDetail), HttpStatus.CREATED);
+    @PostMapping("/save/order/{orderId}/product/{productId}")
+    public ResponseEntity<OrderDetailDto> saveOrderDetail(@RequestBody OrderDetailDto orderDetailDto, @PathVariable int orderId, @PathVariable int productId) {
+        return new ResponseEntity<>(orderDetailService.saveOrderDetail(orderDetailDto, orderId, productId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<OrderDetail> getAllOrderDetails() {
+    public List<OrderDetailDto> getAllOrderDetails() {
         return orderDetailService.getAllOrderDetails();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<OrderDetail> getOrderDetailById(@PathVariable int id) {
+    public ResponseEntity<OrderDetailDto> getOrderDetailById(@PathVariable int id) {
         return new ResponseEntity<>(orderDetailService.getOrderDetailById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<OrderDetail> updateOrderDetail(@PathVariable int id, @RequestBody OrderDetail orderDetail) {
-        return new ResponseEntity<>(orderDetailService.updateOrderDetail(orderDetail, id), HttpStatus.OK);
+    @PutMapping("/update/{id}/order/{orderId}/product/{productId}")
+    public ResponseEntity<OrderDetailDto> updateOrderDetail(@PathVariable int id, @RequestBody OrderDetailDto orderDetailDto, @PathVariable int orderId, @PathVariable int productId) {
+        return new ResponseEntity<>(orderDetailService.updateOrderDetail(orderDetailDto, id, orderId, productId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
