@@ -1,47 +1,43 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
+import { useSelector, useDispatch } from "react-redux";
 import { getDiscountPrice } from "../../../helpers/product";
+import { deleteFromCart } from "../../../store/slices/cart-slice"
 
-const defaultImage = "/assets/img/no-image.png";
-
-const MenuCart = ({ cartData, currency, deleteFromCart }) => {
+const MenuCart = () => {
+  const dispatch = useDispatch();
+  const currency = useSelector((state) => state.currency);
+  const { cartItems } = useSelector((state) => state.cart);
   let cartTotalPrice = 0;
-  const { addToast } = useToasts();
 
   return (
     <div className="shopping-cart-content">
-      {cartData && cartData.length > 0 ? (
+      {cartItems && cartItems.length > 0 ? (
         <Fragment>
           <ul>
-            {cartData.map((single, key) => {
+            {cartItems.map((item) => {
               const discountedPrice = getDiscountPrice(
-                single.price,
-                single.discount
+                item.price,
+                item.discount
               );
               const finalProductPrice = (
-                single.price 
-              );
+                item.price * currency.currencyRate
+              ).toFixed(2);
               const finalDiscountedPrice = (
-                discountedPrice * 1
-              );
+                discountedPrice * currency.currencyRate
+              ).toFixed(2);
 
               discountedPrice != null
-                ? (cartTotalPrice += finalDiscountedPrice * single.quantity).toLocaleString("vi-VN")
-                : (cartTotalPrice += finalProductPrice * single.quantity).toLocaleString("vi-VN");
-
-                const singleImage = single.images && single.images.length > 0 
-                ? single.images[0].imageUrl 
-                : defaultImage;
+                ? (cartTotalPrice += finalDiscountedPrice * item.quantity)
+                : (cartTotalPrice += finalProductPrice * item.quantity);
 
               return (
-                <li className="single-shopping-cart" key={key}>
+                <li className="single-shopping-cart" key={item.cartItemId}>
                   <div className="shopping-cart-img">
-                    <Link to={process.env.PUBLIC_URL + "/product/" + single.productId}>
+                    <Link to={process.env.PUBLIC_URL + "/product/" + item.id}>
                       <img
                         alt=""
-                        src={process.env.PUBLIC_URL + singleImage}
+                        src={process.env.PUBLIC_URL + item.image[0]}
                         className="img-fluid"
                       />
                     </Link>
@@ -49,21 +45,30 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
                   <div className="shopping-cart-title">
                     <h4>
                       <Link
-                        to={process.env.PUBLIC_URL + "/product/" + single.productId}
+                        to={process.env.PUBLIC_URL + "/product/" + item.id}
                       >
                         {" "}
-                        {single.productName}{" "}
+                        {item.name}{" "}
                       </Link>
                     </h4>
-                    <h6>Qty: {single.quantity}</h6>
+                    <h6>Qty: {item.quantity}</h6>
                     <span>
                       {discountedPrice !== null
-                        ? finalDiscountedPrice.toLocaleString("vi-VN") + " VND"
-                        : finalProductPrice.toLocaleString("vi-VN") + " VND"}
+                        ? currency.currencySymbol + finalDiscountedPrice
+                        : currency.currencySymbol + finalProductPrice}
                     </span>
+                    {item.selectedProductColor &&
+                    item.selectedProductSize ? (
+                      <div className="cart-item-variation">
+                        <span>Color: {item.selectedProductColor}</span>
+                        <span>Size: {item.selectedProductSize}</span>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <div className="shopping-cart-delete">
-                    <button onClick={() => deleteFromCart(single, addToast)}>
+                    <button onClick={() => dispatch(deleteFromCart(item.cartItemId))}>
                       <i className="fa fa-times-circle" />
                     </button>
                   </div>
@@ -75,7 +80,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
             <h4>
               Total :{" "}
               <span className="shop-total">
-                {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
+                {currency.currencySymbol + cartTotalPrice.toFixed(2)}
               </span>
             </h4>
           </div>
@@ -96,12 +101,6 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
       )}
     </div>
   );
-};
-
-MenuCart.propTypes = {
-  cartData: PropTypes.array,
-  currency: PropTypes.object,
-  deleteFromCart: PropTypes.func
 };
 
 export default MenuCart;

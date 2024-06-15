@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 import ProductgridList from "./ProductgridList";
 
 const ShopProducts = ({ products, layout }) => {
   return (
     <div className="shop-bottom-area mt-35">
-      <div className={`row ${layout ? layout : ""}`}>
+      <div className={clsx("row", layout)}>
         <ProductgridList products={products} spaceBottomClass="mb-25" />
       </div>
     </div>

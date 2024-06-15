@@ -1,51 +1,46 @@
+import { Fragment } from "react";
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { getProducts } from "../../helpers/product";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
-import { addToCart } from "../../redux/actions/cartActions";
-import { addToWishlist } from "../../redux/actions/wishlistActions";
-import { addToCompare } from "../../redux/actions/compareActions";
 
 const ProductGrid = ({
-  products,
-  currency,
-  addToCart,
-  addToWishlist,
-  addToCompare,
-  cartItems,
-  wishlistItems,
-  compareItems,
-  sliderClassName,
-  spaceBottomClass
+  spaceBottomClass,
+  category,
+  type,
+  limit
 }) => {
+  const { products } = useSelector((state) => state.product);
+  const currency = useSelector((state) => state.currency);
+  const { cartItems } = useSelector((state) => state.cart);
+  const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { compareItems } = useSelector((state) => state.compare);
+  const prods = getProducts(products, category, type, limit)
+  
   return (
     <Fragment>
-      {products.map(product => {
+      {prods?.map(product => {
         return (
-          <ProductGridSingle
-            sliderClassName={sliderClassName}
-            spaceBottomClass={spaceBottomClass}
-            product={product}
-            currency={currency}
-            addToCart={addToCart}
-            addToWishlist={addToWishlist}
-            addToCompare={addToCompare}
-            cartItem={
-              cartItems.filter(cartItem => cartItem.productId === product.productId)[0]
-            }
-            wishlistItem={
-              wishlistItems.filter(
-                wishlistItem => wishlistItem.productId === product.productId
-              )[0]
-            }
-            compareItem={
-              compareItems.filter(
-                compareItem => compareItem.productId === product.productId
-              )[0]
-            }
-            key={product.productId}
-          />
+          <div className="col-xl-3 col-md-6 col-lg-4 col-sm-6" key={product.id}>
+            <ProductGridSingle
+              spaceBottomClass={spaceBottomClass}
+              product={product}
+              currency={currency}
+              cartItem={
+                cartItems.find((cartItem) => cartItem.id === product.id)
+              }
+              wishlistItem={
+                wishlistItems.find(
+                  (wishlistItem) => wishlistItem.id === product.id
+                )
+              }
+              compareItem={
+                compareItems.find(
+                  (compareItem) => compareItem.id === product.id
+                )
+              }
+            />
+          </div>
         );
       })}
     </Fragment>
@@ -53,59 +48,12 @@ const ProductGrid = ({
 };
 
 ProductGrid.propTypes = {
-  addToCart: PropTypes.func,
-  addToCompare: PropTypes.func,
-  addToWishlist: PropTypes.func,
-  cartItems: PropTypes.array,
-  compareItems: PropTypes.array,
-  currency: PropTypes.object,
-  products: PropTypes.array,
-  sliderClassName: PropTypes.string,
   spaceBottomClass: PropTypes.string,
-  wishlistItems: PropTypes.array
+  category: PropTypes.string,
+  type: PropTypes.string,
+  limit: PropTypes.number
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    products: getProducts(
-      state.productData.products,
-      ownProps.categoryName,
-      ownProps.type,
-      ownProps.limit
-    ),
-    currency: state.currencyData,
-    cartItems: state.cartData,
-    wishlistItems: state.wishlistData,
-    compareItems: state.compareData
-  };
-};
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addToCart: (
-      item,
-      addToast,
-      quantityCount,
-      selectedProductColor,
-      selectedProductSize
-    ) => {
-      dispatch(
-        addToCart(
-          item,
-          addToast,
-          quantityCount,
-          selectedProductColor,
-          selectedProductSize
-        )
-      );
-    },
-    addToWishlist: (item, addToast) => {
-      dispatch(addToWishlist(item, addToast));
-    },
-    addToCompare: (item, addToast) => {
-      dispatch(addToCompare(item, addToast));
-    }
-  };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductGrid);
+export default ProductGrid;

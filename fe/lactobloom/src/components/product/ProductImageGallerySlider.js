@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import React from "react";
-import Swiper from "react-id-swiper";
+
+import Swiper, { SwiperSlide } from "../../components/swiper";
 
 const ProductImageGallerySlider = ({ product }) => {
   // swiper slider settings
@@ -8,59 +8,45 @@ const ProductImageGallerySlider = ({ product }) => {
     spaceBetween: 15,
     slidesPerView: 3,
     loop: true,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
-    },
-    renderPrevButton: () => (
-      <button className="swiper-button-prev ht-swiper-button-nav">
-        <i className="pe-7s-angle-left" />
-      </button>
-    ),
-    renderNextButton: () => (
-      <button className="swiper-button-next ht-swiper-button-nav">
-        <i className="pe-7s-angle-right" />
-      </button>
-    ),
+    navigation: true,
     breakpoints: {
-      1024: {
-        slidesPerView: 3
-      },
-      768: {
-        slidesPerView: 2
+      320: {
+        slidesPerView: 1
       },
       640: {
         slidesPerView: 2
       },
-      320: {
-        slidesPerView: 1
+      768: {
+        slidesPerView: 2
+      },
+      1024: {
+        slidesPerView: 3
       }
     }
   };
   return (
     <div className="product-large-image-wrapper product-large-image-wrapper--slider">
-      <Swiper {...gallerySwiperParams}>
-        {product.image &&
-          product.image.map((single, key) => {
-            return (
-              <div key={key}>
-                <div className="single-image">
-                  <img
-                    src={process.env.PUBLIC_URL + single}
-                    className="img-fluid"
-                    alt=""
-                  />
-                </div>
+      {product?.image?.length ? (
+        <Swiper options={gallerySwiperParams}>
+          {product.image.map((single, key) => (
+            <SwiperSlide key={key}>
+              <div className="single-image">
+                <img
+                  src={process.env.PUBLIC_URL + single}
+                  className="img-fluid"
+                  alt=""
+                />
               </div>
-            );
-          })}
-      </Swiper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ): null}
     </div>
   );
 };
 
 ProductImageGallerySlider.propTypes = {
-  product: PropTypes.object
+  product: PropTypes.shape({})
 };
 
 export default ProductImageGallerySlider;

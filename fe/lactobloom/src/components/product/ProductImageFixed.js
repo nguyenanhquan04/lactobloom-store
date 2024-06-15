@@ -1,14 +1,8 @@
 import PropTypes from "prop-types";
-import React from "react";
+
 
 const ProductImageFixed = ({ product }) => {
-
-  const defaultImage = "/assets/img/no-image.png";
-  const productImage = product.images && product.images.length > 0 ? product.images[0].imageUrl : defaultImage;
-
   return (
-
-
     <div className="product-large-image-wrapper">
       {product.discount || product.new ? (
         <div className="product-img-badges">
@@ -24,22 +18,22 @@ const ProductImageFixed = ({ product }) => {
       )}
 
       <div className="product-fixed-image">
-        {/* {product.image ? ( */}
+        {product.image ? (
           <img
-            src={process.env.PUBLIC_URL + productImage}
+            src={process.env.PUBLIC_URL + product.image[0]}
             alt=""
             className="img-fluid"
           />
-        {/* ) : (
+        ) : (
           ""
-        )} */}
+        )}
       </div>
     </div>
   );
 };
 
 ProductImageFixed.propTypes = {
-  product: PropTypes.object
+  product: PropTypes.shape({})
 };
 
 export default ProductImageFixed;

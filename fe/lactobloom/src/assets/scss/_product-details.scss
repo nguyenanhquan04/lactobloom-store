@@ -589,27 +589,22 @@
       color: #fff;
       border-radius: 3px;
       &.pink {
-        background-color: #fa6bff;
+        background-color: rgb(233, 0, 0);
       }
       &.purple {
         background-color: #a749ff;
       }
-      
     }
   }
 
-  .react_lightgallery_item {
+  .lightgallery-button {
     position: absolute;
     top: 20px;
     right: 20px;
-    button {
-      font-size: 30px;
-
-      padding: 0;
-
-      border: none;
-      background: none;
-    }
+    font-size: 30px;
+    padding: 0;
+    border: none;
+    background: none;
   }
 
   &--slider {
@@ -664,6 +659,7 @@
   }
   .single-image {
     cursor: pointer;
+    min-height: 100px;
     img {
       width: 100%;
     }
@@ -678,6 +674,7 @@
   }
   .single-image {
     height: 100%;
+    min-height: 100px;
     img {
       height: 100%;
 

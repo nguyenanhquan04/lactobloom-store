@@ -1,54 +1,46 @@
 import PropTypes from "prop-types";
-import React from "react";
-import Swiper from "react-id-swiper";
+import clsx from "clsx"
+import Swiper, { SwiperSlide } from "../../components/swiper";
 import BrandLogoOneSingle from "../../components/brand-logo/BrandLogoOneSingle";
 import brandLogoData from "../../data/brand-logos/brand-logo-one.json";
 
-const BrandLogoSliderOne = ({ spaceBottomClass, spaceTopClass }) => {
-  const settings = {
-    loop: true,
-    autoplay: {
-      delay: 3000,
-      disableOnInteraction: false
+const settings = {
+  loop: true,
+  autoplay: true,
+  grabCursor: true,
+  breakpoints: {
+    320: {
+      slidesPerView: 2
     },
-    grabCursor: true,
-    breakpoints: {
-      1024: {
-        slidesPerView: 5
-      },
-      768: {
-        slidesPerView: 4
-      },
-      640: {
-        slidesPerView: 3
-      },
-      320: {
-        slidesPerView: 2
-      }
+    640: {
+      slidesPerView: 3
+    },
+    1024: {
+      slidesPerView: 5
+    },
+    768: {
+      slidesPerView: 4
     }
-  };
+  }
+};
 
+const BrandLogoSliderOne = ({ spaceBottomClass, spaceTopClass }) => {
   return (
-    <div
-      className={`brand-logo-area ${
-        spaceBottomClass ? spaceBottomClass : ""
-      }  ${spaceTopClass ? spaceTopClass : ""}`}
-    >
+    <div className={clsx("brand-logo-area", spaceBottomClass, spaceTopClass)}>
       <div className="container">
         <div className="brand-logo-active">
-          <Swiper {...settings}>
-            {brandLogoData &&
-              brandLogoData.map((single, key) => {
-                return (
+          {brandLogoData && (
+            <Swiper options={settings}>
+              {brandLogoData.map((single, key) => (
+                <SwiperSlide key={key}>
                   <BrandLogoOneSingle
                     data={single}
-                    key={key}
-                    sliderClassName="swiper-slide"
                     spaceBottomClass="mb-30"
                   />
-                );
-              })}
-          </Swiper>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </div>
       </div>
     </div>

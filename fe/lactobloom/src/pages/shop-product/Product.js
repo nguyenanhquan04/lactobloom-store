@@ -1,35 +1,35 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import { connect } from "react-redux";
+import React, { Fragment } from "react"; 
+import { useSelector } from "react-redux";
+import { useParams, useLocation } from "react-router-dom";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import RelatedProductSlider from "../../wrappers/product/RelatedProductSlider";
 import ProductDescriptionTab from "../../wrappers/product/ProductDescriptionTab";
 import ProductImageDescription from "../../wrappers/product/ProductImageDescription";
 
-const Product = ({ location, product }) => {
-  const { pathname } = location;
+const Product = () => {
+  let { pathname } = useLocation();
+  let { id } = useParams();
+  const { products } = useSelector((state) => state.product);
+  const product = products.find(product => product.id === id);
+  
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Product Page</title>
-        <meta
-          name="description"
-          content="Product page of LactoBloom Store"
-        />
-      </MetaTags>
-
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Shop Product
-      </BreadcrumbsItem>
+      <SEO
+        titleTemplate="Product"
+        description="Lactobloom Product Page."
+      />
 
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Product", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
 
         {/* product description with image */}
         <ProductImageDescription
@@ -41,31 +41,17 @@ const Product = ({ location, product }) => {
         {/* product description tab */}
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
-          productFullDesc={product.description}
+          productFullDesc={product.fullDescription}
         />
 
         {/* related product slider */}
         <RelatedProductSlider
           spaceBottomClass="pb-95"
-          category={product.categoryName[0]}
+          category={product.category[0]}
         />
       </LayoutOne>
     </Fragment>
   );
 };
 
-Product.propTypes = {
-  location: PropTypes.object,
-  product: PropTypes.object
-};
-
-const mapStateToProps = (state, ownProps) => {
-  const itemId = parseInt(ownProps.match.params.id, 10); // Chuyển 'id' từ chuỗi sang số nguyên
-  return {
-    product: state.productData.products.filter(
-      single => single.productId === itemId
-    )[0]
-  };
-};
-
-export default connect(mapStateToProps)(Product);
+export default Product;

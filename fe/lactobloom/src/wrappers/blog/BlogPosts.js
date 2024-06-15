@@ -6,7 +6,7 @@ const BlogPosts = () => {
       <div className="col-lg-6 col-md-6 col-sm-12">
         <div className="blog-wrap-2 mb-30">
           <div className="blog-img-2">
-            <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/blog-details"}>
               <img
                 src={process.env.PUBLIC_URL + "/assets/img/blog/blog-9.jpg"}
                 alt=""
@@ -16,16 +16,16 @@ const BlogPosts = () => {
           <div className="blog-content-2">
             <div className="blog-meta-2">
               <ul>
-                <li>22 April, 2020</li>
+                <li>22 April, 2024</li>
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                     4 <i className="fa fa-comments-o" />
                   </Link>
                 </li>
               </ul>
             </div>
             <h4>
-              <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                 Lorem ipsum blog post
               </Link>
             </h4>
@@ -35,7 +35,7 @@ const BlogPosts = () => {
             </p>
             <div className="blog-share-comment">
               <div className="blog-btn-2">
-                <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                   read more
                 </Link>
               </div>
@@ -68,7 +68,7 @@ const BlogPosts = () => {
       <div className="col-lg-6 col-md-6 col-sm-12">
         <div className="blog-wrap-2 mb-30">
           <div className="blog-img-2">
-            <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/blog-details"}>
               <img
                 src={process.env.PUBLIC_URL + "/assets/img/blog/blog-8.jpg"}
                 alt=""
@@ -78,16 +78,16 @@ const BlogPosts = () => {
           <div className="blog-content-2">
             <div className="blog-meta-2">
               <ul>
-                <li>22 April, 2020</li>
+                <li>22 April, 2024</li>
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                     4 <i className="fa fa-comments-o" />
                   </Link>
                 </li>
               </ul>
             </div>
             <h4>
-              <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                 New collection of our shop
               </Link>
             </h4>
@@ -97,7 +97,7 @@ const BlogPosts = () => {
             </p>
             <div className="blog-share-comment">
               <div className="blog-btn-2">
-                <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                   read more
                 </Link>
               </div>
@@ -130,7 +130,7 @@ const BlogPosts = () => {
       <div className="col-lg-6 col-md-6 col-sm-12">
         <div className="blog-wrap-2 mb-30">
           <div className="blog-img-2">
-            <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/blog-details"}>
               <img
                 src={process.env.PUBLIC_URL + "/assets/img/blog/blog-7.jpg"}
                 alt=""
@@ -140,16 +140,16 @@ const BlogPosts = () => {
           <div className="blog-content-2">
             <div className="blog-meta-2">
               <ul>
-                <li>22 April, 2020</li>
+                <li>22 April, 2024</li>
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                     4 <i className="fa fa-comments-o" />
                   </Link>
                 </li>
               </ul>
             </div>
             <h4>
-              <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                 Ipsum blog post two
               </Link>
             </h4>
@@ -159,7 +159,7 @@ const BlogPosts = () => {
             </p>
             <div className="blog-share-comment">
               <div className="blog-btn-2">
-                <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                   read more
                 </Link>
               </div>
@@ -192,7 +192,7 @@ const BlogPosts = () => {
       <div className="col-lg-6 col-md-6 col-sm-12">
         <div className="blog-wrap-2 mb-30">
           <div className="blog-img-2">
-            <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/blog-details"}>
               <img
                 src={process.env.PUBLIC_URL + "/assets/img/blog/blog-6.jpg"}
                 alt=""
@@ -202,16 +202,16 @@ const BlogPosts = () => {
           <div className="blog-content-2">
             <div className="blog-meta-2">
               <ul>
-                <li>22 April, 2020</li>
+                <li>22 April, 2024</li>
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                     4 <i className="fa fa-comments-o" />
                   </Link>
                 </li>
               </ul>
             </div>
             <h4>
-              <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                 New shop collection
               </Link>
             </h4>
@@ -221,7 +221,7 @@ const BlogPosts = () => {
             </p>
             <div className="blog-share-comment">
               <div className="blog-btn-2">
-                <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                   read more
                 </Link>
               </div>
@@ -254,7 +254,7 @@ const BlogPosts = () => {
       <div className="col-lg-6 col-md-6 col-sm-12">
         <div className="blog-wrap-2 mb-30">
           <div className="blog-img-2">
-            <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/blog-details"}>
               <img
                 src={process.env.PUBLIC_URL + "/assets/img/blog/blog-5.jpg"}
                 alt=""
@@ -264,16 +264,16 @@ const BlogPosts = () => {
           <div className="blog-content-2">
             <div className="blog-meta-2">
               <ul>
-                <li>22 April, 2020</li>
+                <li>22 April, 2024</li>
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                     4 <i className="fa fa-comments-o" />
                   </Link>
                 </li>
               </ul>
             </div>
             <h4>
-              <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                 Lorem blog post four
               </Link>
             </h4>
@@ -283,7 +283,7 @@ const BlogPosts = () => {
             </p>
             <div className="blog-share-comment">
               <div className="blog-btn-2">
-                <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                   read more
                 </Link>
               </div>
@@ -316,7 +316,7 @@ const BlogPosts = () => {
       <div className="col-lg-6 col-md-6 col-sm-12">
         <div className="blog-wrap-2 mb-30">
           <div className="blog-img-2">
-            <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/blog-details"}>
               <img
                 src={process.env.PUBLIC_URL + "/assets/img/blog/blog-4.jpg"}
                 alt=""
@@ -326,16 +326,16 @@ const BlogPosts = () => {
           <div className="blog-content-2">
             <div className="blog-meta-2">
               <ul>
-                <li>22 April, 2020</li>
+                <li>22 April, 2024</li>
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                     4 <i className="fa fa-comments-o" />
                   </Link>
                 </li>
               </ul>
             </div>
             <h4>
-              <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                 Ipsum blog post five
               </Link>
             </h4>
@@ -345,7 +345,7 @@ const BlogPosts = () => {
             </p>
             <div className="blog-share-comment">
               <div className="blog-btn-2">
-                <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                   read more
                 </Link>
               </div>

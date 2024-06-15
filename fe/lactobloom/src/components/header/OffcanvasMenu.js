@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 import { Link } from "react-router-dom";
 import HeaderSocial from "./sub-components/HeaderSocial";
 import NavMenu from "./NavMenu";
 
 const OffcanvasMenu = ({ activeState, getActiveState }) => {
   return (
-    <div className={`clickable-mainmenu ${activeState ? "inside" : ""}`}>
+    <div className={clsx("clickable-mainmenu", activeState ? "inside" : "")}>
       <div className="clickable-mainmenu-icon">
         <button
           className="clickable-mainmenu-close"

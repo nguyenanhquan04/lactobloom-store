@@ -1,21 +1,16 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 
-const BrandLogoOneSingle = ({ data, sliderClassName, spaceBottomClass }) => {
+const BrandLogoOneSingle = ({ data, spaceBottomClass }) => {
   return (
-    <div
-      className={`single-brand-logo ${sliderClassName ? sliderClassName : ""} ${
-        spaceBottomClass ? spaceBottomClass : ""
-      }`}
-    >
+    <div className={clsx("single-brand-logo", spaceBottomClass)}>
       <img src={process.env.PUBLIC_URL + data.image} alt="" />
     </div>
   );
 };
 
 BrandLogoOneSingle.propTypes = {
-  data: PropTypes.object,
-  sliderClassName: PropTypes.string,
+  data: PropTypes.shape({}),
   spaceBottomClass: PropTypes.string
 };
 

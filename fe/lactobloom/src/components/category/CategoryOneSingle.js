@@ -1,10 +1,9 @@
 import PropTypes from "prop-types";
-import React from "react";
 import { Link } from "react-router-dom";
 
-const CategoryOneSingle = ({ data, sliderClass }) => {
+const CategoryOneSingle = ({ data }) => {
   return (
-    <div className={`collection-product-2 ${sliderClass ? sliderClass : ""}`}>
+    <div className="collection-product-2">
       <Link to={process.env.PUBLIC_URL + data.link}>
         <img src={process.env.PUBLIC_URL + data.image} alt="" />
       </Link>
@@ -19,8 +18,7 @@ const CategoryOneSingle = ({ data, sliderClass }) => {
 };
 
 CategoryOneSingle.propTypes = {
-  data: PropTypes.object,
-  sliderClass: PropTypes.string
+  data: PropTypes.shape({})
 };
 
 export default CategoryOneSingle;

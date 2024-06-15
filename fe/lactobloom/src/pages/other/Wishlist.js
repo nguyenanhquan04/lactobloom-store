@@ -1,52 +1,36 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import { connect } from "react-redux";
+import { Fragment } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import { getDiscountPrice } from "../../helpers/product";
-import {
-  addToWishlist,
-  deleteFromWishlist,
-  deleteAllFromWishlist
-} from "../../redux/actions/wishlistActions";
-import { addToCart } from "../../redux/actions/cartActions";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import { addToCart } from "../../store/slices/cart-slice";
+import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
 
-const Wishlist = ({
-  location,
-  cartItems,
-  currency,
-  addToCart,
-  wishlistItems,
-  deleteFromWishlist,
-  deleteAllFromWishlist
-}) => {
-  const { addToast } = useToasts();
-  const { pathname } = location;
-  const defaultImage = "/assets/img/no-image.png";
+const Wishlist = () => {
+  const dispatch = useDispatch();
+  let { pathname } = useLocation();
+  
+  const currency = useSelector((state) => state.currency);
+  const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { cartItems } = useSelector((state) => state.cart);
   
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Wishlist</title>
-        <meta
-          name="description"
-          content="Wishlist page of LactoBloom Store"
-        />
-      </MetaTags>
-
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Wishlist
-      </BreadcrumbsItem>
-
+      <SEO
+        titleTemplate="Wishlist"
+        description="Lactobloom Wishlist Page."
+      />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
             {wishlistItems && wishlistItems.length >= 1 ? (
@@ -72,15 +56,14 @@ const Wishlist = ({
                               wishlistItem.discount
                             );
                             const finalProductPrice = (
-                              wishlistItem.price 
-                            );
+                              wishlistItem.price * currency.currencyRate
+                            ).toFixed(2);
                             const finalDiscountedPrice = (
-                              discountedPrice * 1
+                              discountedPrice * currency.currencyRate
+                            ).toFixed(2);
+                            const cartItem = cartItems.find(
+                              item => item.id === wishlistItem.id
                             );
-                            const cartItem = cartItems.filter(
-                              item => item.productId === wishlistItem.productId
-                            )[0];
-                            const wishlistItemImage = wishlistItem.images && wishlistItem.images.length > 0 ? wishlistItem.images[0].imageUrl : defaultImage;
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -88,14 +71,14 @@ const Wishlist = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.productId
+                                      wishlistItem.id
                                     }
                                   >
                                     <img
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        wishlistItemImage
+                                        wishlistItem.image[0]
                                       }
                                       alt=""
                                     />
@@ -107,10 +90,10 @@ const Wishlist = ({
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.productId
+                                      wishlistItem.id
                                     }
                                   >
-                                    {wishlistItem.productName}
+                                    {wishlistItem.name}
                                   </Link>
                                 </td>
 
@@ -118,15 +101,18 @@ const Wishlist = ({
                                   {discountedPrice !== null ? (
                                     <Fragment>
                                       <span className="amount old">
-                                        {finalProductPrice.toLocaleString("vi-VN") + " VND"}
+                                        {currency.currencySymbol +
+                                          finalProductPrice}
                                       </span>
                                       <span className="amount">
-                                        {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
+                                        {currency.currencySymbol +
+                                          finalDiscountedPrice}
                                       </span>
                                     </Fragment>
                                   ) : (
                                     <span className="amount">
-                                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
+                                      {currency.currencySymbol +
+                                        finalProductPrice}
                                     </span>
                                   )}
                                 </td>
@@ -144,27 +130,25 @@ const Wishlist = ({
                                   ) : wishlistItem.variation &&
                                     wishlistItem.variation.length >= 1 ? (
                                     <Link
-                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.productId}`}
+                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.id}`}
                                     >
                                       Select option
                                     </Link>
                                   ) : wishlistItem.stock &&
                                     wishlistItem.stock > 0 ? (
-                                  // ) : wishlistItem.quantity &&
-                                  // wishlistItem.quantity > 0 ? (
                                     <button
                                       onClick={() =>
-                                        addToCart(wishlistItem, addToast)
+                                        dispatch(addToCart(wishlistItem))
                                       }
                                       className={
                                         cartItem !== undefined &&
-                                        cartItem.cartQuantity > 0
+                                        cartItem.quantity > 0
                                           ? "active"
                                           : ""
                                       }
                                       disabled={
                                         cartItem !== undefined &&
-                                        cartItem.cartQuantity > 0
+                                        cartItem.quantity > 0
                                       }
                                       title={
                                         wishlistItem !== undefined
@@ -173,7 +157,7 @@ const Wishlist = ({
                                       }
                                     >
                                       {cartItem !== undefined &&
-                                      cartItem.cartQuantity > 0
+                                      cartItem.quantity > 0
                                         ? "Added"
                                         : "Add to cart"}
                                     </button>
@@ -187,7 +171,7 @@ const Wishlist = ({
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      deleteFromWishlist(wishlistItem, addToast)
+                                      dispatch(deleteFromWishlist(wishlistItem.id))
                                     }
                                   >
                                     <i className="fa fa-times"></i>
@@ -213,7 +197,7 @@ const Wishlist = ({
                         </Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => deleteAllFromWishlist(addToast)}>
+                        <button onClick={() => dispatch(deleteAllFromWishlist())}>
                           Clear Wishlist
                         </button>
                       </div>
@@ -245,39 +229,4 @@ const Wishlist = ({
   );
 };
 
-Wishlist.propTypes = {
-  addToCart: PropTypes.func,
-  cartItems: PropTypes.array,
-  currency: PropTypes.object,
-  location: PropTypes.object,
-  deleteAllFromWishlist: PropTypes.func,
-  deleteFromWishlist: PropTypes.func,
-  wishlistItems: PropTypes.array
-};
-
-const mapStateToProps = state => {
-  return {
-    cartItems: state.cartData,
-    wishlistItems: state.wishlistData,
-    currency: state.currencyData
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    addToCart: (item, addToast, quantityCount) => {
-      dispatch(addToCart(item, addToast, quantityCount));
-    },
-    addToWishlist: (item, addToast, quantityCount) => {
-      dispatch(addToWishlist(item, addToast, quantityCount));
-    },
-    deleteFromWishlist: (item, addToast, quantityCount) => {
-      dispatch(deleteFromWishlist(item, addToast, quantityCount));
-    },
-    deleteAllFromWishlist: addToast => {
-      dispatch(deleteAllFromWishlist(addToast));
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Wishlist);
+export default Wishlist;

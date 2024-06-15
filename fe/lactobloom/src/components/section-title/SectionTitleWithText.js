@@ -1,17 +1,13 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 
 const SectionTitleWithText = ({ spaceTopClass, spaceBottomClass }) => {
   return (
-    <div
-      className={`welcome-area ${spaceTopClass ? spaceTopClass : ""} ${
-        spaceBottomClass ? spaceBottomClass : ""
-      }`}
-    >
+    <div className={clsx("welcome-area", spaceTopClass, spaceBottomClass)}>
       <div className="container">
         <div className="welcome-content text-center">
           <h5>Who Are We</h5>
-          <h1>Welcome To LactoBloom Store</h1>
+          <h1>Welcome To Lactobloom</h1>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
             eiusmod tempor incididunt labor et dolore magna aliqua. Ut enim ad

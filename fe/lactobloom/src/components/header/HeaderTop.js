@@ -1,34 +1,18 @@
 import PropTypes from "prop-types";
-import React from "react";
-import { multilanguage } from "redux-multilanguage";
-import { connect } from "react-redux";
-import { setCurrency } from "../../redux/actions/currencyActions";
+import { useSelector } from "react-redux";
+import clsx from "clsx";
 import LanguageCurrencyChanger from "./sub-components/LanguageCurrencyChanger";
 
-const HeaderTop = ({
-  currency,
-  setCurrency,
-  currentLanguageCode,
-  dispatch,
-  borderStyle
-}) => {
+const HeaderTop = ({ borderStyle }) => {
+  const currency = useSelector((state) => state.currency);
   return (
-    <div
-      className={`header-top-wap ${
-        borderStyle === "fluid-border" ? "border-bottom" : ""
-      }`}
-    >
-      <LanguageCurrencyChanger
-        currency={currency}
-        setCurrency={setCurrency}
-        currentLanguageCode={currentLanguageCode}
-        dispatch={dispatch}
-      />
+    <div className={clsx("header-top-wap", borderStyle === "fluid-border" && "border-bottom")}>
+      <LanguageCurrencyChanger currency={currency} />
       <div className="header-offer">
         <p>
           Free delivery on order over{" "}
           <span>
-            { (200000).toLocaleString("vi-VN") + " VND"}
+            {currency.currencySymbol + (200 * currency.currencyRate).toFixed(2)}
           </span>
         </p>
       </div>
@@ -38,27 +22,6 @@ const HeaderTop = ({
 
 HeaderTop.propTypes = {
   borderStyle: PropTypes.string,
-  setCurrency: PropTypes.func,
-  currency: PropTypes.object,
-  currentLanguageCode: PropTypes.string,
-  dispatch: PropTypes.func
 };
 
-const mapStateToProps = state => {
-  return {
-    currency: state.currencyData
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setCurrency: currencyName => {
-      dispatch(setCurrency(currencyName));
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(multilanguage(HeaderTop));
+export default HeaderTop;

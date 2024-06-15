@@ -1,12 +1,9 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 
 const TeamMemberOneSingle = ({ data, spaceBottomClass }) => {
   return (
-    <div className="col-lg-3 col-md-6 col-sm-6">
-      <div
-        className={`team-wrapper ${spaceBottomClass ? spaceBottomClass : ""}`}
-      >
+      <div className={clsx("team-wrapper", spaceBottomClass)}>
         <div className="team-img">
           <img
             src={process.env.PUBLIC_URL + data.image}
@@ -45,12 +42,11 @@ const TeamMemberOneSingle = ({ data, spaceBottomClass }) => {
           <span>{data.position} </span>
         </div>
       </div>
-    </div>
   );
 };
 
 TeamMemberOneSingle.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.shape({}),
   spaceBottomClass: PropTypes.string
 };
 

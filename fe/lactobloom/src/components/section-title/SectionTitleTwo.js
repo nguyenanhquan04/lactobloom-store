@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx"
 
 const SectionTitleTwo = ({
   titleText,
@@ -8,11 +8,7 @@ const SectionTitleTwo = ({
   spaceClass
 }) => {
   return (
-    <div
-      className={`section-title-2 ${positionClass ? positionClass : ""} ${
-        spaceClass ? spaceClass : ""
-      }`}
-    >
+    <div className={clsx("section-title-2", positionClass, spaceClass)}>
       <h2>{titleText}</h2>
       <p>{subTitleText}</p>
     </div>

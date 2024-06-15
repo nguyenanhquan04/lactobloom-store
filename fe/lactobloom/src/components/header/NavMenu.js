@@ -1,38 +1,38 @@
 import PropTypes from "prop-types";
-import React from "react";
 import { Link } from "react-router-dom";
-import { multilanguage } from "redux-multilanguage";
+import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 
-const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
+const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
+  const { t } = useTranslation();
+  
   return (
     <div
-      className={` ${
-        sidebarMenu
+      className={clsx(sidebarMenu
           ? "sidebar-menu"
-          : `main-menu ${menuWhiteClass ? menuWhiteClass : ""}`
-      } `}
+          : `main-menu ${menuWhiteClass ? menuWhiteClass : ""}`)}
     >
       <nav>
         <ul>
           <li>
             <Link to={process.env.PUBLIC_URL + "/"}>
-            {strings["home"]}
-              </Link>
+              {t("home")}             
+            </Link>
           </li>
           <li>
             <Link to={process.env.PUBLIC_URL + "/shop"}>
               {" "}
-              {strings["shop"]}
-              </Link>
+              {t("shop")}
+            </Link>
           </li>
           <li>
             <Link to={process.env.PUBLIC_URL + "/blog"}>
-              {strings["blog"]}
-              </Link>
+              {t("blog")}
+            </Link>
           </li>
           <li>
             <Link>
-              {strings["pages"]}
+              {t("pages")}
               {sidebarMenu ? (
                 <span>
                   <i className="fa fa-angle-right"></i>
@@ -44,47 +44,47 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             <ul className="submenu">
               <li>
                 <Link to={process.env.PUBLIC_URL + "/cart"}>
-                  {strings["cart"]}
+                  {t("cart")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/checkout"}>
-                  {strings["checkout"]}
+                  {t("checkout")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/wishlist"}>
-                  {strings["wishlist"]}
+                  {t("wishlist")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/compare"}>
-                  {strings["compare"]}
+                  {t("compare")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                  {strings["my_account"]}
+                  {t("my_account")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                  {strings["login_register"]}
+                  {t("login_register")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/about"}>
-                  {strings["about_us"]}
+                  {t("about_us")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/contact"}>
-                  {strings["contact_us"]}
+                  {t("contact_us")}
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/not-found"}>
-                  {strings["404_page"]}
+                  {t("404_page")}
                 </Link>
               </li>
             </ul>
@@ -92,7 +92,7 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
           
           <li>
             <Link to={process.env.PUBLIC_URL + "/contact"}>
-              {strings["contact_us"]}
+              {t("contact_us")}
             </Link>
           </li>
         </ul>
@@ -104,7 +104,6 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
 NavMenu.propTypes = {
   menuWhiteClass: PropTypes.string,
   sidebarMenu: PropTypes.bool,
-  strings: PropTypes.object
 };
 
-export default multilanguage(NavMenu);
+export default NavMenu;

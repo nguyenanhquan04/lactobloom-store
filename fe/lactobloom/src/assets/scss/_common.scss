@@ -1598,7 +1598,7 @@ textarea:focus {
   right: 20px;
   bottom: 60px;
 
-  visibility: hidden;
+  // visibility: hidden;
   overflow: hidden;
 
   width: 50px;
@@ -1606,17 +1606,17 @@ textarea:focus {
 
   text-align: center;
 
-  opacity: 0;
+  // opacity: 0;
   color: #fff;
   border: none;
   border-radius: 50px;
   background: none;
   background-color: $theme-color;
-  &.show {
-    visibility: visible;
+  // &.show {
+  //   visibility: visible;
 
-    opacity: 1;
-  }
+  //   opacity: 1;
+  // }
   @media #{$xs-layout} {
     width: 40px;
     height: 40px;
@@ -1651,7 +1651,7 @@ textarea:focus {
 ------------------------------------------*/
 
 .bg-purple {
-  background-color: #f0e0ff;
+  background-color: antiquewhite;
 }
 .bg-purple-2 {
   background-color: #cea1f8;
@@ -1715,7 +1715,7 @@ textarea:focus {
   a,
   button {
     position: relative;
-
+    isolation: isolate;
     transition: all 0.5s ease-in-out 0s;
     &:hover {
       color: #fff;
@@ -1723,6 +1723,7 @@ textarea:focus {
     }
     &::before,
     &::after {
+      border-radius: 50px;
       position: absolute;
       z-index: -1;
       bottom: 0;
@@ -1741,7 +1742,6 @@ textarea:focus {
       width: 0;
 
       background: $theme-color;
-      border-radius: 50px;
     }
     &:hover::after {
       right: auto;
@@ -1885,6 +1885,7 @@ a.default-btn {
   &__text {
     font-size: 20px;
     a {
+      border-radius: 50px;
       font-size: 14px;
       font-weight: 500;
 
@@ -1897,7 +1898,6 @@ a.default-btn {
 
       color: $white;
       background-color: #363f4d;
-      border-radius: 50px;
       &:hover {
         color: $white;
         background-color: $theme-color;
@@ -1934,4 +1934,31 @@ a.default-btn {
 
 .bg-black-3 {
   background-color: #202022;
+}
+.bg-cover {
+  background-size: cover;
+}
+.product-small-image-wrapper.product-small-image-wrapper--side-thumb .swiper-wrap,
+.swiper-pointer-events.swiper-vertical {
+  height: 100%;
+}
+
+@keyframes bounce {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-30px); }
+  100% { transform: translateY(0); }
+} 
+
+.map-marker {
+  animation-name: bounce;
+  animation-timing-function: linear;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+.swiper-wrap {
+  position: relative;
 }

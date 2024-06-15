@@ -1,189 +1,42 @@
-// import PropTypes from "prop-types";
-// import React, { Fragment, useEffect, useState } from "react";
-// import { LightgalleryProvider, LightgalleryItem } from "react-lightgallery";
-// import Swiper from "react-id-swiper";
-
-// const ProductImageGallery = ({ product }) => {
-//   const [gallerySwiper, getGallerySwiper] = useState(null);
-//   const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
-
-//   // effect for swiper slider synchronize
-//   useEffect(() => {
-//     if (
-//       gallerySwiper !== null &&
-//       gallerySwiper.controller &&
-//       thumbnailSwiper !== null &&
-//       thumbnailSwiper.controller
-//     ) {
-//       gallerySwiper.controller.control = thumbnailSwiper;
-//       thumbnailSwiper.controller.control = gallerySwiper;
-//     }
-//   }, [gallerySwiper, thumbnailSwiper]);
-
-//   // swiper slider settings
-//   const gallerySwiperParams = {
-//     getSwiper: getGallerySwiper,
-//     spaceBetween: 10,
-//     loopedSlides: 4,
-//     loop: true,
-//     effect: "fade"
-//   };
-
-//   const thumbnailSwiperParams = {
-//     getSwiper: getThumbnailSwiper,
-//     spaceBetween: 10,
-//     slidesPerView: 4,
-//     loopedSlides: 4,
-//     touchRatio: 0.2,
-//     freeMode: true,
-//     loop: true,
-//     slideToClickedSlide: true,
-//     navigation: {
-//       nextEl: ".swiper-button-next",
-//       prevEl: ".swiper-button-prev"
-//     },
-//     renderPrevButton: () => (
-//       <button className="swiper-button-prev ht-swiper-button-nav">
-//         <i className="pe-7s-angle-left" />
-//       </button>
-//     ),
-//     renderNextButton: () => (
-//       <button className="swiper-button-next ht-swiper-button-nav">
-//         <i className="pe-7s-angle-right" />
-//       </button>
-//     )
-//   };
-
-//   return (
-//     <Fragment>
-//       <div className="product-large-image-wrapper">
-//         {product.discount || product.new ? (
-//           <div className="product-img-badges">
-//             {product.discount ? (
-//               <span className="pink">-{product.discount}%</span>
-//             ) : (
-//               ""
-//             )}
-//             {product.new ? <span className="purple">New</span> : ""}
-//           </div>
-//         ) : (
-//           ""
-//         )}
-//         <LightgalleryProvider>
-//           <Swiper {...gallerySwiperParams}>
-//             {/* {product.image &&
-//               product.image.map((single, key) => { */}
-//               {product.images &&
-//               product.images.map((single, key) => {
-//                 return (
-//                   <div key={key}>
-//                     <LightgalleryItem
-//                       group="any"
-//                       src={process.env.PUBLIC_URL + single.imageUrl}
-//                     >
-//                       <button>
-//                         <i className="pe-7s-expand1"></i>
-//                       </button>
-//                     </LightgalleryItem>
-//                     <div className="single-image">
-//                       <img
-//                         src={process.env.PUBLIC_URL + single.imageUrl}
-//                         className="img-fluid"
-//                         alt=""
-//                       />
-//                     </div>
-//                   </div>
-//                 );
-//               })}
-//           </Swiper>
-//         </LightgalleryProvider>
-//       </div>
-//       <div className="product-small-image-wrapper mt-15">
-//         <Swiper {...thumbnailSwiperParams}>
-//           {product.images &&
-//             product.images.map((single, key) => {
-//               return (
-//                 <div key={key}>
-//                   <div className="single-image">
-//                     <img
-//                       src={process.env.PUBLIC_URL + single.imageUrl}
-//                       className="img-fluid"
-//                       alt=""
-//                     />
-//                   </div>
-//                 </div>
-//               );
-//             })}
-//         </Swiper>
-//       </div>
-//     </Fragment>
-//   );
-// };
-
-// ProductImageGallery.propTypes = {
-//   product: PropTypes.object
-// };
-
-// export default ProductImageGallery;
-
-
+import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
-import React, { Fragment, useEffect, useState } from "react";
-import { LightgalleryProvider, LightgalleryItem } from "react-lightgallery";
-import Swiper from "react-id-swiper";
+import { EffectFade, Thumbs } from 'swiper';
+import AnotherLightbox from "yet-another-react-lightbox";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import Swiper, { SwiperSlide } from "../../components/swiper";
 
 const ProductImageGallery = ({ product }) => {
-  const [gallerySwiper, getGallerySwiper] = useState(null);
-  const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
-
-  // effect for swiper slider synchronize
-  useEffect(() => {
-    if (
-      gallerySwiper !== null &&
-      gallerySwiper.controller &&
-      thumbnailSwiper !== null &&
-      thumbnailSwiper.controller
-    ) {
-      gallerySwiper.controller.control = thumbnailSwiper;
-      thumbnailSwiper.controller.control = gallerySwiper;
-    }
-  }, [gallerySwiper, thumbnailSwiper]);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [index, setIndex] = useState(-1);
+  const slides = product?.image.map((img, i) => ({
+      src: process.env.PUBLIC_URL + img,
+      key: i,
+  }));
 
   // swiper slider settings
   const gallerySwiperParams = {
-    getSwiper: getGallerySwiper,
     spaceBetween: 10,
-    loopedSlides: 4,
     loop: true,
-    effect: "fade"
+    effect: "fade",
+    fadeEffect: {
+      crossFade: true
+    },
+    thumbs: { swiper: thumbsSwiper },
+    modules: [EffectFade, Thumbs],
   };
 
   const thumbnailSwiperParams = {
-    getSwiper: getThumbnailSwiper,
+    onSwiper: setThumbsSwiper,
     spaceBetween: 10,
     slidesPerView: 4,
-    loopedSlides: 4,
     touchRatio: 0.2,
     freeMode: true,
     loop: true,
     slideToClickedSlide: true,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
-    },
-    renderPrevButton: () => (
-      <button className="swiper-button-prev ht-swiper-button-nav">
-        <i className="pe-7s-angle-left" />
-      </button>
-    ),
-    renderNextButton: () => (
-      <button className="swiper-button-next ht-swiper-button-nav">
-        <i className="pe-7s-angle-right" />
-      </button>
-    )
+    navigation: true
   };
-
-  const defaultImage = "/assets/img/no-image.png";
 
   return (
     <Fragment>
@@ -200,75 +53,56 @@ const ProductImageGallery = ({ product }) => {
         ) : (
           ""
         )}
-        <LightgalleryProvider>
-          <Swiper {...gallerySwiperParams}>
-            {product.images && product.images.length > 0 ? (
-              product.images.map((single, key) => (
-                <div key={key}>
-                  <LightgalleryItem
-                    group="any"
-                    src={process.env.PUBLIC_URL + "/assets/img/product/" + (single.imageUrl || defaultImage)}
-                  >
-                    <button>
-                      <i className="pe-7s-expand1"></i>
-                    </button>
-                  </LightgalleryItem>
-                  <div className="single-image">
-                    <img
-                      src={process.env.PUBLIC_URL + "/assets/img/product/" + (single.imageUrl || defaultImage)}
-                      className="img-fluid"
-                      alt=""
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div>
+        {product?.image?.length ? (
+          <Swiper options={gallerySwiperParams}>
+            {product.image.map((single, key) => (
+              <SwiperSlide key={key}>
+                <button className="lightgallery-button" onClick={() => setIndex(key)}>
+                  <i className="pe-7s-expand1"></i>
+                </button>
                 <div className="single-image">
                   <img
-                    src={process.env.PUBLIC_URL + defaultImage}
+                    src={process.env.PUBLIC_URL + single}
                     className="img-fluid"
                     alt=""
                   />
                 </div>
-              </div>
-            )}
+              </SwiperSlide>
+            ))}
+            <AnotherLightbox
+                open={index >= 0}
+                index={index}
+                close={() => setIndex(-1)}
+                slides={slides}
+                plugins={[Thumbnails, Zoom, Fullscreen]}
+            />
           </Swiper>
-        </LightgalleryProvider>
+        ) : null}
+
       </div>
       <div className="product-small-image-wrapper mt-15">
-        <Swiper {...thumbnailSwiperParams}>
-          {product.images && product.images.length > 0 ? (
-            product.images.map((single, key) => (
-              <div key={key}>
+        {product?.image?.length ? (
+          <Swiper options={thumbnailSwiperParams}>
+            {product.image.map((single, key) => (
+              <SwiperSlide key={key}>
                 <div className="single-image">
                   <img
-                    src={process.env.PUBLIC_URL + (single.imageUrl || defaultImage)}
+                    src={process.env.PUBLIC_URL + single}
                     className="img-fluid"
                     alt=""
                   />
                 </div>
-              </div>
-            ))
-          ) : (
-            <div>
-              <div className="single-image">
-                <img
-                  src={process.env.PUBLIC_URL + defaultImage}
-                  className="img-fluid"
-                  alt=""
-                />
-              </div>
-            </div>
-          )}
-        </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : null}
       </div>
     </Fragment>
   );
 };
 
 ProductImageGallery.propTypes = {
-  product: PropTypes.object.isRequired
+  product: PropTypes.shape({})
 };
 
 export default ProductImageGallery;

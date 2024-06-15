@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getProductCartQuantity } from "../../helpers/product";
-import { addToCart } from "../../redux/actions/cartActions";
-import { addToWishlist } from "../../redux/actions/wishlistActions";
-import { addToCompare } from "../../redux/actions/compareActions";
 import Rating from "./sub-components/ProductRating";
+import { addToCart } from "../../store/slices/cart-slice";
+import { addToWishlist } from "../../store/slices/wishlist-slice";
+import { addToCompare } from "../../store/slices/compare-slice";
 
 const ProductDescriptionInfo = ({
   product,
@@ -17,11 +17,8 @@ const ProductDescriptionInfo = ({
   cartItems,
   wishlistItem,
   compareItem,
-  addToast,
-  addToCart,
-  addToWishlist,
-  addToCompare
 }) => {
+  const dispatch = useDispatch();
   const [selectedProductColor, setSelectedProductColor] = useState(
     product.variation ? product.variation[0].color : ""
   );
@@ -30,32 +27,29 @@ const ProductDescriptionInfo = ({
   );
   const [productStock, setProductStock] = useState(
     product.variation ? product.variation[0].size[0].stock : product.stock
-    //product.variation ? product.variation[0].size[0].quantity : product.quantity
-
   );
   const [quantityCount, setQuantityCount] = useState(1);
 
   const productCartQty = getProductCartQuantity(
     cartItems,
-    product
-    // product,
-    // selectedProductColor,
-    // selectedProductSize
+    product,
+    selectedProductColor,
+    selectedProductSize
   );
 
   return (
     <div className="product-details-content ml-70">
-      <h2>{product.productName}</h2>
+      <h2>{product.name}</h2>
       <div className="product-details-price">
         {discountedPrice !== null ? (
           <Fragment>
-            <span>{finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}</span>{" "}
+            <span>{currency.currencySymbol + finalDiscountedPrice}</span>{" "}
             <span className="old">
-              {finalProductPrice.toLocaleString("vi-VN") + " VND"}
+              {currency.currencySymbol + finalProductPrice}
             </span>
           </Fragment>
         ) : (
-          <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
+          <span>{currency.currencySymbol + finalProductPrice} </span>
         )}
       </div>
       {product.rating && product.rating > 0 ? (
@@ -68,7 +62,7 @@ const ProductDescriptionInfo = ({
         ""
       )}
       <div className="pro-details-list">
-        <p>{product.description}</p>
+        <p>{product.shortDescription}</p>
       </div>
 
       {product.variation ? (
@@ -93,7 +87,6 @@ const ProductDescriptionInfo = ({
                         setSelectedProductColor(single.color);
                         setSelectedProductSize(single.size[0].name);
                         setProductStock(single.size[0].stock);
-                        //setProductStock(single.size[0].quantity);
                         setQuantityCount(1);
                       }}
                     />
@@ -126,7 +119,6 @@ const ProductDescriptionInfo = ({
                               onChange={() => {
                                 setSelectedProductSize(singleSize.name);
                                 setProductStock(singleSize.stock);
-                                //setProductStock(singleSize.quantity);
                                 setQuantityCount(1);
                               }}
                             />
@@ -188,13 +180,12 @@ const ProductDescriptionInfo = ({
             {productStock && productStock > 0 ? (
               <button
                 onClick={() =>
-                  addToCart(
-                    product,
-                    addToast,
-                    quantityCount
-                    //selectedProductColor,
-                    //selectedProductSize
-                  )
+                  dispatch(addToCart({
+                    ...product,
+                    quantity: quantityCount,
+                    selectedProductColor: selectedProductColor ? selectedProductColor : product.selectedProductColor ? product.selectedProductColor : null,
+                    selectedProductSize: selectedProductSize ? selectedProductSize : product.selectedProductSize ? product.selectedProductSize : null
+                  }))
                 }
                 disabled={productCartQty >= productStock}
               >
@@ -214,7 +205,7 @@ const ProductDescriptionInfo = ({
                   ? "Added to wishlist"
                   : "Add to wishlist"
               }
-              onClick={() => addToWishlist(product, addToast)}
+              onClick={() => dispatch(addToWishlist(product))}
             >
               <i className="pe-7s-like" />
             </button>
@@ -228,18 +219,18 @@ const ProductDescriptionInfo = ({
                   ? "Added to compare"
                   : "Add to compare"
               }
-              onClick={() => addToCompare(product, addToast)}
+              onClick={() => dispatch(addToCompare(product))}
             >
               <i className="pe-7s-shuffle" />
             </button>
           </div>
         </div>
       )}
-      {product.categoryName ? (
+      {product.category ? (
         <div className="pro-details-meta">
           <span>Categories :</span>
           <ul>
-            {product.categoryName.map((single, key) => {
+            {product.category.map((single, key) => {
               return (
                 <li key={key}>
                   <Link to={process.env.PUBLIC_URL + "/shop"}>
@@ -253,11 +244,11 @@ const ProductDescriptionInfo = ({
       ) : (
         ""
       )}
-      {product.brandName ? (
+      {product.tag ? (
         <div className="pro-details-meta">
-          <span>Brand :</span>
+          <span>Tags :</span>
           <ul>
-            {product.brandName.map((single, key) => {
+            {product.tag.map((single, key) => {
               return (
                 <li key={key}>
                   <Link to={process.env.PUBLIC_URL + "/shop"}>
@@ -306,46 +297,14 @@ const ProductDescriptionInfo = ({
 };
 
 ProductDescriptionInfo.propTypes = {
-  addToCart: PropTypes.func,
-  addToCompare: PropTypes.func,
-  addToWishlist: PropTypes.func,
-  addToast: PropTypes.func,
   cartItems: PropTypes.array,
-  compareItem: PropTypes.array,
-  currency: PropTypes.object,
+  compareItem: PropTypes.shape({}),
+  currency: PropTypes.shape({}),
   discountedPrice: PropTypes.number,
   finalDiscountedPrice: PropTypes.number,
   finalProductPrice: PropTypes.number,
-  product: PropTypes.object,
-  wishlistItem: PropTypes.object
+  product: PropTypes.shape({}),
+  wishlistItem: PropTypes.shape({})
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addToCart: (
-      item,
-      addToast,
-      quantityCount,
-      selectedProductColor,
-      selectedProductSize
-    ) => {
-      dispatch(
-        addToCart(
-          item,
-          addToast,
-          quantityCount,
-          selectedProductColor,
-          selectedProductSize
-        )
-      );
-    },
-    addToWishlist: (item, addToast) => {
-      dispatch(addToWishlist(item, addToast));
-    },
-    addToCompare: (item, addToast) => {
-      dispatch(addToCompare(item, addToast));
-    }
-  };
-};
-
-export default connect(null, mapDispatchToProps)(ProductDescriptionInfo);
+export default ProductDescriptionInfo;
