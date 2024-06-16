@@ -3,21 +3,15 @@ CREATE DATABASE LactoBloom;
 
 USE LactoBloom;
 
-CREATE TABLE Role (
-    Role_id INT AUTO_INCREMENT PRIMARY KEY,
-    Role_name VARCHAR(50) NOT NULL
-);
-
 CREATE TABLE User (
     User_id INT AUTO_INCREMENT PRIMARY KEY,
     Full_name NVARCHAR(100) NOT NULL,
-    Role_id INT NOT NULL DEFAULT 1,
+    Role ENUM('MEMBER', 'STAFF', 'ADMIN') DEFAULT 'MEMBER',
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     Phone VARCHAR(15),
     Address TEXT,
-    Point INT DEFAULT 0,
-    FOREIGN KEY (Role_id) REFERENCES Role(Role_id)
+    Point INT DEFAULT 0
 );
 
 CREATE TABLE Chat (
@@ -133,22 +127,18 @@ CREATE TABLE OrderDetail (
 
 -- Insert data into tables
 
--- Role table
-INSERT INTO Role (Role_name) VALUES 
-('Member'), ('Admin'), ('Staff');
-
 -- User table
-INSERT INTO User (Full_name, Role_id, Email, Password, Phone, Address, Point) VALUES
-('John Doe', 1, 'john.doe@example.com', '123', '1234567890', '123 Main St', 10),
-('Jane Smith', 2, 'jane.smith@example.com', '123', '0987654321', '456 Elm St', 20),
-('Michael Brown', 3, 'michael.brown@example.com', '123', '1231231234', '789 Maple St', 30),
-('Emily Davis', 1, 'emily.davis@example.com', '123', '9879879876', '101 Oak St', 40),
-('Chris Wilson', 2, 'chris.wilson@example.com', '123', '6546546543', '102 Pine St', 50),
-('Amanda Taylor', 3, 'amanda.taylor@example.com', '123', '3213213211', '103 Birch St', 60),
-('Joshua Moore', 1, 'joshua.moore@example.com', '123', '5555555555', '104 Cedar St', 70),
-('Megan Jackson', 2, 'megan.jackson@example.com', '123', '4444444444', '105 Spruce St', 80),
-('Matthew White', 3, 'matthew.white@example.com', '123', '3333333333', '106 Fir St', 90),
-('Laura Harris', 1, 'laura.harris@example.com', '123', '2222222222', '107 Ash St', 100);
+INSERT INTO User (Full_name, Role, Email, Password, Phone, Address, Point) VALUES
+('John Doe', 'MEMBER', 'john.doe@example.com', '123', '1234567890', '123 Main St', 10),
+('Jane Smith', 'STAFF', 'jane.smith@example.com', '123', '0987654321', '456 Elm St', 20),
+('Michael Brown', 'ADMIN', 'michael.brown@example.com', '123', '1231231234', '789 Maple St', 30),
+('Emily Davis', 'MEMBER', 'emily.davis@example.com', '123', '9879879876', '101 Oak St', 40),
+('Chris Wilson', 'STAFF', 'chris.wilson@example.com', '123', '6546546543', '102 Pine St', 50),
+('Amanda Taylor', 'ADMIN', 'amanda.taylor@example.com', '123', '3213213211', '103 Birch St', 60),
+('Joshua Moore', 'MEMBER', 'joshua.moore@example.com', '123', '5555555555', '104 Cedar St', 70),
+('Megan Jackson', 'STAFF', 'megan.jackson@example.com', '123', '4444444444', '105 Spruce St', 80),
+('Matthew White', 'ADMIN', 'matthew.white@example.com', '123', '3333333333', '106 Fir St', 90),
+('Laura Harris', 'MEMBER', 'laura.harris@example.com', '123', '2222222222', '107 Ash St', 100);
 
 -- Chat table
 INSERT INTO Chat (User1_id, User2_id, Message, Timestamp) VALUES

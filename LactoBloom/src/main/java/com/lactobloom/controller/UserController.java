@@ -1,11 +1,10 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.model.JwtRequest;
-import com.lactobloom.model.JwtResponse;
+import com.lactobloom.dto.RegisterRequest;
+import com.lactobloom.dto.AuthenticationResponse;
 import com.lactobloom.model.User;
-import com.lactobloom.service.interfaces.IRoleService;
 import com.lactobloom.service.interfaces.IUserService;
-import com.lactobloom.util.JwtUtil;
+import com.lactobloom.config.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,53 +25,17 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @Autowired
-    private IRoleService roleService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword())
-            );
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect email or password", e);
-        }
-
-        final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getEmail());
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new JwtResponse(jwt));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // Encode the user's password before saving
-//        user.setRole(roleService.getRoleById(roleId));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        // Invalidate JWT token or handle logout logic
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.findByEmail(userDetails.getUsername());
-        return ResponseEntity.ok(user);
-    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<?> logout() {
+//        // Invalidate JWT token or handle logout logic
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @GetMapping("/me")
+//    public ResponseEntity<User> getCurrentUser(@RequestParam String email) {
+//        User user = userService.findByEmail(email);
+//        return ResponseEntity.ok(user);
+//    }
 
     @GetMapping("/all")
     public List<User> getAllUsers() {

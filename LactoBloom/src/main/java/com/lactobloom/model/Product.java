@@ -24,13 +24,13 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "Brand_id")
     @JsonBackReference
-    @NotNull(message = "Brand must not be null")
+//    @NotNull(message = "Brand must not be null")
     private Brand brand;
 
     @ManyToOne
     @JoinColumn(name = "Category_id")
     @JsonBackReference
-    @NotNull(message = "Category must not be null")
+//    @NotNull(message = "Category must not be null")
     private Category category;
 
     @Column(name = "Description", length = 10000)

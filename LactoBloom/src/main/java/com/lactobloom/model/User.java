@@ -1,18 +1,28 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +33,8 @@ public class User {
     @NotNull(message = "Full name must not be null")
     private String fullName;
 
-    @ManyToOne
-    @JoinColumn(name = "Role_id", columnDefinition = "INT DEFAULT 1")
-    @JsonBackReference
+    @Column(name = "Role", nullable = false)
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "Role must not be null")
     private Role role;
 
@@ -39,16 +48,18 @@ public class User {
     @NotNull(message = "Password must not be null")
     private String password;
 
-    @Column(name = "Phone", nullable = false)
-    @NotNull(message = "Phone must not be null")
+    @Column(name = "Phone")
     private String phone;
 
-    @Column(name = "Address", nullable = false)
-    @NotNull(message = "Address must not be null")
+    @Column(name = "Address")
     private String address;
 
     @Column(name = "Point", columnDefinition = "INT DEFAULT 0")
     private int point;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
+    private List<Token> tokens;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user1")
     @JsonManagedReference
@@ -77,4 +88,39 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
     private List<Order> orders;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority((role.name())));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
