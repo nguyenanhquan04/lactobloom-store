@@ -104,6 +104,7 @@
     }
     .slider-btn {
       a {
+        border-radius: 50px;
         font-size: 16px;
         line-height: 1;
 
@@ -161,26 +162,17 @@
   }
 }
 
-.swiper-slide .slider-content * {
-  border-radius: 50px;
+.swiper-slide .slider-animated-1 * {
   -webkit-animation-duration: 1.3s;
           animation-duration: 1.3s;
 
   -webkit-animation-fill-mode: both;
           animation-fill-mode: both;
 }
-
-.swiper-wrapper {
-  // height: 400px;
+.swiper-slide-visible .swiper-slide{
+  pointer-events: visible;
 }
-
-.single-slider {
-  height: 400px;
-  padding: 40px;
-}
-
-
-.swiper-slide-active {
+.swiper-slide-visible {
   .slider-animated-1 {
     h3 {
       -webkit-animation-name: fadeInUp;
@@ -616,7 +608,7 @@
     .slider-btn {
       a {
         font-size: 16px;
-
+        
         color: #fff;
         border: 1px solid #6eab49;
         background-color: #6eab49;
@@ -1321,14 +1313,16 @@
   border: none;
   background-color: #fff;
   &.swiper-button-prev {
-    right: 50px;
+    right: 65px;
   }
   @media #{$xs-layout} {
     font-size: 45px;
     line-height: 67px;
-
     width: 50px;
     height: 60px;
+    &.swiper-button-prev {
+      right: 50px;
+    }
   }
   &:hover {
     color: #fff;
@@ -2156,7 +2150,6 @@
 
 .dealy-style-2 {
   .timer {
-    div {
       margin: 49px 0 43px;
       @media #{$lg-layout} {
         margin: 40px 0 40px;
@@ -2206,7 +2199,6 @@
           }
         }
       }
-    }
   }
 }
 

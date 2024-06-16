@@ -1,18 +1,17 @@
-import PropTypes from "prop-types";
-import axios from "axios";
-import React, { Fragment, useState, useEffect } from "react";
-import MetaTags from "react-meta-tags";
+import { Fragment, useState, useEffect } from "react";
 import Paginator from "react-hooks-paginator";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { getSortedProducts } from "../../helpers/product";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ShopSidebar from "../../wrappers/product/ShopSidebar";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProducts from "../../wrappers/product/ShopProducts";
+import { getProductsByCategoryId, getProductsByBrandId, searchProducts } from "../../utils/ProductService";
 
-const Shop = ({ location, products }) => {
+const ShopGridStandard = () => {
   const [layout, setLayout] = useState("grid three-column");
   const [sortType, setSortType] = useState("");
   const [sortValue, setSortValue] = useState("");
@@ -21,12 +20,15 @@ const Shop = ({ location, products }) => {
   const [offset, setOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]);
+  const [sortedProducts, setSortedProducts] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
-  const [showAllProducts, setShowAllProducts] = useState(true); // Mặc định hiển thị tất cả sản phẩm
-  const [sortedProducts, setSortedProducts] = useState([]); // Declare sortedProducts
+  const [categoryProducts, setCategoryProducts] = useState([]);
+  const [brandProducts, setBrandProducts] = useState([]);
+  const [showAllProducts, setShowAllProducts] = useState(true);
+  const { products } = useSelector((state) => state.product);
 
-  const pageLimit = 12;
-  const { pathname, search } = location;
+  const pageLimit = 15;
+  let { pathname, search } = useLocation();
 
   const getLayout = (layout) => {
     setLayout(layout);
@@ -42,100 +44,130 @@ const Shop = ({ location, products }) => {
     setFilterSortValue(sortValue);
   };
 
-  useEffect(() => {
-    // Xử lý khi có kết quả từ tìm kiếm
-    if (searchResult.length > 0) {
-      const sortedProducts = getSortedProducts(searchResult, sortType, sortValue);
-      console.log(sortedProducts);
-      const filteredProducts = getSortedProducts(
-        sortedProducts,
-        filterSortType,
-        filterSortValue
-      );
-      setCurrentData(filteredProducts.slice(offset, offset + pageLimit));
-      setShowAllProducts(false);
-      setSortedProducts(sortedProducts); // Update sortedProducts state
-    } else {
-      // Xử lý khi không có kết quả từ tìm kiếm
-      const sortedProducts = getSortedProducts(products, sortType, sortValue);
-      const filteredProducts = getSortedProducts(
-        sortedProducts,
-        filterSortType,
-        filterSortValue
-      );
-      setCurrentData(filteredProducts.slice(offset, offset + pageLimit));
+  const handleCategorySelect = async (categoryId) => {
+    setBrandProducts([]); // Reset brand products when a category is selected
+    if (categoryId === null) {
+      setCategoryProducts([]);
       setShowAllProducts(true);
-      setSortedProducts(sortedProducts); // Update sortedProducts state
+      return;
     }
+
+    try {
+      const response = await getProductsByCategoryId(categoryId);
+      setCategoryProducts(response.data);
+      setShowAllProducts(false);
+    } catch (error) {
+      console.error("Error fetching products for category:", error);
+    }
+  };
+
+  const handleBrandSelect = async (brandId) => {
+    setCategoryProducts([]); // Reset category products when a brand is selected
+    if (brandId === null) {
+      setBrandProducts([]);
+      setShowAllProducts(true);
+      return;
+    }
+
+    try {
+      const response = await getProductsByBrandId(brandId);
+      console.log(response.data);
+      setBrandProducts(response.data);
+      setShowAllProducts(false);
+    } catch (error) {
+      console.error("Error fetching products for brand:", error);
+    }
+  };
+
+  useEffect(() => {
+    const productsToSort =
+      searchResult.length > 0
+        ? searchResult
+        : categoryProducts.length > 0
+        ? categoryProducts
+        : brandProducts.length > 0
+        ? brandProducts
+        : showAllProducts
+        ? products
+        : [];
+    const sortedProducts = getSortedProducts(
+      productsToSort,
+      sortType,
+      sortValue
+    );
+    const filteredProducts = getSortedProducts(
+      sortedProducts,
+      filterSortType,
+      filterSortValue
+    );
+    setCurrentData(filteredProducts.slice(offset, offset + pageLimit));
+    setSortedProducts(sortedProducts);
   }, [
     searchResult,
+    categoryProducts,
+    brandProducts,
     offset,
     products,
     sortType,
     sortValue,
     filterSortType,
     filterSortValue,
+    showAllProducts
   ]);
 
   useEffect(() => {
-    // Lọc sản phẩm dựa trên từ khóa tìm kiếm nếu có
     const params = new URLSearchParams(search);
     const productName = params.get("search");
     if (productName) {
-      axios
-        .get(
-          `http://localhost:8080/product/search/${encodeURIComponent(
-            productName
-          )}`
-        )
+      searchProducts(encodeURIComponent(productName))
         .then((response) => {
           if (response.data.length === 0) {
-            // Nếu không có sản phẩm nào được tìm thấy
-            setCurrentData([]); // Xóa dữ liệu hiện tại để không hiển thị sản phẩm
-            setShowAllProducts(false); // Không hiển thị tất cả sản phẩm
+            setSearchResult([]);
+            setShowAllProducts(false);
           } else {
             setSearchResult(response.data);
-            setShowAllProducts(false); // Hiển thị kết quả tìm kiếm
+            setShowAllProducts(false);
           }
         })
         .catch((error) => {
           console.error("There was an error fetching the products: ", error);
+          setSearchResult([]);
+          setShowAllProducts(true);
         });
     } else {
       setSearchResult([]);
-      setShowAllProducts(true); // Hiển thị tất cả sản phẩm nếu không có từ khóa tìm kiếm
+      setShowAllProducts(true);
     }
-  }, [search, products]);
+  }, [search]);
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Shop Page</title>
-        <meta name="description" content="Shop page of LactoBloom Store" />
-      </MetaTags>
-
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Shop
-      </BreadcrumbsItem>
+      <SEO titleTemplate="Shop" description="Lactobloom Shop Page." />
 
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb
+          pages={[
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Shop", path: process.env.PUBLIC_URL + pathname },
+          ]}
+        />
 
         <div className="shop-area pt-95 pb-100">
           <div className="container">
             <div className="row">
               <div className="col-lg-3 order-2 order-lg-1">
-                {/* Shop sidebar */}
+                {/* shop sidebar */}
                 <ShopSidebar
                   products={products}
                   getSortParams={getSortParams}
+                  onCategorySelect={handleCategorySelect}
+                  onBrandSelect={handleBrandSelect}
                   sideSpaceClass="mr-30"
                 />
               </div>
               <div className="col-lg-9 order-1 order-lg-2">
-                {/* Shop topbar default */}
+                {/* shop topbar default */}
                 <ShopTopbar
                   getLayout={getLayout}
                   getFilterSortParams={getFilterSortParams}
@@ -143,26 +175,26 @@ const Shop = ({ location, products }) => {
                   sortedProductCount={currentData.length}
                 />
 
-                {/* Shop page content default */}
-                <ShopProducts layout={layout} products={currentData} />
-                
+                {/* shop page content default */}
+                <ShopProducts
+                  layout={layout}
+                  products={showAllProducts ? products : currentData}
+                />
 
-                {/* Shop product pagination */}
-                {showAllProducts && (
-                  <div className="pro-pagination-style text-center mt-30">
-                    <Paginator
-                      totalRecords={sortedProducts.length}
-                      pageLimit={pageLimit}
-                      pageNeighbours={2}
-                      setOffset={setOffset}
-                      currentPage={currentPage}
-                      setCurrentPage={setCurrentPage}
-                      pageContainerClass="mb-0 mt-0"
-                      pagePrevText="«"
-                      pageNextText="»"
-                    />
-                  </div>
-                )}
+                {/* shop product pagination */}
+                <div className="pro-pagination-style text-center mt-30">
+                  <Paginator
+                    totalRecords={sortedProducts.length}
+                    pageLimit={pageLimit}
+                    pageNeighbours={2}
+                    setOffset={setOffset}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    pageContainerClass="mb-0 mt-0"
+                    pagePrevText="«"
+                    pageNextText="»"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -172,16 +204,4 @@ const Shop = ({ location, products }) => {
   );
 };
 
-Shop.propTypes = {
-  location: PropTypes.object,
-  products: PropTypes.array,
-};
-
-const mapStateToProps = (state) => {
-  return {
-    products: state.productData.products,
-    productCount: state.productData.products.length,
-  };
-};
-
-export default connect(mapStateToProps)(Shop);
+export default ShopGridStandard;

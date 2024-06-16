@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React from "react";
+
 import {
   getIndividualCategories,
   getIndividualTags,
@@ -29,7 +29,7 @@ const ShopTopFilter = ({ products, getSortParams }) => {
                       <li key={key}>
                         <button
                           onClick={e => {
-                            getSortParams("categoryName", category);
+                            getSortParams("category", category);
                             setActiveSort(e);
                           }}
                         >
@@ -109,7 +109,7 @@ const ShopTopFilter = ({ products, getSortParams }) => {
                       <li key={key}>
                         <button
                           onClick={e => {
-                            getSortParams("brandName", tag);
+                            getSortParams("tag", tag);
                             setActiveSort(e);
                           }}
                         >

@@ -1,16 +1,12 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 import SectionTitleTwo from "../../components/section-title/SectionTitleTwo";
 import teamMemberData from "../../data/team-members/team-member-one.json";
 import TeamMemberOneSingle from "../../components/team-member/TeamMemberOneSingle";
 
 const TeamMemberOne = ({ spaceTopClass, spaceBottomClass }) => {
   return (
-    <div
-      className={`team-area ${spaceTopClass ? spaceTopClass : ""} ${
-        spaceBottomClass ? spaceBottomClass : ""
-      }`}
-    >
+    <div className={clsx("team-area", spaceTopClass, spaceBottomClass)}>
       <div className="container">
         {/* section title */}
         <SectionTitleTwo
@@ -21,16 +17,14 @@ const TeamMemberOne = ({ spaceTopClass, spaceBottomClass }) => {
         />
 
         <div className="row">
-          {teamMemberData &&
-            teamMemberData.map((single, key) => {
-              return (
-                <TeamMemberOneSingle
-                  data={single}
-                  spaceBottomClass="mb-30"
-                  key={key}
-                />
-              );
-            })}
+          {teamMemberData?.map((single, key) => (
+            <div className="col-lg-3 col-md-6 col-sm-6" key={key}>
+              <TeamMemberOneSingle
+                data={single}
+                spaceBottomClass="mb-30"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>

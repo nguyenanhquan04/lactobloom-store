@@ -16,7 +16,7 @@ const BlogPost = () => {
             <ul>
               <li>22 April, 2018</li>
               <li>
-                <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
                   4 <i className="fa fa-comments-o" />
                 </Link>
               </li>
@@ -84,17 +84,17 @@ const BlogPost = () => {
         <div className="dec-tag">
           <ul>
             <li>
-              <Link to={process.env.PUBLIC_URL + "/blog"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
                 lifestyle ,
               </Link>
             </li>
             <li>
-              <Link to={process.env.PUBLIC_URL + "/blog"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
                 interior ,
               </Link>
             </li>
             <li>
-              <Link to={process.env.PUBLIC_URL + "/blog"}>
+              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
                 outdoor
               </Link>
             </li>
@@ -124,11 +124,11 @@ const BlogPost = () => {
         </div>
       </div>
       <div className="next-previous-post">
-        <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+        <Link to={process.env.PUBLIC_URL + "/blog-details"}>
           {" "}
           <i className="fa fa-angle-left" /> prev post
         </Link>
-        <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
+        <Link to={process.env.PUBLIC_URL + "/blog-details"}>
           next post <i className="fa fa-angle-right" />
         </Link>
       </div>

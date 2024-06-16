@@ -1,14 +1,16 @@
 [
   {
     "id": 1,
-    "title": "New Products",
-    "subtitle": "Maternity Milk Products",
+    "title": "Smart Products",
+    "subtitle": "Winter Offer 2024 Collection",
+    "image": "/assets/img/slider/single-slide-hm1-2.png",
     "url": "/shop"
   },
   {
     "id": 2,
-    "title": "New Products",
-    "subtitle": "Baby Milk Products",
+    "title": "Smart Products",
+    "subtitle": "Summer Offer 2024 Collection",
+    "image": "/assets/img/slider/single-slide-1.png",
     "url": "/shop"
   }
 ]

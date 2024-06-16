@@ -1,37 +1,34 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
+import { Fragment } from "react"; 
+import { useLocation } from "react-router-dom";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import LocationMap from "../../components/contact/LocationMap";
+import GoogleMap from "../../components/google-map"
 
-const Contact = ({ location }) => {
-  const { pathname } = location;
+const Contact = () => {
+  let { pathname } = useLocation();
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Contact</title>
-        <meta
-          name="description"
-          content="Contact of LactoBloom Store"
-        />
-      </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Contact
-      </BreadcrumbsItem>
+      <SEO
+        titleTemplate="Contact"
+        description="Lactobloom Contact Page."
+      />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Contact", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
         <div className="contact-area pt-100 pb-100">
           <div className="container">
             <div className="contact-map mb-10">
-              <LocationMap latitude="47.444" longitude="-122.176" />
+              <GoogleMap lat={47.444} lng={-122.176} />
             </div>
             <div className="custom-row-2">
-              <div className="col-lg-4 col-md-5">
+              <div className="col-12 col-lg-4 col-md-5">
                 <div className="contact-info-wrap">
                   <div className="single-contact-info">
                     <div className="contact-icon">
@@ -48,10 +45,14 @@ const Contact = ({ location }) => {
                     </div>
                     <div className="contact-info-dec">
                       <p>
-                        <a href="mailto:urname@email.com">urname@email.com</a>
+                        <a href="mailto:yourname@email.com">
+                          yourname@email.com
+                        </a>
                       </p>
                       <p>
-                        <a href="//urwebsitenaem.com">urwebsitenaem.com</a>
+                        <a href="https://yourwebsitename.com">
+                          yourwebsitename.com
+                        </a>
                       </p>
                     </div>
                   </div>
@@ -96,7 +97,7 @@ const Contact = ({ location }) => {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-8 col-md-7">
+              <div className="col-12 col-lg-8 col-md-7">
                 <div className="contact-form">
                   <div className="contact-title mb-30">
                     <h2>Get In Touch</h2>
@@ -128,7 +129,7 @@ const Contact = ({ location }) => {
                       </div>
                     </div>
                   </form>
-                  <p className="form-messege" />
+                  <p className="form-message" />
                 </div>
               </div>
             </div>
@@ -137,10 +138,6 @@ const Contact = ({ location }) => {
       </LayoutOne>
     </Fragment>
   );
-};
-
-Contact.propTypes = {
-  location: PropTypes.object
 };
 
 export default Contact;

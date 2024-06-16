@@ -181,6 +181,7 @@
     .shop-list-btn {
       a,
       button {
+        border-radius: 50px;
         font-size: 14px;
         font-weight: 500;
         line-height: 1;
@@ -273,6 +274,7 @@
       &.page-item {
         &.active {
           .page-link {
+            --bs-pagination-active-color: #ffffff;
             border-color: $theme-color;
             background-color: $theme-color;
             box-shadow: 0 0 12px 0.8px rgba(0, 0, 0, 0.1) !important;

@@ -1,13 +1,10 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 import { Link } from "react-router-dom";
 
 const BannerOneSingle = ({ data, spaceBottomClass }) => {
   return (
-    <div className="col-lg-4 col-md-4">
-      <div
-        className={`single-banner ${spaceBottomClass ? spaceBottomClass : ""}`}
-      >
+      <div className={clsx("single-banner", spaceBottomClass)}>
         <Link to={process.env.PUBLIC_URL + data.link}>
           <img src={process.env.PUBLIC_URL + data.image} alt="" />
         </Link>
@@ -21,12 +18,11 @@ const BannerOneSingle = ({ data, spaceBottomClass }) => {
           </Link>
         </div>
       </div>
-    </div>
   );
 };
 
 BannerOneSingle.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.shape({}),
   spaceBottomClass: PropTypes.string
 };
 

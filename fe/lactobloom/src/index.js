@@ -1,40 +1,73 @@
-import "react-app-polyfill/ie11";
-import "react-app-polyfill/stable";
-import React from "react";
-import ReactDOM from "react-dom";
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import { save, load } from "redux-localstorage-simple";
-import { Provider } from "react-redux";
-import { fetchProducts } from "./redux/actions/productActions";
-import rootReducer from "./redux/reducers/rootReducer";
+// import React from "react";
+// import { createRoot } from 'react-dom/client';
+// import { Provider } from 'react-redux';
+// import App from "./App";
+// import { store } from "./store/store";
+// import PersistProvider from "./store/providers/persist-provider";
+// import { setProducts } from "./store/slices/product-slice"
 // import products from "./data/products.json";
+// import 'animate.css';
+// import 'swiper/swiper-bundle.min.css';
+// import "yet-another-react-lightbox/styles.css";
+// import "yet-another-react-lightbox/plugins/thumbnails.css";
+// import "./assets/scss/style.scss";
+// import "./i18n";
+
+
+// store.dispatch(setProducts(products));
+
+// const container = document.getElementById('root');
+// const root = createRoot(container);
+// root.render(
+//     <Provider store={store}>
+//       <PersistProvider>
+//         <App />
+//       </PersistProvider>
+//     </Provider>
+// );
+
+import React, { useEffect } from "react";
+import { createRoot } from 'react-dom/client';
+import { Provider, useDispatch } from 'react-redux';
 import App from "./App";
+import { store } from "./store/store";
+import PersistProvider from "./store/providers/persist-provider";
+import { setProducts } from "./store/slices/product-slice";
+import { getAllProducts } from "./utils/ProductService";
+import 'animate.css';
+import 'swiper/swiper-bundle.min.css';
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "./assets/scss/style.scss";
-import * as serviceWorker from "./serviceWorker";
+import "./i18n";
 
-import { composeWithDevTools } from "redux-devtools-extension";
+const Root = () => {
+    const dispatch = useDispatch();
 
-const store = createStore(
-  rootReducer,
-  load(),
-  composeWithDevTools(applyMiddleware(thunk, save()))
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await getAllProducts();
+                dispatch(setProducts(response.data));
+            } catch (error) {
+                console.error("Failed to fetch products", error);
+            }
+        };
+
+        fetchProducts();
+    }, [dispatch]);
+
+    return (
+        <PersistProvider>
+            <App />
+        </PersistProvider>
+    );
+};
+
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
+    <Provider store={store}>
+        <Root />
+    </Provider>
 );
-
-// fetch products from json file
-//store.dispatch(fetchProducts(products));
-
-// Bỏ dòng này và chỉ cần gọi fetchProducts() mà không truyền tham số
-store.dispatch(fetchProducts())
-
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById("root")
-);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

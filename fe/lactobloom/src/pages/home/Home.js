@@ -1,21 +1,18 @@
-import React, { Fragment } from "react";
-import MetaTags from "react-meta-tags";
+import { Fragment } from "react";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import HeroSliderOne from "../../wrappers/hero-slider/HeroSliderOne";
 import FeatureIcon from "../../wrappers/feature-icon/FeatureIcon";
 import TabProduct from "../../wrappers/product/TabProduct";
 import BlogFeatured from "../../wrappers/blog-featured/BlogFeatured";
 
-const Home = () => {
+const HomeFashion = () => {
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Home</title>
-        <meta
-          name="description"
-          content="LactoBloom Store | Home"
-        />
-      </MetaTags>
+      <SEO
+        titleTemplate="Homepage"
+        description="Lactobloom Home Page."
+      />
       <LayoutOne
         headerContainerClass="container-fluid"
         headerPaddingClass="header-padding-1"
@@ -27,7 +24,7 @@ const Home = () => {
         <FeatureIcon spaceTopClass="pt-100" spaceBottomClass="pb-60" />
 
         {/* tab product */}
-        <TabProduct spaceBottomClass="pb-60" category="Milk" />
+        <TabProduct spaceBottomClass="pb-60" category="fashion" />
 
         {/* blog featured */}
         <BlogFeatured spaceBottomClass="pb-55" />
@@ -36,4 +33,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeFashion;

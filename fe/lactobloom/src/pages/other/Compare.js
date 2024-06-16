@@ -1,46 +1,59 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import { connect } from "react-redux";
-import { addToCart } from "../../redux/actions/cartActions";
-import { deleteFromCompare } from "../../redux/actions/compareActions";
+import { Fragment, useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Rating from "../../components/product/sub-components/ProductRating";
+import { addToCart } from "../../store/slices/cart-slice";
+import { deleteFromCompare } from "../../store/slices/compare-slice";
+import { getImagesByProductId } from "../../utils/ImageService";
 
-const Compare = ({
-  location,
-  cartItems,
-  compareItems,
-  addToCart,
-  deleteFromCompare,
-  currency
-}) => {
-  const { pathname } = location;
-  const { addToast } = useToasts();
+const Compare = () => {
+  const dispatch = useDispatch();
+  let { pathname } = useLocation();
 
-  const defaultImage = "/assets/img/no-image.png";
+  const currency = useSelector((state) => state.currency);
+  const { compareItems } = useSelector((state) => state.compare);
+  const { cartItems } = useSelector((state) => state.cart);
+
+  const [compareImages, setCompareImages] = useState({});
+
+  useEffect(() => {
+    const fetchCompareImages = async () => {
+      const imagesMap = {};
+      for (const compareItem of compareItems) {
+        try {
+          const response = await getImagesByProductId(compareItem.productId);
+          imagesMap[compareItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
+        } catch (error) {
+          console.error("Error fetching images:", error);
+          imagesMap[compareItem.productId] = "/assets/img/no-image.png";
+        }
+      }
+      setCompareImages(imagesMap);
+    };
+
+    if (compareItems.length > 0) {
+      fetchCompareImages();
+    }
+  }, [compareItems]);
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Compare</title>
-        <meta
-          name="description"
-          content="Compare page of LactoBloom Store"
-        />
-      </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Compare
-      </BreadcrumbsItem>
+      <SEO
+        titleTemplate="Compare"
+        description="Lactobloom Compare Page."
+      />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Compare", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
         <div className="compare-main-area pt-90 pb-100">
           <div className="container">
             {compareItems && compareItems.length >= 1 ? (
@@ -53,16 +66,15 @@ const Compare = ({
                           <tr>
                             <th className="title-column">Product Info</th>
                             {compareItems.map((compareItem, key) => {
-                              const cartItem = cartItems.filter(
+                              const cartItem = cartItems.find(
                                 item => item.productId === compareItem.productId
-                              )[0];
-                              const compareItemImage = compareItem.images && compareItem.images.length > 0 ? compareItem.images[0].imageUrl : defaultImage;
+                              );
                               return (
                                 <td className="product-image-title" key={key}>
                                   <div className="compare-remove">
                                     <button
                                       onClick={() =>
-                                        deleteFromCompare(compareItem, addToast)
+                                        dispatch(deleteFromCompare(compareItem.productId))
                                       }
                                     >
                                       <i className="pe-7s-trash" />
@@ -80,9 +92,9 @@ const Compare = ({
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        compareItemImage
+                                        (compareImages[compareItem.productId] || "/assets/img/no-image.png")
                                       }
-                                      alt=""
+                                      alt={compareItem.productName}
                                     />
                                   </Link>
                                   <div className="product-title">
@@ -115,21 +127,19 @@ const Compare = ({
                                       </Link>
                                     ) : compareItem.stock &&
                                       compareItem.stock > 0 ? (
-                                    //  ) : compareItem.quantity &&
-                                    //  compareItem.quantity > 0 ? (
                                       <button
                                         onClick={() =>
-                                          addToCart(compareItem, addToast)
+                                          dispatch(addToCart(compareItem))
                                         }
                                         className={
                                           cartItem !== undefined &&
-                                          cartItem.cartQuantity > 0
+                                          cartItem.quantity > 0
                                             ? "active"
                                             : ""
                                         }
                                         disabled={
                                           cartItem !== undefined &&
-                                          cartItem.cartQuantity > 0
+                                          cartItem.quantity > 0
                                         }
                                         title={
                                           compareItem !== undefined
@@ -138,7 +148,7 @@ const Compare = ({
                                         }
                                       >
                                         {cartItem !== undefined &&
-                                        cartItem.cartQuantity > 0
+                                        cartItem.quantity > 0
                                           ? "Added"
                                           : "Add to cart"}
                                       </button>
@@ -160,7 +170,7 @@ const Compare = ({
                                 compareItem.discount
                               );
                               const finalProductPrice = (
-                                compareItem.price 
+                                compareItem.price * 1
                               );
                               const finalDiscountedPrice = (
                                 discountedPrice * 1
@@ -241,33 +251,5 @@ const Compare = ({
   );
 };
 
-Compare.propTypes = {
-  addToCart: PropTypes.func,
-  cartItems: PropTypes.array,
-  compareItems: PropTypes.array,
-  currency: PropTypes.object,
-  location: PropTypes.object,
-  deleteFromCompare: PropTypes.func
-};
+export default Compare;
 
-const mapStateToProps = state => {
-  return {
-    cartItems: state.cartData,
-    compareItems: state.compareData,
-    currency: state.currencyData
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    addToCart: (item, addToast, quantityCount) => {
-      dispatch(addToCart(item, addToast, quantityCount));
-    },
-
-    deleteFromCompare: (item, addToast) => {
-      dispatch(deleteFromCompare(item, addToast));
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Compare);

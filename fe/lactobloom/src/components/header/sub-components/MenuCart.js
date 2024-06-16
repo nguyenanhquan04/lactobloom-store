@@ -1,61 +1,80 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
+import { useSelector, useDispatch } from "react-redux";
 import { getDiscountPrice } from "../../../helpers/product";
+import { deleteFromCart } from "../../../store/slices/cart-slice";
+import { getImagesByProductId } from "../../../utils/ImageService";
 
-const defaultImage = "/assets/img/no-image.png";
-
-const MenuCart = ({ cartData, currency, deleteFromCart }) => {
+const MenuCart = () => {
+  const dispatch = useDispatch();
+  const currency = useSelector((state) => state.currency);
+  const { cartItems } = useSelector((state) => state.cart);
+  const [cartItemsWithImages, setCartItemsWithImages] = useState([]);
+  const defaultImage = "/assets/img/no-image.png"; // Default image URL
   let cartTotalPrice = 0;
-  const { addToast } = useToasts();
+
+  useEffect(() => {
+    const fetchImagesForCartItems = async () => {
+      const updatedCartItems = await Promise.all(
+        cartItems.map(async (item) => {
+          try {
+            const response = await getImagesByProductId(item.productId);
+            const images = response.data.map((img) => img.imageUrl);
+            return {
+              ...item,
+              image: images.length > 0 ? images : [defaultImage]
+            };
+          } catch (error) {
+            console.error("Error fetching images:", error);
+            return {
+              ...item,
+              image: [defaultImage]
+            };
+          }
+        })
+      );
+      setCartItemsWithImages(updatedCartItems);
+    };
+
+    if (cartItems.length > 0) {
+      fetchImagesForCartItems();
+    } else {
+      setCartItemsWithImages([]);
+    }
+  }, [cartItems]);
 
   return (
     <div className="shopping-cart-content">
-      {cartData && cartData.length > 0 ? (
+      {cartItemsWithImages && cartItemsWithImages.length > 0 ? (
         <Fragment>
           <ul>
-            {cartData.map((single, key) => {
-              const discountedPrice = getDiscountPrice(
-                single.price,
-                single.discount
-              );
-              const finalProductPrice = (
-                single.price 
-              );
-              const finalDiscountedPrice = (
-                discountedPrice * 1
-              );
+            {cartItemsWithImages.map((item) => {
+              const discountedPrice = getDiscountPrice(item.price, item.discount);
+              const finalProductPrice = (item.price * 1);
+              const finalDiscountedPrice = (discountedPrice * 1);
 
               discountedPrice != null
-                ? (cartTotalPrice += finalDiscountedPrice * single.quantity).toLocaleString("vi-VN")
-                : (cartTotalPrice += finalProductPrice * single.quantity).toLocaleString("vi-VN");
-
-                const singleImage = single.images && single.images.length > 0 
-                ? single.images[0].imageUrl 
-                : defaultImage;
+                ? (cartTotalPrice += finalDiscountedPrice * item.quantity)
+                : (cartTotalPrice += finalProductPrice * item.quantity);
 
               return (
-                <li className="single-shopping-cart" key={key}>
+                <li className="single-shopping-cart" key={item.cartItemId}>
                   <div className="shopping-cart-img">
-                    <Link to={process.env.PUBLIC_URL + "/product/" + single.productId}>
+                    <Link to={process.env.PUBLIC_URL + "/product/" + item.productId}>
                       <img
                         alt=""
-                        src={process.env.PUBLIC_URL + singleImage}
+                        src={item.image[0] || defaultImage}
                         className="img-fluid"
                       />
                     </Link>
                   </div>
                   <div className="shopping-cart-title">
                     <h4>
-                      <Link
-                        to={process.env.PUBLIC_URL + "/product/" + single.productId}
-                      >
-                        {" "}
-                        {single.productName}{" "}
+                      <Link to={process.env.PUBLIC_URL + "/product/" + item.productId}>
+                        {item.productName}
                       </Link>
                     </h4>
-                    <h6>Qty: {single.quantity}</h6>
+                    <h6>Qty: {item.quantity}</h6>
                     <span>
                       {discountedPrice !== null
                         ? finalDiscountedPrice.toLocaleString("vi-VN") + " VND"
@@ -63,7 +82,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
                     </span>
                   </div>
                   <div className="shopping-cart-delete">
-                    <button onClick={() => deleteFromCart(single, addToast)}>
+                    <button onClick={() => dispatch(deleteFromCart(item.cartItemId))}>
                       <i className="fa fa-times-circle" />
                     </button>
                   </div>
@@ -81,13 +100,10 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
           </div>
           <div className="shopping-cart-btn btn-hover text-center">
             <Link className="default-btn" to={process.env.PUBLIC_URL + "/cart"}>
-              view cart
+              View Cart
             </Link>
-            <Link
-              className="default-btn"
-              to={process.env.PUBLIC_URL + "/checkout"}
-            >
-              checkout
+            <Link className="default-btn" to={process.env.PUBLIC_URL + "/checkout"}>
+              Checkout
             </Link>
           </div>
         </Fragment>
@@ -98,10 +114,5 @@ const MenuCart = ({ cartData, currency, deleteFromCart }) => {
   );
 };
 
-MenuCart.propTypes = {
-  cartData: PropTypes.array,
-  currency: PropTypes.object,
-  deleteFromCart: PropTypes.func
-};
-
 export default MenuCart;
+

@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import React from "react";
 import MailchimpSubscribe from "react-mailchimp-subscribe";
 
 const CustomForm = ({ status, message, onValidated }) => {

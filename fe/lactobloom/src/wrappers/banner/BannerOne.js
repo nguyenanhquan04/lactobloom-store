@@ -1,27 +1,21 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 import bannerData from "../../data/banner/banner-one.json";
 import BannerOneSingle from "../../components/banner/BannerOneSingle.js";
 
 const BannerOne = ({ spaceTopClass, spaceBottomClass }) => {
   return (
-    <div
-      className={`banner-area ${spaceTopClass ? spaceTopClass : ""} ${
-        spaceBottomClass ? spaceBottomClass : ""
-      }`}
-    >
+    <div className={clsx("banner-area", spaceTopClass, spaceBottomClass)}>
       <div className="container">
         <div className="row">
-          {bannerData &&
-            bannerData.map((single, key) => {
-              return (
-                <BannerOneSingle
-                  data={single}
-                  key={key}
-                  spaceBottomClass="mb-30"
-                />
-              );
-            })}
+          {bannerData?.map((single, key) => (
+            <div className="col-lg-4 col-md-4" key={key}>
+              <BannerOneSingle
+                data={single}
+                spaceBottomClass="mb-30"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>

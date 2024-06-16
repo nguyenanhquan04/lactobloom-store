@@ -1,23 +1,22 @@
-import PropTypes from "prop-types";
-import React from "react";
-import { multilanguage, changeLanguage } from "redux-multilanguage";
-import { connect } from "react-redux";
-import { setCurrency } from "../../../redux/actions/currencyActions";
+import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { setCurrency } from "../../../store/slices/currency-slice"
 
-const MobileLangCurrChange = ({
-  currency,
-  setCurrency,
-  currentLanguageCode,
-  dispatch
-}) => {
+const MobileLangCurrChange = () => {
+  const { i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const currency = useSelector((state) => state.currency);
+
   const changeLanguageTrigger = e => {
     const languageCode = e.target.value;
-    dispatch(changeLanguage(languageCode));
+    i18n.changeLanguage(languageCode);
+    closeMobileMenu();
   };
 
   const setCurrencyTrigger = e => {
     const currencyName = e.target.value;
-    setCurrency(currencyName);
+    dispatch(setCurrency(currencyName));
+    closeMobileMenu();
   };
 
   const closeMobileMenu = () => {
@@ -32,11 +31,8 @@ const MobileLangCurrChange = ({
       <div className="lang-curr-style">
         <span className="title mb-2">Choose Language </span>
         <select
-          value={currentLanguageCode}
-          onChange={e => {
-            changeLanguageTrigger(e);
-            closeMobileMenu();
-          }}
+          value={i18n.resolvedLanguage}
+          onChange={changeLanguageTrigger}
         >
           <option value="en">English</option>
           <option value="vn">Việt Nam</option>
@@ -46,42 +42,14 @@ const MobileLangCurrChange = ({
         <span className="title mb-2">Choose Currency</span>
         <select
           value={currency.currencyName}
-          onChange={e => {
-            setCurrencyTrigger(e);
-            closeMobileMenu();
-          }}
+          onChange={setCurrencyTrigger}
         >
           <option value="USD">USD</option>
           <option value="VND">VND</option>
-          {/* <option value="GBP">GBP</option> */}
         </select>
       </div>
     </div>
   );
 };
 
-MobileLangCurrChange.propTypes = {
-  setCurrency: PropTypes.func,
-  currency: PropTypes.object,
-  currentLanguageCode: PropTypes.string,
-  dispatch: PropTypes.func
-};
-
-const mapStateToProps = state => {
-  return {
-    currency: state.currencyData
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setCurrency: currencyName => {
-      dispatch(setCurrency(currencyName));
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(multilanguage(MobileLangCurrChange));
+export default MobileLangCurrChange;

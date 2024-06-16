@@ -1,10 +1,9 @@
 import PropTypes from "prop-types";
-import React from "react";
 import { Link } from "react-router-dom";
 
-const ImageSliderOneSingle = ({ data, sliderClass }) => {
+const ImageSliderOneSingle = ({ data }) => {
   return (
-    <div className={`single-image ${sliderClass ? sliderClass : ""}`}>
+    <div className="single-image">
       <Link to={process.env.PUBLIC_URL + data.link}>
         <img src={process.env.PUBLIC_URL + data.image} alt="" />
       </Link>
@@ -13,8 +12,7 @@ const ImageSliderOneSingle = ({ data, sliderClass }) => {
 };
 
 ImageSliderOneSingle.propTypes = {
-  data: PropTypes.object,
-  sliderClass: PropTypes.string
+  data: PropTypes.shape({})
 };
 
 export default ImageSliderOneSingle;

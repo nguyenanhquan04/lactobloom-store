@@ -1,30 +1,32 @@
 import PropTypes from "prop-types";
-import React from "react";
-import {
-  getIndividualBrandNames,
-  getIndividualCategoryNames
-} from "../../helpers/product";
+import clsx from "clsx";
 import ShopSearch from "../../components/product/ShopSearch";
 import ShopCategories from "../../components/product/ShopCategories";
-import ShopTag from "../../components/product/ShopBrandName";
+import ShopBrand from "../../components/product/ShopBrand";
 
-const ShopSidebar = ({ products, getSortParams, sideSpaceClass }) => {
-  const uniqueCategoryNames = getIndividualCategoryNames(products);
-  const uniqueBrandNames = getIndividualBrandNames(products);
-
+const ShopSidebar = ({
+  products,
+  getSortParams,
+  sideSpaceClass,
+  onCategorySelect,
+  onBrandSelect,
+}) => {
   return (
-    <div className={`sidebar-style ${sideSpaceClass ? sideSpaceClass : ""}`}>
+    <div className={clsx("sidebar-style", sideSpaceClass)}>
       {/* shop search */}
       <ShopSearch />
 
       {/* filter by categories */}
       <ShopCategories
-        categoryNames={uniqueCategoryNames}
         getSortParams={getSortParams}
+        onCategorySelect={onCategorySelect}
       />
 
-      {/* filter by tag */}
-      <ShopTag brandNames={uniqueBrandNames} getSortParams={getSortParams} />
+      {/* filter by brands */}
+      <ShopBrand
+        getSortParams={getSortParams}
+        onBrandSelect={onBrandSelect}
+      />
     </div>
   );
 };
@@ -32,7 +34,9 @@ const ShopSidebar = ({ products, getSortParams, sideSpaceClass }) => {
 ShopSidebar.propTypes = {
   getSortParams: PropTypes.func,
   products: PropTypes.array,
-  sideSpaceClass: PropTypes.string
+  sideSpaceClass: PropTypes.string,
+  onCategorySelect: PropTypes.func, // Add this prop type
+  onBrandSelect: PropTypes.func, // Add this prop type
 };
 
 export default ShopSidebar;

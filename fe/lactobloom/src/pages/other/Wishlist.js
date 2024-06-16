@@ -1,52 +1,58 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import { connect } from "react-redux";
+import { Fragment, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import { getDiscountPrice } from "../../helpers/product";
-import {
-  addToWishlist,
-  deleteFromWishlist,
-  deleteAllFromWishlist
-} from "../../redux/actions/wishlistActions";
-import { addToCart } from "../../redux/actions/cartActions";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import { addToCart } from "../../store/slices/cart-slice";
+import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
+import { getImagesByProductId } from "../../utils/ImageService";
 
-const Wishlist = ({
-  location,
-  cartItems,
-  currency,
-  addToCart,
-  wishlistItems,
-  deleteFromWishlist,
-  deleteAllFromWishlist
-}) => {
-  const { addToast } = useToasts();
-  const { pathname } = location;
-  const defaultImage = "/assets/img/no-image.png";
+const Wishlist = () => {
+  const dispatch = useDispatch();
+  let { pathname } = useLocation();
   
+  const currency = useSelector((state) => state.currency);
+  const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { cartItems } = useSelector((state) => state.cart);
+  
+  const [wishlistImages, setWishlistImages] = useState({});
+
+  useEffect(() => {
+    const fetchWishlistImages = async () => {
+      const imagesMap = {};
+      for (const wishlistItem of wishlistItems) {
+        try {
+          const response = await getImagesByProductId(wishlistItem.productId);
+          imagesMap[wishlistItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
+        } catch (error) {
+          console.error("Error fetching images:", error);
+          imagesMap[wishlistItem.productId] = "/assets/img/no-image.png";
+        }
+      }
+      setWishlistImages(imagesMap);
+    };
+
+    if (wishlistItems.length > 0) {
+      fetchWishlistImages();
+    }
+  }, [wishlistItems]);
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Wishlist</title>
-        <meta
-          name="description"
-          content="Wishlist page of LactoBloom Store"
-        />
-      </MetaTags>
-
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Wishlist
-      </BreadcrumbsItem>
-
+      <SEO
+        titleTemplate="Wishlist"
+        description="Lactobloom Wishlist Page."
+      />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
             {wishlistItems && wishlistItems.length >= 1 ? (
@@ -72,15 +78,14 @@ const Wishlist = ({
                               wishlistItem.discount
                             );
                             const finalProductPrice = (
-                              wishlistItem.price 
+                              wishlistItem.price * 1
                             );
                             const finalDiscountedPrice = (
                               discountedPrice * 1
                             );
-                            const cartItem = cartItems.filter(
+                            const cartItem = cartItems.find(
                               item => item.productId === wishlistItem.productId
-                            )[0];
-                            const wishlistItemImage = wishlistItem.images && wishlistItem.images.length > 0 ? wishlistItem.images[0].imageUrl : defaultImage;
+                            );
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -95,9 +100,9 @@ const Wishlist = ({
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        wishlistItemImage
+                                        (wishlistImages[wishlistItem.productId] || "/assets/img/no-image.png")
                                       }
-                                      alt=""
+                                      alt={wishlistItem.productName}
                                     />
                                   </Link>
                                 </td>
@@ -150,21 +155,19 @@ const Wishlist = ({
                                     </Link>
                                   ) : wishlistItem.stock &&
                                     wishlistItem.stock > 0 ? (
-                                  // ) : wishlistItem.quantity &&
-                                  // wishlistItem.quantity > 0 ? (
                                     <button
                                       onClick={() =>
-                                        addToCart(wishlistItem, addToast)
+                                        dispatch(addToCart(wishlistItem))
                                       }
                                       className={
                                         cartItem !== undefined &&
-                                        cartItem.cartQuantity > 0
+                                        cartItem.quantity > 0
                                           ? "active"
                                           : ""
                                       }
                                       disabled={
                                         cartItem !== undefined &&
-                                        cartItem.cartQuantity > 0
+                                        cartItem.quantity > 0
                                       }
                                       title={
                                         wishlistItem !== undefined
@@ -173,7 +176,7 @@ const Wishlist = ({
                                       }
                                     >
                                       {cartItem !== undefined &&
-                                      cartItem.cartQuantity > 0
+                                      cartItem.quantity > 0
                                         ? "Added"
                                         : "Add to cart"}
                                     </button>
@@ -187,7 +190,7 @@ const Wishlist = ({
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      deleteFromWishlist(wishlistItem, addToast)
+                                      dispatch(deleteFromWishlist(wishlistItem.productId))
                                     }
                                   >
                                     <i className="fa fa-times"></i>
@@ -213,7 +216,7 @@ const Wishlist = ({
                         </Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => deleteAllFromWishlist(addToast)}>
+                        <button onClick={() => dispatch(deleteAllFromWishlist())}>
                           Clear Wishlist
                         </button>
                       </div>
@@ -245,39 +248,4 @@ const Wishlist = ({
   );
 };
 
-Wishlist.propTypes = {
-  addToCart: PropTypes.func,
-  cartItems: PropTypes.array,
-  currency: PropTypes.object,
-  location: PropTypes.object,
-  deleteAllFromWishlist: PropTypes.func,
-  deleteFromWishlist: PropTypes.func,
-  wishlistItems: PropTypes.array
-};
-
-const mapStateToProps = state => {
-  return {
-    cartItems: state.cartData,
-    wishlistItems: state.wishlistData,
-    currency: state.currencyData
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    addToCart: (item, addToast, quantityCount) => {
-      dispatch(addToCart(item, addToast, quantityCount));
-    },
-    addToWishlist: (item, addToast, quantityCount) => {
-      dispatch(addToWishlist(item, addToast, quantityCount));
-    },
-    deleteFromWishlist: (item, addToast, quantityCount) => {
-      dispatch(deleteFromWishlist(item, addToast, quantityCount));
-    },
-    deleteAllFromWishlist: addToast => {
-      dispatch(deleteAllFromWishlist(addToast));
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Wishlist);
+export default Wishlist;

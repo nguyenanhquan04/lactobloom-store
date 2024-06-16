@@ -1,54 +1,61 @@
-import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
-import { Link } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import { connect } from "react-redux";
+import { Fragment, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import SEO from "../../components/seo";
 import { getDiscountPrice } from "../../helpers/product";
-import {
-  addToCart,
-  decreaseQuantity,
-  deleteFromCart,
-  cartItemStock,
-  deleteAllFromCart
-} from "../../redux/actions/cartActions";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import { addToCart, decreaseQuantity, deleteFromCart, deleteAllFromCart } from "../../store/slices/cart-slice";
+import { cartItemStock } from "../../helpers/product";
+import { getImagesByProductId } from "../../utils/ImageService";
 
-const Cart = ({
-  location,
-  cartItems,
-  decreaseQuantity,
-  addToCart,
-  deleteFromCart,
-  deleteAllFromCart
-}) => {
-  const [quantityCount] = useState(1);
-  const { addToast } = useToasts();
-  const { pathname } = location;
+const Cart = () => {
   let cartTotalPrice = 0;
 
-  const defaultImage = "/assets/img/no-image.png";
+  const [quantityCount] = useState(1);
+  const dispatch = useDispatch();
+  let { pathname } = useLocation();
+  
+  const currency = useSelector((state) => state.currency);
+  const { cartItems } = useSelector((state) => state.cart);
+
+  const [cartImages, setCartImages] = useState({});
+
+  useEffect(() => {
+    const fetchCartImages = async () => {
+      const imagesMap = {};
+      for (const cartItem of cartItems) {
+        try {
+          const response = await getImagesByProductId(cartItem.productId);
+          imagesMap[cartItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
+        } catch (error) {
+          console.error("Error fetching images:", error);
+          imagesMap[cartItem.productId] = "/assets/img/no-image.png";
+        }
+      }
+      setCartImages(imagesMap);
+    };
+
+    if (cartItems.length > 0) {
+      fetchCartImages();
+    }
+  }, [cartItems]);
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Cart</title>
-        <meta
-          name="description"
-          content="Cart page of LactoBloom Store"
-        />
-      </MetaTags>
-
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Cart
-      </BreadcrumbsItem>
+      <SEO
+        titleTemplate="Cart"
+        description="Lactobloom Cart Page."
+      />
 
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Cart", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
             {cartItems && cartItems.length >= 1 ? (
@@ -75,19 +82,17 @@ const Cart = ({
                               cartItem.discount
                             );
                             const finalProductPrice = (
-                              cartItem.price 
+                              cartItem.price * 1
                             );
                             const finalDiscountedPrice = (
                               discountedPrice * 1
                             );
 
-                            const cartItemImage = cartItem.images && cartItem.images.length > 0 ? cartItem.images[0].imageUrl : defaultImage;
-
                             discountedPrice != null
                               ? (cartTotalPrice +=
-                                  finalDiscountedPrice * cartItem.quantity).toLocaleString("vi-VN")
+                                  finalDiscountedPrice * cartItem.quantity)
                               : (cartTotalPrice +=
-                                  finalProductPrice * cartItem.quantity).toLocaleString("vi-VN");
+                                  finalProductPrice * cartItem.quantity);
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -102,9 +107,9 @@ const Cart = ({
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        cartItemImage
+                                        (cartImages[cartItem.productId] || "/assets/img/no-image.png")
                                       }
-                                      alt=""
+                                      alt={cartItem.productName}
                                     />
                                   </Link>
                                 </td>
@@ -118,7 +123,7 @@ const Cart = ({
                                     }
                                   >
                                     {cartItem.productName}
-                                  </Link>                             
+                                  </Link>
                                 </td>
 
                                 <td className="product-price-cart">
@@ -143,7 +148,7 @@ const Cart = ({
                                     <button
                                       className="dec qtybutton"
                                       onClick={() =>
-                                        decreaseQuantity(cartItem, addToast)
+                                        dispatch(decreaseQuantity(cartItem))
                                       }
                                     >
                                       -
@@ -157,18 +162,19 @@ const Cart = ({
                                     <button
                                       className="inc qtybutton"
                                       onClick={() =>
-                                        addToCart(
-                                          cartItem,
-                                          addToast,
-                                          quantityCount
-                                        )
+                                        dispatch(addToCart({
+                                          ...cartItem,
+                                          quantity: quantityCount
+                                        }))
                                       }
                                       disabled={
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=
                                           cartItemStock(
-                                            cartItem
+                                            cartItem,
+                                            cartItem.selectedProductColor,
+                                            cartItem.selectedProductSize
                                           )
                                       }
                                     >
@@ -189,7 +195,7 @@ const Cart = ({
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      deleteFromCart(cartItem, addToast)
+                                      dispatch(deleteFromCart(cartItem.cartItemId))
                                     }
                                   >
                                     <i className="fa fa-times"></i>
@@ -214,7 +220,7 @@ const Cart = ({
                         </Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => deleteAllFromCart(addToast)}>
+                        <button onClick={() => dispatch(deleteAllFromCart())}>
                           Clear Shopping Cart
                         </button>
                       </div>
@@ -223,7 +229,9 @@ const Cart = ({
                 </div>
 
                 <div className="row">
-                <div className="col-lg-4 col-md-6"></div>                 
+                  <div className="col-lg-4 col-md-6">
+                  </div>
+
                   <div className="col-lg-4 col-md-6">
                     <div className="discount-code-wrapper">
                       <div className="title-wrap">
@@ -294,38 +302,4 @@ const Cart = ({
   );
 };
 
-Cart.propTypes = {
-  addToCart: PropTypes.func,
-  cartItems: PropTypes.array,
-  currency: PropTypes.object,
-  decreaseQuantity: PropTypes.func,
-  location: PropTypes.object,
-  deleteAllFromCart: PropTypes.func,
-  deleteFromCart: PropTypes.func
-};
-
-const mapStateToProps = state => {
-  return {
-    cartItems: state.cartData,
-    currency: state.currencyData
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    addToCart: (item, addToast, quantityCount) => {
-      dispatch(addToCart(item, addToast, quantityCount));
-    },
-    decreaseQuantity: (item, addToast) => {
-      dispatch(decreaseQuantity(item, addToast));
-    },
-    deleteFromCart: (item, addToast) => {
-      dispatch(deleteFromCart(item, addToast));
-    },
-    deleteAllFromCart: addToast => {
-      dispatch(deleteAllFromCart(addToast));
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Cart);
+export default Cart;

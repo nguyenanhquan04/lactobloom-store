@@ -1,63 +1,64 @@
 /*------ 25. My account Page  ------*/
 
-.single-my-account {
-  margin-bottom: 20px;
-  border: 1px solid #ebebeb;
-  .panel-heading {
-    padding: 0;
-    & > button {
-      background: none;
-      border: none;
-      width: 100%;
-      text-align: left;
-      padding: 0;
+.myaccount-wrapper {
+  .accordion {
+    &-item {
+      margin-bottom: 20px;
+      border: 1px solid #ebebeb;
     }
-  }
-  .card-body {
-    border-bottom: 1px solid #ebebeb;
-  }
-  h3.panel-title {
-    background-color: #f9f9f9;
-    border-bottom: 1px solid #ebebeb;
-    font-size: 15px;
-    font-weight: 500;
-    margin: 0;
-    text-transform: uppercase;
-    color: #242424;
-    display: block;
-    padding: 16px 55px;
-    position: relative;
-    @media #{$xs-layout} {
-      line-height: 22px;
-      font-size: 14px;
-      padding: 16px 30px 16px 40px;
-    }
-
-    &:hover {
-      color: $theme-color;
-    }
-    &::before {
-      color: #000;
-      content: "\f107";
-      display: inline-block;
-      font-family: "FontAwesome";
-      font-size: 16px;
-      position: absolute;
-      right: 10px;
-      top: 19px;
-    }
-    &:hover::before {
-      color: $theme-color;
-    }
-
-    span {
-      color: #242424;
+    &-button {
+      background-color: #f9f9f9;
       font-size: 15px;
-      left: 20px;
-      position: absolute;
-      top: 16px;
+      font-weight: 500;
+      margin: 0;
+      text-transform: uppercase;
+      color: #242424;
+      display: block;
+      padding: 16px 55px;
+      position: relative;
+      span {
+        color: #242424;
+        font-size: 15px;
+        left: 20px;
+        position: absolute;
+        top: 16px;
+      }
+      &[aria-expanded="true"]{
+        border-bottom: 1px solid #ebebeb;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+      @media #{$xs-layout} {
+        line-height: 22px;
+        font-size: 14px;
+        padding: 16px 30px 16px 40px;
+      }
+  
+      &:hover {
+        color: $theme-color;
+      }
+      &::before {
+        color: #000;
+        content: "\f107";
+        display: inline-block;
+        font-family: "FontAwesome";
+        font-size: 16px;
+        position: absolute;
+        right: 10px;
+        top: 19px;
+      }
+      &:hover::before {
+        color: $theme-color;
+      }
+    }
+    &-body {
+      border-bottom: 1px solid #ebebeb;
     }
   }
+}
+
+.single-my-account {
   .myaccount-info-wrapper {
     padding: 30px 20px;
     background-color: #fff;

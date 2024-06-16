@@ -5,7 +5,7 @@
     letter-spacing: 1rem;
     line-height: 1.1;
     margin-bottom: 30px;
-    color: #a749ff;
+    color: $theme-color;
     @media #{$lg-layout} {
       font-size: 15rem;
       margin-bottom: 4px;
@@ -29,6 +29,7 @@
 }
 
 .error-btn {
+  border-radius: 50px;
   position: relative;
   transition: all 0.3s;
   color: #fff;
@@ -40,7 +41,7 @@
   padding: 0 10px;
   border: none;
   border-radius: 0;
-  background-color: #a749ff;
+  background-color: $theme-color;
   display: inline-block;
   &:after {
     position: absolute;
@@ -49,7 +50,7 @@
     bottom: -6px;
     height: 3px;
     width: 100%;
-    background-color: #a749ff;
+    background-color: transparent;
     transition: all 0.3s;
   }
   &:hover {
@@ -64,6 +65,7 @@
 .searchform {
   position: relative;
   & input {
+    border-radius: 50px;
     border: 1px solid #eeeeee;
     height: 45px;
     width: 100%;
@@ -72,8 +74,9 @@
     background-color: transparent;
   }
   & button {
+    border-radius: 50px;
     border: none;
-    background-color: #a749ff;
+    background-color: $theme-color;
     width: 70px;
     color: #fff;
     cursor: pointer;

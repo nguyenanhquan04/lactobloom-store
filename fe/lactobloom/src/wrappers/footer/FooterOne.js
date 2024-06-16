@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { animateScroll } from "react-scroll";
 import FooterCopyright from "../../components/footer/FooterCopyright";
 import FooterNewsletter from "../../components/footer/FooterNewsletter";
+
 
 const FooterOne = ({
   backgroundColorClass,
@@ -15,35 +15,8 @@ const FooterOne = ({
   extraFooterClass,
   sideMenu
 }) => {
-  const [scroll, setScroll] = useState(0);
-  const [top, setTop] = useState(0);
-
-  useEffect(() => {
-    setTop(100);
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  const scrollToTop = () => {
-    animateScroll.scrollToTop();
-  };
-
-  const handleScroll = () => {
-    setScroll(window.scrollY);
-  };
-
   return (
-    <footer
-      className={`footer-area ${
-        backgroundColorClass ? backgroundColorClass : ""
-      } ${spaceTopClass ? spaceTopClass : ""} ${
-        spaceBottomClass ? spaceBottomClass : ""
-      } ${extraFooterClass ? extraFooterClass : ""} ${
-        spaceLeftClass ? spaceLeftClass : ""
-      } ${spaceRightClass ? spaceRightClass : ""}`}
-    >
+    <footer className={clsx("footer-area", backgroundColorClass, spaceTopClass, spaceBottomClass, extraFooterClass, spaceLeftClass, spaceRightClass )}>
       <div className={`${containerClass ? containerClass : "container"}`}>
         <div className="row">
           <div
@@ -196,12 +169,6 @@ const FooterOne = ({
           </div>
         </div>
       </div>
-      <button
-        className={`scroll-top ${scroll > top ? "show" : ""}`}
-        onClick={() => scrollToTop()}
-      >
-        <i className="fa fa-angle-double-up"></i>
-      </button>
     </footer>
   );
 };

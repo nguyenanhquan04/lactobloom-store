@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import { useState } from "react";
+import clsx from "clsx";
 import CountUp from "react-countup";
 import VisibilitySensor from "react-visibility-sensor";
 
@@ -12,12 +13,7 @@ const FunFactOneSingle = ({ data, spaceBottomClass, textAlignClass }) => {
     }
   };
   return (
-    <div className="col-lg-3 col-md-6 col-sm-6">
-      <div
-        className={`single-count ${textAlignClass ? textAlignClass : ""} ${
-          spaceBottomClass ? spaceBottomClass : ""
-        }`}
-      >
+      <div className={clsx("single-count", textAlignClass, spaceBottomClass)}>
         <div className="count-icon">
           <i className={data.iconClass} />
         </div>
@@ -32,12 +28,11 @@ const FunFactOneSingle = ({ data, spaceBottomClass, textAlignClass }) => {
         </h2>
         <span>{data.title}</span>
       </div>
-    </div>
   );
 };
 
 FunFactOneSingle.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.shape({}),
   spaceBottomClass: PropTypes.string,
   textAlignClass: PropTypes.string
 };

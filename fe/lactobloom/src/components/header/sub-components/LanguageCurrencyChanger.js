@@ -1,30 +1,28 @@
 import PropTypes from "prop-types";
-import React from "react";
-import { changeLanguage } from "redux-multilanguage";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { setCurrency } from "../../../store/slices/currency-slice"
 
-const LanguageCurrencyChanger = ({
-  currency,
-  setCurrency,
-  currentLanguageCode,
-  dispatch
-}) => {
+const LanguageCurrencyChanger = ({ currency }) => {
+  const { i18n } = useTranslation();
+  const dispatch = useDispatch();
   const changeLanguageTrigger = e => {
     const languageCode = e.target.value;
-    dispatch(changeLanguage(languageCode));
+    i18n.changeLanguage(languageCode);
   };
 
   const setCurrencyTrigger = e => {
     const currencyName = e.target.value;
-    setCurrency(currencyName);
+    dispatch(setCurrency(currencyName));
   };
 
   return (
     <div className="language-currency-wrap">
       <div className="same-language-currency language-style">
         <span>
-          {currentLanguageCode === "en"
+          {i18n.resolvedLanguage === "en"
             ? "English"
-            : currentLanguageCode === "vn"
+            : i18n.resolvedLanguage === "vn"
             ? "Việt Nam"
             : ""}{" "}
           <i className="fa fa-angle-down" />
@@ -51,35 +49,24 @@ const LanguageCurrencyChanger = ({
         <div className="lang-car-dropdown">
           <ul>
             <li>
-              <button value="USD" onClick={e => setCurrencyTrigger(e)}>
-                USD
-              </button>
-            </li>
-            <li>
               <button value="VND" onClick={e => setCurrencyTrigger(e)}>
                 VND
               </button>
             </li>
-            {/* <li>
-              <button value="GBP" onClick={e => setCurrencyTrigger(e)}>
-                GBP
+            <li>
+              <button value="USD" onClick={e => setCurrencyTrigger(e)}>
+                USD
               </button>
-            </li> */}
+            </li>
           </ul>
         </div>
       </div>
-      {/* <div className="same-language-currency">
-        <p>Call Us 3965410</p>
-      </div> */}
     </div>
   );
 };
 
 LanguageCurrencyChanger.propTypes = {
-  setCurrency: PropTypes.func,
-  currency: PropTypes.object,
-  currentLanguageCode: PropTypes.string,
-  dispatch: PropTypes.func
+  currency: PropTypes.shape({}),
 };
 
 export default LanguageCurrencyChanger;

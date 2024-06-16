@@ -1,30 +1,32 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
-import MetaTags from "react-meta-tags";
-import { connect } from "react-redux";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
+import { Fragment } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 
-const Checkout = ({ location, cartItems, currency }) => {
-  const { pathname } = location;
+const Checkout = () => {
   let cartTotalPrice = 0;
+
+  let { pathname } = useLocation();
+  const currency = useSelector((state) => state.currency);
+  const { cartItems } = useSelector((state) => state.cart);
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Checkout</title>
-        <meta name="description" content="Checkout page of LactoBloom Store" />
-      </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Checkout
-      </BreadcrumbsItem>
+      <SEO
+        titleTemplate="Checkout"
+        description="Lactobloom Checkout Page."
+      />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Checkout", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
         <div className="checkout-area pt-95 pb-100">
           <div className="container">
             {cartItems && cartItems.length >= 1 ? (
@@ -45,13 +47,13 @@ const Checkout = ({ location, cartItems, currency }) => {
                           <input type="text" />
                         </div>
                       </div>
-                      {/* <div className="col-lg-12">
+                      <div className="col-lg-12">
                         <div className="billing-info mb-20">
                           <label>Company Name</label>
                           <input type="text" />
                         </div>
-                      </div> */}
-                      {/* <div className="col-lg-12">
+                      </div>
+                      <div className="col-lg-12">
                         <div className="billing-select mb-20">
                           <label>Country</label>
                           <select>
@@ -63,7 +65,7 @@ const Checkout = ({ location, cartItems, currency }) => {
                             <option>Barbados</option>
                           </select>
                         </div>
-                      </div> */}
+                      </div>
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
                           <label>Street Address</label>
@@ -80,34 +82,34 @@ const Checkout = ({ location, cartItems, currency }) => {
                       </div>
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>District / City</label>
+                          <label>Town / City</label>
                           <input type="text" />
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
-                          <label>Province / City</label>
+                          <label>State / County</label>
                           <input type="text" />
                         </div>
                       </div>
-                      {/* <div className="col-lg-6 col-md-6">
+                      <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Postcode / ZIP</label>
                           <input type="text" />
                         </div>
-                      </div> */}
+                      </div>
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Phone</label>
                           <input type="text" />
                         </div>
                       </div>
-                      {/* <div className="col-lg-6 col-md-6">
+                      <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Email Address</label>
                           <input type="text" />
                         </div>
-                      </div> */}
+                      </div>
                     </div>
 
                     <div className="additional-info-wrap">
@@ -142,22 +144,21 @@ const Checkout = ({ location, cartItems, currency }) => {
                                 cartItem.price,
                                 cartItem.discount
                               );
-                              const finalProductPrice =
-                                cartItem.price;
+                              const finalProductPrice = (
+                                cartItem.price * 1
+                              );
                               const finalDiscountedPrice = (
                                 discountedPrice * 1
                               );
 
                               discountedPrice != null
                                 ? (cartTotalPrice +=
-                                    finalDiscountedPrice * cartItem.quantity).toLocaleString("vi-VN")
+                                    finalDiscountedPrice * cartItem.quantity)
                                 : (cartTotalPrice +=
-                                    finalProductPrice * cartItem.quantity).toLocaleString("vi-VN");
+                                    finalProductPrice * cartItem.quantity);
                               return (
                                 <li key={key}>
-                                  <span
-                                    className="order-middle-left"
-                                  >
+                                  <span className="order-middle-left">
                                     {cartItem.productName} X {cartItem.quantity}
                                   </span>{" "}
                                   <span className="order-price">
@@ -222,17 +223,4 @@ const Checkout = ({ location, cartItems, currency }) => {
   );
 };
 
-Checkout.propTypes = {
-  cartItems: PropTypes.array,
-  currency: PropTypes.object,
-  location: PropTypes.object,
-};
-
-const mapStateToProps = (state) => {
-  return {
-    cartItems: state.cartData,
-    currency: state.currencyData,
-  };
-};
-
-export default connect(mapStateToProps)(Checkout);
+export default Checkout;

@@ -1,27 +1,21 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx";
 import textGridData from "../../data/text-grid/text-grid-one.json";
 import TextGridOneSingle from "../../components/text-grid/TextGridOneSingle.js";
 
 const TextGridOne = ({ spaceBottomClass }) => {
   return (
-    <div
-      className={`about-mission-area ${
-        spaceBottomClass ? spaceBottomClass : ""
-      }`}
-    >
+    <div className={clsx("about-mission-area", spaceBottomClass)}>
       <div className="container">
         <div className="row">
-          {textGridData &&
-            textGridData.map((single, key) => {
-              return (
+          {textGridData?.map((single, key) => (
+              <div className="col-lg-4 col-md-4" key={key}>
                 <TextGridOneSingle
                   data={single}
                   spaceBottomClass="mb-30"
-                  key={key}
                 />
-              );
-            })}
+              </div>
+          ))}
         </div>
       </div>
     </div>

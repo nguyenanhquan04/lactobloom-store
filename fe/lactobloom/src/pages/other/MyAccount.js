@@ -1,47 +1,39 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import Card from "react-bootstrap/Card";
+import { Fragment } from "react"; 
+import { useLocation } from "react-router-dom"; 
 import Accordion from "react-bootstrap/Accordion";
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 
-const MyAccount = ({ location }) => {
-  const { pathname } = location;
+const MyAccount = () => {
+  let { pathname } = useLocation();
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | My Account</title>
-        <meta
-          name="description"
-          content="Compare page of LactoBloom Store"
-        />
-      </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        My Account
-      </BreadcrumbsItem>
+      <SEO
+        titleTemplate="My Account"
+        description="Lactobloom My Account Page."
+      />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "My Account", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
+        
         <div className="myaccount-area pb-80 pt-100">
           <div className="container">
             <div className="row">
-              <div className="ml-auto mr-auto col-lg-9">
+              <div className="ms-auto me-auto col-lg-9">
                 <div className="myaccount-wrapper">
                   <Accordion defaultActiveKey="0">
-                    <Card className="single-my-account mb-20">
-                      <Card.Header className="panel-heading">
-                        <Accordion.Toggle variant="link" eventKey="0">
-                          <h3 className="panel-title">
-                            <span>1 .</span> Edit your account information{" "}
-                          </h3>
-                        </Accordion.Toggle>
-                      </Card.Header>
-                      <Accordion.Collapse eventKey="0">
-                        <Card.Body>
+                    <Accordion.Item eventKey="0" className="single-my-account mb-20">
+                      <Accordion.Header className="panel-heading">
+                        <span>1 .</span> Edit your account information{" "}
+                      </Accordion.Header>
+                      <Accordion.Body>
                           <div className="myaccount-info-wrapper">
                             <div className="account-info-wrapper">
                               <h4>My Account Information</h4>
@@ -85,19 +77,15 @@ const MyAccount = ({ location }) => {
                               </div>
                             </div>
                           </div>
-                        </Card.Body>
-                      </Accordion.Collapse>
-                    </Card>
-                    <Card className="single-my-account mb-20">
-                      <Card.Header className="panel-heading">
-                        <Accordion.Toggle variant="link" eventKey="1">
-                          <h3 className="panel-title">
-                            <span>2 .</span> Change your password
-                          </h3>
-                        </Accordion.Toggle>
-                      </Card.Header>
-                      <Accordion.Collapse eventKey="1">
-                        <Card.Body>
+                      </Accordion.Body>
+                    </Accordion.Item>
+
+
+                    <Accordion.Item eventKey="1" className="single-my-account mb-20">
+                      <Accordion.Header className="panel-heading">
+                          <span>2 .</span> Change your password
+                      </Accordion.Header>
+                      <Accordion.Body>
                           <div className="myaccount-info-wrapper">
                             <div className="account-info-wrapper">
                               <h4>Change Password</h4>
@@ -123,19 +111,14 @@ const MyAccount = ({ location }) => {
                               </div>
                             </div>
                           </div>
-                        </Card.Body>
-                      </Accordion.Collapse>
-                    </Card>
-                    <Card className="single-my-account mb-20">
-                      <Card.Header className="panel-heading">
-                        <Accordion.Toggle variant="link" eventKey="2">
-                          <h3 className="panel-title">
-                            <span>3 .</span> Modify your address book entries{" "}
-                          </h3>
-                        </Accordion.Toggle>
-                      </Card.Header>
-                      <Accordion.Collapse eventKey="2">
-                        <Card.Body>
+                      </Accordion.Body>
+                    </Accordion.Item>
+
+                    <Accordion.Item eventKey="2" className="single-my-account mb-20">
+                      <Accordion.Header className="panel-heading">
+                          <span>3 .</span> Modify your address book entries
+                      </Accordion.Header>
+                      <Accordion.Body>
                           <div className="myaccount-info-wrapper">
                             <div className="account-info-wrapper">
                               <h4>Address Book Entries</h4>
@@ -165,9 +148,8 @@ const MyAccount = ({ location }) => {
                               </div>
                             </div>
                           </div>
-                        </Card.Body>
-                      </Accordion.Collapse>
-                    </Card>
+                      </Accordion.Body>
+                    </Accordion.Item>
                   </Accordion>
                 </div>
               </div>
@@ -177,10 +159,6 @@ const MyAccount = ({ location }) => {
       </LayoutOne>
     </Fragment>
   );
-};
-
-MyAccount.propTypes = {
-  location: PropTypes.object
 };
 
 export default MyAccount;

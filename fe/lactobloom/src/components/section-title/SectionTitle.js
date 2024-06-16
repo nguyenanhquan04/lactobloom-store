@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React from "react";
+import clsx from "clsx"
 
 const SectionTitle = ({
   titleText,
@@ -10,13 +10,9 @@ const SectionTitle = ({
   borderClass
 }) => {
   return (
-    <div
-      className={`section-title ${positionClass ? positionClass : ""} ${
-        spaceClass ? spaceClass : ""
-      } ${borderClass ? borderClass : ""}`}
-    >
+    <div className={clsx("section-title", positionClass, spaceClass, borderClass)}>
       <h2>{titleText}</h2>
-      <p className={subtitleColorClass ? subtitleColorClass : ""}>
+      <p className={clsx(subtitleColorClass)}>
         {subtitleText}
       </p>
     </div>

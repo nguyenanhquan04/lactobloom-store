@@ -1,32 +1,29 @@
-import PropTypes from "prop-types";
-import React, { Fragment } from "react";
-import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
+import { Fragment } from "react"; 
+import { useLocation } from "react-router-dom"; 
+import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import BlogSidebar from "../../wrappers/blog/BlogSidebar";
 import BlogPagination from "../../wrappers/blog/BlogPagination";
 import BlogPosts from "../../wrappers/blog/BlogPosts";
 
-const Blog = ({ location }) => {
-  const { pathname } = location;
+const BlogStandard = () => {
+  let { pathname } = useLocation();
 
   return (
     <Fragment>
-      <MetaTags>
-        <title>LactoBloom Store | Blog</title>
-        <meta
-          name="description"
-          content="Blog of LactoBloom Store"
-        />
-      </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Blog
-      </BreadcrumbsItem>
+      <SEO
+        titleTemplate="Blog"
+        description="Lactobloom Blog Page."
+      />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb />
+        <Breadcrumb 
+          pages={[
+            {label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {label: "Blog", path: process.env.PUBLIC_URL + pathname }
+          ]} 
+        />
         <div className="blog-area pt-100 pb-100">
           <div className="container">
             <div className="row flex-row-reverse">
@@ -53,8 +50,4 @@ const Blog = ({ location }) => {
   );
 };
 
-Blog.propTypes = {
-  location: PropTypes.object
-};
-
-export default Blog;
+export default BlogStandard;
