@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { getDiscountPrice } from "../../helpers/product";
 import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
+import { getImagesByProductId } from "../../utils/ImageService";
 
 const ProductGridSingle = ({
   product,
@@ -18,32 +19,39 @@ const ProductGridSingle = ({
   spaceBottomClass
 }) => {
   const [modalShow, setModalShow] = useState(false);
+  const [productImages, setProductImages] = useState("/assets/img/no-image.png");
+
   const discountedPrice = getDiscountPrice(product.price, product.discount);
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
+  const finalProductPrice = +(product.price * 1);
   const finalDiscountedPrice = +(
-    discountedPrice * currency.currencyRate
-  ).toFixed(2);
+    discountedPrice * 1
+  );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchProductImages = async () => {
+      try {
+        const response = await getImagesByProductId(product.productId);
+        console.log(response.data[0].imageUrl);
+        setProductImages(response.data[0].imageUrl);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
+    fetchProductImages();
+  }, [product.productId]);
 
   return (
     <Fragment>
       <div className={clsx("product-wrap", spaceBottomClass)}>
         <div className="product-img">
-          <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+          <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
             <img
               className="default-img"
-              src={process.env.PUBLIC_URL + product.image[0]}
+              src={process.env.PUBLIC_URL + productImages}
               alt=""
-            />
-            {product.image.length > 1 ? (
-              <img
-                className="hover-img"
-                src={process.env.PUBLIC_URL + product.image[1]}
-                alt=""
-              />
-            ) : (
-              ""
-            )}
+            />           
           </Link>
           {product.discount || product.new ? (
             <div className="product-img-badges">
@@ -84,7 +92,7 @@ const ProductGridSingle = ({
                   Buy now{" "}
                 </a>
               ) : product.variation && product.variation.length >= 1 ? (
-                <Link to={`${process.env.PUBLIC_URL}/product/${product.id}`}>
+                <Link to={`${process.env.PUBLIC_URL}/product/${product.productId}`}>
                   Select Option
                 </Link>
               ) : product.stock && product.stock > 0 ? (
@@ -121,8 +129,8 @@ const ProductGridSingle = ({
         </div>
         <div className="product-content text-center">
           <h3>
-            <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
-              {product.name}
+            <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
+              {product.productName}
             </Link>
           </h3>
           {product.rating && product.rating > 0 ? (
@@ -135,13 +143,13 @@ const ProductGridSingle = ({
           <div className="product-price">
             {discountedPrice !== null ? (
               <Fragment>
-                <span>{currency.currencySymbol + finalDiscountedPrice}</span>{" "}
+                <span>{finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}</span>{" "}
                 <span className="old">
-                  {currency.currencySymbol + finalProductPrice}
+                  {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                 </span>
               </Fragment>
             ) : (
-              <span>{currency.currencySymbol + finalProductPrice} </span>
+              <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
             )}
           </div>
         </div>

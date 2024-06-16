@@ -10,14 +10,14 @@ const ProductImageDescriptionSticky = ({ spaceTopClass, spaceBottomClass, produc
   const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { compareItems } = useSelector((state) => state.compare);
-  const wishlistItem = wishlistItems.find(item => item.id === product.id);
-  const compareItem = compareItems.find(item => item.id === product.id);
+  const wishlistItem = wishlistItems.find(item => item.productId === product.productId);
+  const compareItem = compareItems.find(item => item.productId === product.productId);
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
+  const finalProductPrice = +(product.price * 1);
   const finalDiscountedPrice = +(
-    discountedPrice * currency.currencyRate
-  ).toFixed(2);
+    discountedPrice * 1
+  );
 
   return (
     <div className={clsx("shop-area", spaceTopClass, spaceBottomClass)}>

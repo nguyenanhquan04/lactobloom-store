@@ -1,17 +1,30 @@
+// // get products
+// export const getProducts = (products, category, type, limit) => {
+//   const finalProducts = category
+//     ? products.filter(
+//         product => product.category.filter(single => single === category)[0]
+//       )
+//     : products;
+
+//   if (type && type === "saleItems") {
+//     const saleItems = finalProducts.filter(
+//       single => single.discount && single.discount > 0
+//     );
+//     return saleItems.slice(0, limit ? limit : saleItems.length);
+//   }
+//   return finalProducts.slice(0, limit ? limit : finalProducts.length);
+// };
+
 // get products
-export const getProducts = (products, category, type, limit) => {
-  const finalProducts = category
-    ? products.filter(
-        product => product.category.filter(single => single === category)[0]
-      )
-    : products;
+export const getProducts = (products, type, limit) => {
+  let finalProducts = products;
 
   if (type && type === "saleItems") {
-    const saleItems = finalProducts.filter(
+    finalProducts = finalProducts.filter(
       single => single.discount && single.discount > 0
     );
-    return saleItems.slice(0, limit ? limit : saleItems.length);
   }
+
   return finalProducts.slice(0, limit ? limit : finalProducts.length);
 };
 
@@ -24,7 +37,7 @@ export const getDiscountPrice = (price, discount) => {
 export const getProductCartQuantity = (cartItems, product, color, size) => {
   let productInCart = cartItems.find(
     single =>
-      single.id === product.id &&
+      single.productId === product.productId &&
       (single.selectedProductColor
         ? single.selectedProductColor === color
         : true) &&
@@ -34,12 +47,12 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
     if (product.variation) {
       return cartItems.find(
         single =>
-          single.id === product.id &&
+          single.productId === product.productId &&
           single.selectedProductColor === color &&
           single.selectedProductSize === size
       ).quantity;
     } else {
-      return cartItems.find(single => product.id === single.id).quantity;
+      return cartItems.find(single => product.productId === single.productId).quantity;
     }
   } else {
     return 0;

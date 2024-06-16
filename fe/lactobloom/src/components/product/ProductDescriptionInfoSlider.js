@@ -39,17 +39,17 @@ const ProductDescriptionInfoSlider = ({
 
   return (
     <div className="product-details-content pro-details-slider-content">
-      <h2>{product.name}</h2>
+      <h2>{product.productName}</h2>
       <div className="product-details-price justify-content-center">
         {discountedPrice !== null ? (
           <Fragment>
-            <span>{currency.currencySymbol + finalDiscountedPrice}</span>{" "}
+            <span>{finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}</span>{" "}
             <span className="old">
-              {currency.currencySymbol + finalProductPrice}
+              {finalProductPrice.toLocaleString("vi-VN") + " VND"}
             </span>
           </Fragment>
         ) : (
-          <span>{currency.currencySymbol + finalProductPrice} </span>
+          <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
         )}
       </div>
       {product.rating && product.rating > 0 ? (
@@ -62,7 +62,7 @@ const ProductDescriptionInfoSlider = ({
         ""
       )}
       <div className="pro-details-list">
-        <p>{product.shortDescription}</p>
+        <p>{product.description}</p>
       </div>
 
       {product.variation ? (

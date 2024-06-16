@@ -16,22 +16,22 @@ const ProductGridList = ({
     <Fragment>
       {products?.map(product => {
         return (
-          <div className="col-xl-4 col-sm-6" key={product.id}>
+          <div className="col-xl-4 col-sm-6" key={product.productId}>
             <ProductGridListSingle
               spaceBottomClass={spaceBottomClass}
               product={product}
               currency={currency}
               cartItem={
-                cartItems.find(cartItem => cartItem.id === product.id)
+                cartItems.find(cartItem => cartItem.productId === product.productId)
               }
               wishlistItem={
                 wishlistItems.find(
-                  wishlistItem => wishlistItem.id === product.id
+                  wishlistItem => wishlistItem.productId === product.productId
                 )
               }
               compareItem={
                 compareItems.find(
-                  compareItem => compareItem.id === product.id
+                  compareItem => compareItem.productId === product.productId
                 )
               }
             />

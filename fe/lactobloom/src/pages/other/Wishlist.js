@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { getDiscountPrice } from "../../helpers/product";
@@ -7,6 +7,7 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart } from "../../store/slices/cart-slice";
 import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
+import { getImagesByProductId } from "../../utils/ImageService";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,27 @@ const Wishlist = () => {
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems } = useSelector((state) => state.cart);
   
+  const [wishlistImages, setWishlistImages] = useState({});
+
+  useEffect(() => {
+    const fetchWishlistImages = async () => {
+      const imagesMap = {};
+      for (const wishlistItem of wishlistItems) {
+        try {
+          const response = await getImagesByProductId(wishlistItem.productId);
+          imagesMap[wishlistItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
+        } catch (error) {
+          console.error("Error fetching images:", error);
+          imagesMap[wishlistItem.productId] = "/assets/img/no-image.png";
+        }
+      }
+      setWishlistImages(imagesMap);
+    };
+
+    if (wishlistItems.length > 0) {
+      fetchWishlistImages();
+    }
+  }, [wishlistItems]);
 
   return (
     <Fragment>
@@ -56,13 +78,13 @@ const Wishlist = () => {
                               wishlistItem.discount
                             );
                             const finalProductPrice = (
-                              wishlistItem.price * currency.currencyRate
-                            ).toFixed(2);
+                              wishlistItem.price * 1
+                            );
                             const finalDiscountedPrice = (
-                              discountedPrice * currency.currencyRate
-                            ).toFixed(2);
+                              discountedPrice * 1
+                            );
                             const cartItem = cartItems.find(
-                              item => item.id === wishlistItem.id
+                              item => item.productId === wishlistItem.productId
                             );
                             return (
                               <tr key={key}>
@@ -71,16 +93,16 @@ const Wishlist = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.id
+                                      wishlistItem.productId
                                     }
                                   >
                                     <img
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        wishlistItem.image[0]
+                                        (wishlistImages[wishlistItem.productId] || "/assets/img/no-image.png")
                                       }
-                                      alt=""
+                                      alt={wishlistItem.productName}
                                     />
                                   </Link>
                                 </td>
@@ -90,10 +112,10 @@ const Wishlist = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.id
+                                      wishlistItem.productId
                                     }
                                   >
-                                    {wishlistItem.name}
+                                    {wishlistItem.productName}
                                   </Link>
                                 </td>
 
@@ -101,18 +123,15 @@ const Wishlist = () => {
                                   {discountedPrice !== null ? (
                                     <Fragment>
                                       <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
+                                        {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                       <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
+                                        {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                     </Fragment>
                                   ) : (
                                     <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
+                                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                     </span>
                                   )}
                                 </td>
@@ -130,7 +149,7 @@ const Wishlist = () => {
                                   ) : wishlistItem.variation &&
                                     wishlistItem.variation.length >= 1 ? (
                                     <Link
-                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.id}`}
+                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.productId}`}
                                     >
                                       Select option
                                     </Link>
@@ -171,7 +190,7 @@ const Wishlist = () => {
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      dispatch(deleteFromWishlist(wishlistItem.id))
+                                      dispatch(deleteFromWishlist(wishlistItem.productId))
                                     }
                                   >
                                     <i className="fa fa-times"></i>

@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import SEO from "../../components/seo";
@@ -7,6 +7,7 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart, decreaseQuantity, deleteFromCart, deleteAllFromCart } from "../../store/slices/cart-slice";
 import { cartItemStock } from "../../helpers/product";
+import { getImagesByProductId } from "../../utils/ImageService";
 
 const Cart = () => {
   let cartTotalPrice = 0;
@@ -17,6 +18,28 @@ const Cart = () => {
   
   const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
+
+  const [cartImages, setCartImages] = useState({});
+
+  useEffect(() => {
+    const fetchCartImages = async () => {
+      const imagesMap = {};
+      for (const cartItem of cartItems) {
+        try {
+          const response = await getImagesByProductId(cartItem.productId);
+          imagesMap[cartItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
+        } catch (error) {
+          console.error("Error fetching images:", error);
+          imagesMap[cartItem.productId] = "/assets/img/no-image.png";
+        }
+      }
+      setCartImages(imagesMap);
+    };
+
+    if (cartItems.length > 0) {
+      fetchCartImages();
+    }
+  }, [cartItems]);
 
   return (
     <Fragment>
@@ -59,11 +82,11 @@ const Cart = () => {
                               cartItem.discount
                             );
                             const finalProductPrice = (
-                              cartItem.price * currency.currencyRate
-                            ).toFixed(2);
+                              cartItem.price * 1
+                            );
                             const finalDiscountedPrice = (
-                              discountedPrice * currency.currencyRate
-                            ).toFixed(2);
+                              discountedPrice * 1
+                            );
 
                             discountedPrice != null
                               ? (cartTotalPrice +=
@@ -77,16 +100,16 @@ const Cart = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      cartItem.id
+                                      cartItem.productId
                                     }
                                   >
                                     <img
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        cartItem.image[0]
+                                        (cartImages[cartItem.productId] || "/assets/img/no-image.png")
                                       }
-                                      alt=""
+                                      alt={cartItem.productName}
                                     />
                                   </Link>
                                 </td>
@@ -96,42 +119,26 @@ const Cart = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      cartItem.id
+                                      cartItem.productId
                                     }
                                   >
-                                    {cartItem.name}
+                                    {cartItem.productName}
                                   </Link>
-                                  {cartItem.selectedProductColor &&
-                                  cartItem.selectedProductSize ? (
-                                    <div className="cart-item-variation">
-                                      <span>
-                                        Color: {cartItem.selectedProductColor}
-                                      </span>
-                                      <span>
-                                        Size: {cartItem.selectedProductSize}
-                                      </span>
-                                    </div>
-                                  ) : (
-                                    ""
-                                  )}
                                 </td>
 
                                 <td className="product-price-cart">
                                   {discountedPrice !== null ? (
                                     <Fragment>
                                       <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
+                                        {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                       <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
+                                        {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                     </Fragment>
                                   ) : (
                                     <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
+                                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                     </span>
                                   )}
                                 </td>
@@ -177,14 +184,12 @@ const Cart = () => {
                                 </td>
                                 <td className="product-subtotal">
                                   {discountedPrice !== null
-                                    ? currency.currencySymbol +
-                                      (
+                                    ? (
                                         finalDiscountedPrice * cartItem.quantity
-                                      ).toFixed(2)
-                                    : currency.currencySymbol +
-                                      (
+                                      ).toLocaleString("vi-VN") + " VND"
+                                    : (
                                         finalProductPrice * cartItem.quantity
-                                      ).toFixed(2)}
+                                      ).toLocaleString("vi-VN") + " VND"}
                                 </td>
 
                                 <td className="product-remove">
@@ -256,14 +261,14 @@ const Cart = () => {
                       <h5>
                         Total products{" "}
                         <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
+                          {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h5>
 
                       <h4 className="grand-totall-title">
                         Grand Total{" "}
                         <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
+                          {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h4>
                       <Link to={process.env.PUBLIC_URL + "/checkout"}>

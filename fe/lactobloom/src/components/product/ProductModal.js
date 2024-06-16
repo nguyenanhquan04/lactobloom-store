@@ -106,19 +106,19 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
         </div>
         <div className="col-md-7 col-sm-12 col-xs-12">
           <div className="product-details-content quickview-content">
-            <h2>{product.name}</h2>
+            <h2>{product.productName}</h2>
             <div className="product-details-price">
               {discountedPrice !== null ? (
                 <Fragment>
                   <span>
-                    {currency.currencySymbol + finalDiscountedPrice}
+                    {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                   </span>{" "}
                   <span className="old">
-                    {currency.currencySymbol + finalProductPrice}
+                    {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                   </span>
                 </Fragment>
               ) : (
-                <span>{currency.currencySymbol + finalProductPrice} </span>
+                <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
               )}
             </div>
             {product.rating && product.rating > 0 ? (
@@ -131,7 +131,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
               ""
             )}
             <div className="pro-details-list">
-              <p>{product.shortDescription}</p>
+              <p>{product.description}</p>
             </div>
 
             {product.variation ? (

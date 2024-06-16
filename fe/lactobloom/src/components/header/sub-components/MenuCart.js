@@ -1,31 +1,57 @@
-import { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getDiscountPrice } from "../../../helpers/product";
-import { deleteFromCart } from "../../../store/slices/cart-slice"
+import { deleteFromCart } from "../../../store/slices/cart-slice";
+import { getImagesByProductId } from "../../../utils/ImageService";
 
 const MenuCart = () => {
   const dispatch = useDispatch();
   const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
+  const [cartItemsWithImages, setCartItemsWithImages] = useState([]);
+  const defaultImage = "/assets/img/no-image.png"; // Default image URL
   let cartTotalPrice = 0;
+
+  useEffect(() => {
+    const fetchImagesForCartItems = async () => {
+      const updatedCartItems = await Promise.all(
+        cartItems.map(async (item) => {
+          try {
+            const response = await getImagesByProductId(item.productId);
+            const images = response.data.map((img) => img.imageUrl);
+            return {
+              ...item,
+              image: images.length > 0 ? images : [defaultImage]
+            };
+          } catch (error) {
+            console.error("Error fetching images:", error);
+            return {
+              ...item,
+              image: [defaultImage]
+            };
+          }
+        })
+      );
+      setCartItemsWithImages(updatedCartItems);
+    };
+
+    if (cartItems.length > 0) {
+      fetchImagesForCartItems();
+    } else {
+      setCartItemsWithImages([]);
+    }
+  }, [cartItems]);
 
   return (
     <div className="shopping-cart-content">
-      {cartItems && cartItems.length > 0 ? (
+      {cartItemsWithImages && cartItemsWithImages.length > 0 ? (
         <Fragment>
           <ul>
-            {cartItems.map((item) => {
-              const discountedPrice = getDiscountPrice(
-                item.price,
-                item.discount
-              );
-              const finalProductPrice = (
-                item.price * currency.currencyRate
-              ).toFixed(2);
-              const finalDiscountedPrice = (
-                discountedPrice * currency.currencyRate
-              ).toFixed(2);
+            {cartItemsWithImages.map((item) => {
+              const discountedPrice = getDiscountPrice(item.price, item.discount);
+              const finalProductPrice = (item.price * 1);
+              const finalDiscountedPrice = (discountedPrice * 1);
 
               discountedPrice != null
                 ? (cartTotalPrice += finalDiscountedPrice * item.quantity)
@@ -34,38 +60,26 @@ const MenuCart = () => {
               return (
                 <li className="single-shopping-cart" key={item.cartItemId}>
                   <div className="shopping-cart-img">
-                    <Link to={process.env.PUBLIC_URL + "/product/" + item.id}>
+                    <Link to={process.env.PUBLIC_URL + "/product/" + item.productId}>
                       <img
                         alt=""
-                        src={process.env.PUBLIC_URL + item.image[0]}
+                        src={item.image[0] || defaultImage}
                         className="img-fluid"
                       />
                     </Link>
                   </div>
                   <div className="shopping-cart-title">
                     <h4>
-                      <Link
-                        to={process.env.PUBLIC_URL + "/product/" + item.id}
-                      >
-                        {" "}
-                        {item.name}{" "}
+                      <Link to={process.env.PUBLIC_URL + "/product/" + item.productId}>
+                        {item.productName}
                       </Link>
                     </h4>
                     <h6>Qty: {item.quantity}</h6>
                     <span>
                       {discountedPrice !== null
-                        ? currency.currencySymbol + finalDiscountedPrice
-                        : currency.currencySymbol + finalProductPrice}
+                        ? finalDiscountedPrice.toLocaleString("vi-VN") + " VND"
+                        : finalProductPrice.toLocaleString("vi-VN") + " VND"}
                     </span>
-                    {item.selectedProductColor &&
-                    item.selectedProductSize ? (
-                      <div className="cart-item-variation">
-                        <span>Color: {item.selectedProductColor}</span>
-                        <span>Size: {item.selectedProductSize}</span>
-                      </div>
-                    ) : (
-                      ""
-                    )}
                   </div>
                   <div className="shopping-cart-delete">
                     <button onClick={() => dispatch(deleteFromCart(item.cartItemId))}>
@@ -80,19 +94,16 @@ const MenuCart = () => {
             <h4>
               Total :{" "}
               <span className="shop-total">
-                {currency.currencySymbol + cartTotalPrice.toFixed(2)}
+                {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
               </span>
             </h4>
           </div>
           <div className="shopping-cart-btn btn-hover text-center">
             <Link className="default-btn" to={process.env.PUBLIC_URL + "/cart"}>
-              view cart
+              View Cart
             </Link>
-            <Link
-              className="default-btn"
-              to={process.env.PUBLIC_URL + "/checkout"}
-            >
-              checkout
+            <Link className="default-btn" to={process.env.PUBLIC_URL + "/checkout"}>
+              Checkout
             </Link>
           </div>
         </Fragment>
@@ -104,3 +115,4 @@ const MenuCart = () => {
 };
 
 export default MenuCart;
+

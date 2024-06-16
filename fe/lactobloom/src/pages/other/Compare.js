@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
@@ -8,6 +8,7 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Rating from "../../components/product/sub-components/ProductRating";
 import { addToCart } from "../../store/slices/cart-slice";
 import { deleteFromCompare } from "../../store/slices/compare-slice";
+import { getImagesByProductId } from "../../utils/ImageService";
 
 const Compare = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,28 @@ const Compare = () => {
   const currency = useSelector((state) => state.currency);
   const { compareItems } = useSelector((state) => state.compare);
   const { cartItems } = useSelector((state) => state.cart);
+
+  const [compareImages, setCompareImages] = useState({});
+
+  useEffect(() => {
+    const fetchCompareImages = async () => {
+      const imagesMap = {};
+      for (const compareItem of compareItems) {
+        try {
+          const response = await getImagesByProductId(compareItem.productId);
+          imagesMap[compareItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
+        } catch (error) {
+          console.error("Error fetching images:", error);
+          imagesMap[compareItem.productId] = "/assets/img/no-image.png";
+        }
+      }
+      setCompareImages(imagesMap);
+    };
+
+    if (compareItems.length > 0) {
+      fetchCompareImages();
+    }
+  }, [compareItems]);
 
   return (
     <Fragment>
@@ -44,14 +67,14 @@ const Compare = () => {
                             <th className="title-column">Product Info</th>
                             {compareItems.map((compareItem, key) => {
                               const cartItem = cartItems.find(
-                                item => item.id === compareItem.id
+                                item => item.productId === compareItem.productId
                               );
                               return (
                                 <td className="product-image-title" key={key}>
                                   <div className="compare-remove">
                                     <button
                                       onClick={() =>
-                                        dispatch(deleteFromCompare(compareItem.id))
+                                        dispatch(deleteFromCompare(compareItem.productId))
                                       }
                                     >
                                       <i className="pe-7s-trash" />
@@ -61,7 +84,7 @@ const Compare = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      compareItem.id
+                                      compareItem.productId
                                     }
                                     className="image"
                                   >
@@ -69,9 +92,9 @@ const Compare = () => {
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        compareItem.image[0]
+                                        (compareImages[compareItem.productId] || "/assets/img/no-image.png")
                                       }
-                                      alt=""
+                                      alt={compareItem.productName}
                                     />
                                   </Link>
                                   <div className="product-title">
@@ -79,10 +102,10 @@ const Compare = () => {
                                       to={
                                         process.env.PUBLIC_URL +
                                         "/product/" +
-                                        compareItem.id
+                                        compareItem.productId
                                       }
                                     >
-                                      {compareItem.name}
+                                      {compareItem.productName}
                                     </Link>
                                   </div>
                                   <div className="compare-btn">
@@ -98,7 +121,7 @@ const Compare = () => {
                                     ) : compareItem.variation &&
                                       compareItem.variation.length >= 1 ? (
                                       <Link
-                                        to={`${process.env.PUBLIC_URL}/product/${compareItem.id}`}
+                                        to={`${process.env.PUBLIC_URL}/product/${compareItem.productId}`}
                                       >
                                         Select Option
                                       </Link>
@@ -147,28 +170,25 @@ const Compare = () => {
                                 compareItem.discount
                               );
                               const finalProductPrice = (
-                                compareItem.price * currency.currencyRate
-                              ).toFixed(2);
+                                compareItem.price * 1
+                              );
                               const finalDiscountedPrice = (
-                                discountedPrice * currency.currencyRate
-                              ).toFixed(2);
+                                discountedPrice * 1
+                              );
                               return (
                                 <td className="product-price" key={key}>
                                   {discountedPrice !== null ? (
                                     <Fragment>
                                       <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
+                                        {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                       <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
+                                        {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
                                     </Fragment>
                                   ) : (
                                     <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
+                                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                     </span>
                                   )}
                                 </td>
@@ -182,8 +202,8 @@ const Compare = () => {
                               return (
                                 <td className="product-desc" key={key}>
                                   <p>
-                                    {compareItem.shortDescription
-                                      ? compareItem.shortDescription
+                                    {compareItem.description
+                                      ? compareItem.description
                                       : "N/A"}
                                   </p>
                                 </td>

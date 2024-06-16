@@ -6,7 +6,7 @@ import ProductGridSingle from "../../components/product/ProductGridSingle";
 
 const ProductGrid = ({
   spaceBottomClass,
-  category,
+  // category,
   type,
   limit
 }) => {
@@ -15,28 +15,28 @@ const ProductGrid = ({
   const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { compareItems } = useSelector((state) => state.compare);
-  const prods = getProducts(products, category, type, limit)
+  const prods = getProducts(products, type, limit)
   
   return (
     <Fragment>
       {prods?.map(product => {
         return (
-          <div className="col-xl-3 col-md-6 col-lg-4 col-sm-6" key={product.id}>
+          <div className="col-xl-3 col-md-6 col-lg-4 col-sm-6" key={product.productId}>
             <ProductGridSingle
               spaceBottomClass={spaceBottomClass}
               product={product}
               currency={currency}
               cartItem={
-                cartItems.find((cartItem) => cartItem.id === product.id)
+                cartItems.find((cartItem) => cartItem.productId === product.productId)
               }
               wishlistItem={
                 wishlistItems.find(
-                  (wishlistItem) => wishlistItem.id === product.id
+                  (wishlistItem) => wishlistItem.productId === product.productId
                 )
               }
               compareItem={
                 compareItems.find(
-                  (compareItem) => compareItem.id === product.id
+                  (compareItem) => compareItem.productId === product.productId
                 )
               }
             />
@@ -49,7 +49,7 @@ const ProductGrid = ({
 
 ProductGrid.propTypes = {
   spaceBottomClass: PropTypes.string,
-  category: PropTypes.string,
+  // category: PropTypes.string,
   type: PropTypes.string,
   limit: PropTypes.number
 };

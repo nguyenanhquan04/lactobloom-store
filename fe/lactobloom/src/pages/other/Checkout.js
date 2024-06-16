@@ -145,11 +145,11 @@ const Checkout = () => {
                                 cartItem.discount
                               );
                               const finalProductPrice = (
-                                cartItem.price * currency.currencyRate
-                              ).toFixed(2);
+                                cartItem.price * 1
+                              );
                               const finalDiscountedPrice = (
-                                discountedPrice * currency.currencyRate
-                              ).toFixed(2);
+                                discountedPrice * 1
+                              );
 
                               discountedPrice != null
                                 ? (cartTotalPrice +=
@@ -159,19 +159,17 @@ const Checkout = () => {
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
-                                    {cartItem.name} X {cartItem.quantity}
+                                    {cartItem.productName} X {cartItem.quantity}
                                   </span>{" "}
                                   <span className="order-price">
                                     {discountedPrice !== null
-                                      ? currency.currencySymbol +
-                                        (
+                                      ? (
                                           finalDiscountedPrice *
                                           cartItem.quantity
-                                        ).toFixed(2)
-                                      : currency.currencySymbol +
-                                        (
+                                        ).toLocaleString("vi-VN") + " VND"
+                                      : (
                                           finalProductPrice * cartItem.quantity
-                                        ).toFixed(2)}
+                                        ).toLocaleString("vi-VN") + " VND"}
                                   </span>
                                 </li>
                               );
@@ -188,8 +186,7 @@ const Checkout = () => {
                           <ul>
                             <li className="order-total">Total</li>
                             <li>
-                              {currency.currencySymbol +
-                                cartTotalPrice.toFixed(2)}
+                              {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                             </li>
                           </ul>
                         </div>

@@ -31,7 +31,7 @@ const settings = {
 const NewProductSlider = ({
   spaceTopClass,
   spaceBottomClass,
-  category,
+  // category,
   limit
 }) => {
   const { products } = useSelector((state) => state.product);
@@ -39,7 +39,7 @@ const NewProductSlider = ({
   const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { compareItems } = useSelector((state) => state.compare);
-  const prods = getProducts(products, category, "new", limit);
+  const prods = getProducts(products, "new", limit);
 
   return (
     <div className={clsx("new-product-area", spaceBottomClass, spaceTopClass)}>
@@ -52,21 +52,21 @@ const NewProductSlider = ({
         {prods?.length ? (
           <Swiper options={settings}>
             {prods.map((product) => (
-                <SwiperSlide key={product.id}>
+                <SwiperSlide key={product.productId}>
                     <ProductGridSingleTwelve
                         product={product}
                         currency={currency}
                         cartItem={
-                            cartItems.find((cartItem) => cartItem.id === product.id)
+                            cartItems.find((cartItem) => cartItem.productId === product.productId)
                         }
                         wishlistItem={
                             wishlistItems.find(
-                            (wishlistItem) => wishlistItem.id === product.id
+                            (wishlistItem) => wishlistItem.productId === product.productId
                             )
                         }
                         compareItem={
                             compareItems.find(
-                            (compareItem) => compareItem.id === product.id
+                            (compareItem) => compareItem.productId === product.productId
                             )
                         }
                     />
@@ -81,7 +81,7 @@ const NewProductSlider = ({
 };
 
 NewProductSlider.propTypes = {
-  category: PropTypes.string,
+  // category: PropTypes.string,
   limit: PropTypes.number,
   spaceBottomClass: PropTypes.string,
   spaceTopClass: PropTypes.string
