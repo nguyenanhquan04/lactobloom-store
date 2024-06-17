@@ -45,122 +45,140 @@
 
 .single-slider {
   display: flex;
-  align-items: flex-end;
-  .slider-content {
-    padding: 183px 0 0;
-    @media #{$xl-layout} {
-      padding: 80px 0 0;
-    }
-    @media #{$lg-layout} {
-      padding: 45px 0 0;
-    }
-    @media #{$md-layout} {
-      padding: 0 0 0;
-    }
-    @media #{$xs-layout} {
-      padding: 0 0 40px;
+  align-items: center; /* Change this to center for vertical alignment */
+  justify-content: center; /* Add this for horizontal alignment */
+  height: 400px; /* Ensure the slider has a fixed height */
 
+  &.slider-height-1.bg-purple {
+    position: relative; /* Ensure proper positioning for child elements */
+
+    .container {
+      padding-left: 0;
+      padding-right: 0;
+      max-width: 100%;
+      height: 100%; /* Ensure the container takes the full height */
+      overflow: hidden; /* Hide any overflow */
+      display: flex;
+      justify-content: center; /* Center content horizontally */
+      align-items: center; /* Center content vertically */
+    }
+
+    .slider-content {
+      padding: 0; /* Reset padding to avoid offset */
       text-align: center;
-    }
-    @media #{$sm-layout} {
-      padding: 0 0 0;
 
-      text-align: left;
-    }
-    h3 {
-      font-size: 24px;
-      font-weight: 500;
-
-      margin: 0;
-    }
-    h1 {
-      font-size: 72px;
-      line-height: 97px;
-
-      margin: 6px 0 37px;
-
-      color: #010101;
+      @media #{$xl-layout} {
+        padding: 0;
+      }
       @media #{$lg-layout} {
-        font-size: 52px;
-        line-height: 65px;
+        padding: 0;
       }
       @media #{$md-layout} {
-        font-size: 40px;
-        line-height: 52px;
-
-        margin: 6px 0 20px;
+        padding: 0;
       }
       @media #{$xs-layout} {
-        font-size: 33px;
-        line-height: 48px;
-
-        margin: 6px 0 20px;
-      }
-      @media #{$sm-layout} {
-        font-size: 30px;
-
-        margin: 6px 0 10px;
-      }
-    }
-    .slider-btn {
-      a {
-        border-radius: 50px;
-        font-size: 16px;
-        line-height: 1;
-
-        display: inline-block;
-
-        padding: 19px 50px 21px;
-
-        text-transform: uppercase;
-
-        color: #010101;
-        border: 1px solid #333;
-        @media #{$md-layout} {
-          padding: 15px 35px 17px;
-        }
-        @media #{$xs-layout} {
-          padding: 15px 35px 17px;
-        }
-        &:hover {
-          color: #fff;
-          border: 1px solid $theme-color;
-        }
-      }
-    }
-    &.slider-content-10 {
-      padding-top: 0;
-      @media #{$xs-layout} {
-        display: block;
-
-        width: 100%;
-
+        padding: 0;
         text-align: center;
       }
       @media #{$sm-layout} {
-        text-align: left;
+        padding: 0;
+        text-align: center;
+      }
+
+      h3 {
+        font-size: 24px;
+        font-weight: 500;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 72px;
+        line-height: 97px;
+        margin: 6px 0 37px;
+        color: #010101;
+
+        @media #{$lg-layout} {
+          font-size: 52px;
+          line-height: 65px;
+        }
+        @media #{$md-layout} {
+          font-size: 40px;
+          line-height: 52px;
+          margin: 6px 0 20px;
+        }
+        @media #{$xs-layout} {
+          font-size: 33px;
+          line-height: 48px;
+          margin: 6px 0 20px;
+        }
+        @media #{$sm-layout} {
+          font-size: 30px;
+          margin: 6px 0 10px;
+        }
+      }
+
+      .slider-btn {
+        a {
+          border-radius: 50px;
+          font-size: 16px;
+          line-height: 1;
+          display: inline-block;
+          padding: 19px 50px 21px;
+          text-transform: uppercase;
+          color: #010101;
+          border: 1px solid #333;
+
+          @media #{$md-layout} {
+            padding: 15px 35px 17px;
+          }
+          @media #{$xs-layout} {
+            padding: 15px 35px 17px;
+          }
+
+          &:hover {
+            color: #fff;
+            border: 1px solid $theme-color;
+          }
+        }
+      }
+
+      &.slider-content-10 {
+        padding-top: 0;
+
+        @media #{$xs-layout} {
+          display: block;
+          width: 100%;
+          text-align: center;
+        }
+        @media #{$sm-layout} {
+          text-align: center;
+        }
       }
     }
-  }
-  .slider-single-img {
-    margin: 0 -80px 0 -80px;
-    @media #{$xl-layout} {
-      margin: 0 0 0 0;
+
+    .slider-single-img {
+      margin: 0;
+
+      @media #{$xl-layout} {
+        margin: 0;
+      }
+      @media #{$lg-layout} {
+        margin: 0;
+      }
+      @media #{$md-layout} {
+        margin: 0;
+      }
+      @media #{$xs-layout} {
+        margin: 0;
+      }
     }
-    @media #{$lg-layout} {
-      margin: 0 0 0 0;
+
+    &.single-slider-10 {
+      align-items: center;
     }
-    @media #{$md-layout} {
-      margin: 0 0 0 0;
-    }
-    @media #{$xs-layout} {
-      margin: 0 0 0 0;
-    }
-  }
-  &.single-slider-10 {
-    align-items: center;
   }
 }
+
 
 .swiper-slide .slider-animated-1 * {
   -webkit-animation-duration: 1.3s;

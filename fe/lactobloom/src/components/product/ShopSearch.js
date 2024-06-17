@@ -11,8 +11,11 @@ const ShopSearch = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(`/shop?search=${searchTerm}`);
-  };
+    if (searchTerm) {
+        navigate(`/shop?search=${searchTerm}`);
+    }
+};
+
 
   return (
     <div className="sidebar-widget">
@@ -25,7 +28,7 @@ const ShopSearch = () => {
             value={searchTerm}
             onChange={handleSearchChange}  
           />
-          <button>
+          <button disabled={!searchTerm}>
             <i className="pe-7s-search" />
           </button>
         </form>

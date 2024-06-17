@@ -16,7 +16,6 @@ const Cart = () => {
   const dispatch = useDispatch();
   let { pathname } = useLocation();
   
-  const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
 
   const [cartImages, setCartImages] = useState({});
@@ -132,6 +131,7 @@ const Cart = () => {
                                       <span className="amount old">
                                         {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
+                                      <br/>
                                       <span className="amount">
                                         {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
@@ -172,9 +172,7 @@ const Cart = () => {
                                         cartItem.quantity &&
                                         cartItem.quantity >=
                                           cartItemStock(
-                                            cartItem,
-                                            cartItem.selectedProductColor,
-                                            cartItem.selectedProductSize
+                                            cartItem
                                           )
                                       }
                                     >

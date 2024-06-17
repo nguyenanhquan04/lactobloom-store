@@ -90,30 +90,14 @@ const ShopGridStandard = () => {
         : showAllProducts
         ? products
         : [];
-    const sortedProducts = getSortedProducts(
-      productsToSort,
-      sortType,
-      sortValue
-    );
-    const filteredProducts = getSortedProducts(
-      sortedProducts,
-      filterSortType,
-      filterSortValue
-    );
-    setCurrentData(filteredProducts.slice(offset, offset + pageLimit));
-    setSortedProducts(sortedProducts);
-  }, [
-    searchResult,
-    categoryProducts,
-    brandProducts,
-    offset,
-    products,
-    sortType,
-    sortValue,
-    filterSortType,
-    filterSortValue,
-    showAllProducts
-  ]);
+
+    const sortedProducts = getSortedProducts(productsToSort, sortType, sortValue);
+    const filteredProducts = getSortedProducts(sortedProducts, filterSortType, filterSortValue);
+    const slicedProducts = filteredProducts.slice(offset, offset + pageLimit);
+
+    setCurrentData(slicedProducts);  // Update currentData with paginated subset
+    setSortedProducts(sortedProducts); // Update sortedProducts if needed
+  }, [searchResult, categoryProducts, brandProducts, offset, products, sortType, sortValue, filterSortType, filterSortValue, showAllProducts, pageLimit]);
 
   useEffect(() => {
     const params = new URLSearchParams(search);
@@ -178,7 +162,7 @@ const ShopGridStandard = () => {
                 {/* shop page content default */}
                 <ShopProducts
                   layout={layout}
-                  products={showAllProducts ? products : currentData}
+                  products={currentData}
                 />
 
                 {/* shop product pagination */}
