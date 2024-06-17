@@ -33,11 +33,7 @@ const cartSlice = createSlice({
             } else {
                 const cartItem = state.cartItems.find(
                     item =>
-                        item.productId === product.productId &&
-                        product.selectedProductColor &&
-                        product.selectedProductColor === item.selectedProductColor &&
-                        product.selectedProductSize &&
-                        product.selectedProductSize === item.selectedProductSize &&
+                        item.productId === product.productId 
                         (product.cartItemId ? product.cartItemId === item.cartItemId : true)
                 );
                 if(!cartItem){
@@ -46,7 +42,7 @@ const cartSlice = createSlice({
                         quantity: product.quantity ? product.quantity : 1,
                         cartItemId: uuidv4()
                     });
-                } else if (cartItem !== undefined && (cartItem.selectedProductColor !== product.selectedProductColor || cartItem.selectedProductSize !== product.selectedProductSize)) {
+                } else if (cartItem !== undefined) {
                     state.cartItems = [
                         ...state.cartItems,
                         {
@@ -61,8 +57,6 @@ const cartSlice = createSlice({
                             return {
                                 ...item,
                                 quantity: product.quantity ? item.quantity + product.quantity : item.quantity + 1,
-                                selectedProductColor: product.selectedProductColor,
-                                selectedProductSize: product.selectedProductSize
                             }
                         }
                         return item;

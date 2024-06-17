@@ -10,22 +10,18 @@ const Checkout = () => {
   let cartTotalPrice = 0;
 
   let { pathname } = useLocation();
-  const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
 
   return (
     <Fragment>
-      <SEO
-        titleTemplate="Checkout"
-        description="Lactobloom Checkout Page."
-      />
+      <SEO titleTemplate="Checkout" description="Lactobloom Checkout Page." />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Checkout", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Checkout", path: process.env.PUBLIC_URL + pathname },
+          ]}
         />
         <div className="checkout-area pt-95 pb-100">
           <div className="container">
@@ -33,69 +29,22 @@ const Checkout = () => {
               <div className="row">
                 <div className="col-lg-7">
                   <div className="billing-info-wrap">
-                    <h3>Billing Details</h3>
+                    <h3>Order Details</h3>
                     <div className="row">
-                      <div className="col-lg-6 col-md-6">
+                      <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>First Name</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Last Name</label>
+                          <label>Full Name</label>
                           <input type="text" />
                         </div>
                       </div>
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>Company Name</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-select mb-20">
-                          <label>Country</label>
-                          <select>
-                            <option>Select a country</option>
-                            <option>Azerbaijan</option>
-                            <option>Bahamas</option>
-                            <option>Bahrain</option>
-                            <option>Bangladesh</option>
-                            <option>Barbados</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-info mb-20">
-                          <label>Street Address</label>
+                          <label>Address</label>
                           <input
                             className="billing-address"
                             placeholder="House number and street name"
                             type="text"
                           />
-                          <input
-                            placeholder="Apartment, suite, unit etc."
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-info mb-20">
-                          <label>Town / City</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>State / County</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Postcode / ZIP</label>
-                          <input type="text" />
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6">
@@ -104,14 +53,7 @@ const Checkout = () => {
                           <input type="text" />
                         </div>
                       </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Email Address</label>
-                          <input type="text" />
-                        </div>
-                      </div>
                     </div>
-
                     <div className="additional-info-wrap">
                       <h4>Additional information</h4>
                       <div className="additional-info">
@@ -144,18 +86,16 @@ const Checkout = () => {
                                 cartItem.price,
                                 cartItem.discount
                               );
-                              const finalProductPrice = (
-                                cartItem.price * 1
-                              );
-                              const finalDiscountedPrice = (
-                                discountedPrice * 1
-                              );
+                              const finalProductPrice = cartItem.price;
+                              const finalDiscountedPrice = discountedPrice * 1;
 
                               discountedPrice != null
                                 ? (cartTotalPrice +=
-                                    finalDiscountedPrice * cartItem.quantity)
+                                    finalDiscountedPrice *
+                                    cartItem.quantity).toLocaleString("vi-VN")
                                 : (cartTotalPrice +=
-                                    finalProductPrice * cartItem.quantity);
+                                    finalProductPrice *
+                                    cartItem.quantity).toLocaleString("vi-VN");
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
