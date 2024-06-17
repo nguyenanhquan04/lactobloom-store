@@ -16,6 +16,7 @@ import AddCategory from "layouts/category/addCategory/add";
 import AddBrand from "layouts/brand/addBrand/add";
 import EditCategory from "layouts/category/editCagetory/edit";
 import EditBrand from "layouts/brand/editBrand/edit";
+import ViewForm from "layouts/product/viewProduct/view";
 
 
 export default function App() {
@@ -108,6 +109,7 @@ export default function App() {
         {getRoutes(routes)}
 
         {/* Routes of product */}
+        <Route path="/products/view/:productId" element={<ViewForm />} /> 
         <Route path="/products/:productId" element={<EditForm />} /> 
         <Route path="/products/new" element={<AddForm />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
