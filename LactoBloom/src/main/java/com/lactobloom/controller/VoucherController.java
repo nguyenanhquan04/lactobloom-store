@@ -17,9 +17,9 @@ public class VoucherController {
     @Autowired
     private IVoucherService voucherService;
 
-    @PostMapping("/save/user/{userId}")
-    public ResponseEntity<VoucherDto> saveVoucher(@RequestBody VoucherDto voucherDto, @PathVariable int userId) {
-        return new ResponseEntity<>(voucherService.saveVoucher(voucherDto, userId), HttpStatus.CREATED);
+    @PostMapping("/save")
+    public ResponseEntity<VoucherDto> saveVoucher(@RequestBody VoucherDto voucherDto) {
+        return new ResponseEntity<>(voucherService.saveVoucher(voucherDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
@@ -32,9 +32,9 @@ public class VoucherController {
         return new ResponseEntity<>(voucherService.getVoucherById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}/user/{userId}")
-    public ResponseEntity<VoucherDto> updateVoucher(@PathVariable int id, @PathVariable int userId, @RequestBody VoucherDto voucherDto) {
-        return new ResponseEntity<>(voucherService.updateVoucher(voucherDto, id, userId), HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<VoucherDto> updateVoucher(@PathVariable int id, @RequestBody VoucherDto voucherDto) {
+        return new ResponseEntity<>(voucherService.updateVoucher(voucherDto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

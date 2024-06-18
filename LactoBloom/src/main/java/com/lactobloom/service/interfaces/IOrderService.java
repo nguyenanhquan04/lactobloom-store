@@ -6,9 +6,9 @@ import com.lactobloom.model.Order;
 import java.util.List;
 
 public interface IOrderService {
-    OrderDto saveOrder(OrderDto orderDto, int userId, int voucherId);
+    OrderDto saveOrder(OrderDto orderDto, Integer voucherId);
     List<OrderDto> getAllOrders();
     OrderDto getOrderById(int id);
-    OrderDto updateOrder(OrderDto orderDto, int id, int userId, int voucherId);
+    OrderDto updateOrder(OrderDto orderDto, int id);
     void deleteOrder(int id);
 }

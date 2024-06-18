@@ -8,6 +8,7 @@ import com.lactobloom.repository.UserRepository;
 import com.lactobloom.repository.VoucherRepository;
 import com.lactobloom.service.interfaces.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,14 +28,19 @@ public class OrderService implements IOrderService {
     private VoucherRepository voucherRepository;
 
     @Override
-    public OrderDto saveOrder(OrderDto orderDto, int userId, int voucherId) {
+    public OrderDto saveOrder(OrderDto orderDto, Integer voucherId) {
         Order order = mapToEntity(orderDto);
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
-        Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(() ->
-                new ResourceNotFoundException("Voucher", "Id", voucherId));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        if (voucherId != null) {
+            Voucher existingVoucher = voucherRepository.findById(voucherId).orElseThrow(() ->
+                    new ResourceNotFoundException("Voucher", "Id", voucherId));
+            existingVoucher.setAvailable(false);
+            Voucher voucher = voucherRepository.save(existingVoucher);
+            order.setVoucher(voucher);
+        }
         order.setUser(user);
-        order.setVoucher(voucher);
         order.setOrderDate(LocalDateTime.now());
         Order newOrder = orderRepository.save(order);
         return mapToDto(newOrder);
@@ -54,22 +60,16 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderDto updateOrder(OrderDto orderDto, int id, int userId, int voucherId) {
+    public OrderDto updateOrder(OrderDto orderDto, int id) {
         Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
-        Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(() ->
-                new ResourceNotFoundException("Voucher", "Id", voucherId));
-        existingOrder.setUser(user);
         existingOrder.setFullName(orderDto.getFullName());
         existingOrder.setEmail(orderDto.getEmail());
         existingOrder.setPhone(orderDto.getPhone());
         existingOrder.setAddress(orderDto.getAddress());
-        existingOrder.setVoucher(voucher);
         existingOrder.setShippingFee(orderDto.getShippingFee());
         existingOrder.setTotalPrice(orderDto.getTotalPrice());
-        existingOrder.setOrderDate(LocalDateTime.now());
+        existingOrder.setStatus(orderDto.isStatus());
         return mapToDto(orderRepository.save(existingOrder));
     }
 
@@ -88,7 +88,8 @@ public class OrderService implements IOrderService {
         orderResponse.setPhone(order.getPhone());
         orderResponse.setAddress(order.getAddress());
         orderResponse.setShippingFee(order.getShippingFee());
-        orderResponse.setTotalPrice(orderResponse.getTotalPrice());
+        orderResponse.setTotalPrice(order.getTotalPrice());
+        orderResponse.setStatus(order.isStatus());
         orderResponse.setOrderDate(order.getOrderDate());
         return orderResponse;
     }
@@ -101,6 +102,7 @@ public class OrderService implements IOrderService {
         order.setAddress(orderDto.getAddress());
         order.setShippingFee(orderDto.getShippingFee());
         order.setTotalPrice(orderDto.getTotalPrice());
+        order.setStatus(false);
         return order;
     }
 }

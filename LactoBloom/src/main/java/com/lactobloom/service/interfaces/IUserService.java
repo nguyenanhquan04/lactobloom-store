@@ -1,15 +1,16 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.User;
+import com.lactobloom.dto.UserDto;
 
 import java.util.List;
 
 public interface IUserService {
-    User saveUser(User user);
-    List<User> getAllUsers();
-    User getUserById(int id);
-    User updateUser(User user, int id);
+    List<UserDto> getAllUsers();
+    UserDto getUserInfo();
+    UserDto getUserById(int id);
+    UserDto updateUserInfo (UserDto userDto);
+    UserDto updateUser(UserDto userDto, int id);
     void deleteUser(int id);
-    List<User> searchUsersByFullName(String fullName);
-    User findByEmail(String email);
+    List<UserDto> searchUsersByFullName(String fullName);
+    UserDto findByEmail(String email);
 }

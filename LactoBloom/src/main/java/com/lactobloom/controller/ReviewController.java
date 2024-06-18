@@ -18,9 +18,9 @@ public class ReviewController {
     @Autowired
     private IReviewService reviewService;
 
-    @PostMapping("/save/user/{userId}/product/{productId}")
-    public ResponseEntity<ReviewDto> saveReview(@RequestBody ReviewDto reviewDto, @PathVariable int userId, @PathVariable int productId) {
-        return new ResponseEntity<>(reviewService.saveReview(reviewDto, userId, productId), HttpStatus.CREATED);
+    @PostMapping("/save/product/{productId}")
+    public ResponseEntity<ReviewDto> saveReview(@RequestBody ReviewDto reviewDto, @PathVariable int productId) {
+        return new ResponseEntity<>(reviewService.saveReview(reviewDto, productId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
@@ -33,9 +33,9 @@ public class ReviewController {
         return new ResponseEntity<>(reviewService.getReviewById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}/user/{userId}/product/{productId}")
-    public ResponseEntity<ReviewDto> updateReview(@PathVariable int id, @PathVariable int userId, @PathVariable int productId, @RequestBody ReviewDto reviewDto) {
-        return new ResponseEntity<>(reviewService.updateReview(reviewDto, id, userId, productId), HttpStatus.OK);
+    @PutMapping("/update/{id}/product/{productId}")
+    public ResponseEntity<ReviewDto> updateReview(@PathVariable int id, @PathVariable int productId, @RequestBody ReviewDto reviewDto) {
+        return new ResponseEntity<>(reviewService.updateReview(reviewDto, id, productId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

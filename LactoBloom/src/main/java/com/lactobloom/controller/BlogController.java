@@ -22,9 +22,9 @@ public class BlogController {
     @Autowired
     private IBlogService blogService;
 
-    @PostMapping("/save/category/{categoryId}/user/{userId}")
-    public ResponseEntity<BlogDto> saveBlog(@PathVariable int categoryId, @PathVariable int userId, @RequestBody BlogDto blogDto) {
-        return new ResponseEntity<>(blogService.saveBlog(blogDto, categoryId, userId), HttpStatus.CREATED);
+    @PostMapping("/save/category/{categoryId}")
+    public ResponseEntity<BlogDto> saveBlog(@PathVariable int categoryId, @RequestBody BlogDto blogDto) {
+        return new ResponseEntity<>(blogService.saveBlog(blogDto, categoryId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
@@ -37,9 +37,9 @@ public class BlogController {
         return new ResponseEntity<>(blogService.getBlogById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}/category/{categoryId}/user/{userId}")
-    public ResponseEntity<BlogDto> updateBlog(@PathVariable int id, @PathVariable int categoryId, @PathVariable int userId, @RequestBody BlogDto blogDto) {
-        return new ResponseEntity<>(blogService.updateBlog(blogDto, id, categoryId, userId), HttpStatus.OK);
+    @PutMapping("/update/{id}/category/{categoryId}")
+    public ResponseEntity<BlogDto> updateBlog(@PathVariable int id, @PathVariable int categoryId, @RequestBody BlogDto blogDto) {
+        return new ResponseEntity<>(blogService.updateBlog(blogDto, id, categoryId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

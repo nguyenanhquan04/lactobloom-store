@@ -61,14 +61,6 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Token> tokens;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user1")
-    @JsonManagedReference
-    private List<Chat> user1Chats;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user2")
-    @JsonManagedReference
-    private List<Chat> user2Chats;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
     private List<Blog> blogs;

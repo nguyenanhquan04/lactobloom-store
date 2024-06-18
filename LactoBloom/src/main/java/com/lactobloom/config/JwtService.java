@@ -32,32 +32,33 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(UserDetails userDetails, int id) {
+        return generateToken(new HashMap<>(), userDetails, id);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, int id) {
+        return buildToken(extraClaims, userDetails, id, jwtExpiration);
     }
 
 //    public String generateRefreshToken(UserDetails userDetails) {
 //        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
 //    }
 
-    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, int id, long expiration) {
 //        extraClaims.put("userId", userDetails.getUserId);
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
+                .claim("userId", id)
+                .claim("role", buildRole(userDetails))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .claim("scope", buildScope(userDetails))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private String buildScope (UserDetails userDetails){
+    private String buildRole (UserDetails userDetails){
         StringBuilder scopeBuilder = new StringBuilder();
         if (userDetails.getAuthorities() != null) {
             userDetails.getAuthorities().forEach(authority ->

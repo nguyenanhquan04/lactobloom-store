@@ -10,6 +10,7 @@ import com.lactobloom.repository.ReviewRepository;
 import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,10 +30,11 @@ public class ReviewService implements IReviewService {
     private ProductRepository productRepository;
 
     @Override
-    public ReviewDto saveReview(ReviewDto reviewDto, int userId, int productId) {
+    public ReviewDto saveReview(ReviewDto reviewDto, int productId) {
         Review review = mapToEntity(reviewDto);
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         review.setUser(user);
@@ -56,14 +58,11 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public ReviewDto updateReview(ReviewDto reviewDto, int id, int userId, int productId) {
+    public ReviewDto updateReview(ReviewDto reviewDto, int id, int productId) {
         Review existingReview = reviewRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Review", "Id", id));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
-        existingReview.setUser(user);
         existingReview.setProduct(product);
         existingReview.setRate(reviewDto.getRate());
         existingReview.setComment(reviewDto.getComment());

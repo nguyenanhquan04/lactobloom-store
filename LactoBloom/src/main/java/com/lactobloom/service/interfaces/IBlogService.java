@@ -5,10 +5,10 @@ import com.lactobloom.dto.BlogDto;
 import java.util.List;
 
 public interface IBlogService {
-    BlogDto saveBlog(BlogDto blogDto, int categoryId, int userId);
+    BlogDto saveBlog(BlogDto blogDto, int categoryId);
     List<BlogDto> getAllBlogs();
     BlogDto getBlogById(int id);
-    BlogDto updateBlog(BlogDto blogDto, int id, int categoryId, int userId);
+    BlogDto updateBlog(BlogDto blogDto, int id, int categoryId);
     void deleteBlog(int id);
     List<BlogDto> searchBlogsByTitle(String title);
 }

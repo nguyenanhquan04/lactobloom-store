@@ -56,6 +56,10 @@ public class Order {
     @NotNull(message = "Total price must not be null")
     private double totalPrice;
 
+    @Column(name = "Status", nullable = false)
+    @NotNull(message = "Status must not be null")
+    private boolean status;
+
     @Column(name = "Order_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime orderDate;
 

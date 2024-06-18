@@ -23,11 +23,8 @@ public class VoucherService implements IVoucherService {
     private UserRepository userRepository;
 
     @Override
-    public VoucherDto saveVoucher(VoucherDto voucherDto, int userId) {
+    public VoucherDto saveVoucher(VoucherDto voucherDto) {
         Voucher voucher = mapToEntity(voucherDto);
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
-        voucher.setUser(user);
         Voucher newVoucher = voucherRepository.save(voucher);
         return mapToDto(newVoucher);
     }
@@ -46,12 +43,9 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
-    public VoucherDto updateVoucher(VoucherDto voucherDto, int id, int userId) {
+    public VoucherDto updateVoucher(VoucherDto voucherDto, int id) {
         Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Voucher", "Id", id));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
-        existingVoucher.setUser(user);
         existingVoucher.setPoint(voucherDto.getPoint());
         existingVoucher.setDiscount(voucherDto.getDiscount());
         existingVoucher.setExpirationDate(voucherDto.getExpirationDate());

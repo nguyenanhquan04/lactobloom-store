@@ -1,6 +1,7 @@
 package com.lactobloom.service;
 
-import com.lactobloom.dto.ProductDto;
+import com.lactobloom.dto.ProductRequest;
+import com.lactobloom.dto.ProductResponse;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Brand;
 import com.lactobloom.model.Category;
@@ -28,8 +29,8 @@ public class ProductService implements IProductService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public ProductDto saveProduct(int brandId, int categoryId, ProductDto productDto) {
-        Product product = mapToEntity(productDto);
+    public ProductResponse saveProduct(int brandId, int categoryId, ProductRequest productRequest) {
+        Product product = mapToEntity(productRequest);
         Brand brand = brandRepository.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", brandId));
         Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
@@ -37,38 +38,38 @@ public class ProductService implements IProductService {
         product.setBrand(brand);
         product.setCategory(category);
         Product newProduct = productRepository.save(product);
-        return mapToDto(newProduct);
+        return mapToResponse(newProduct);
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         List<Product> productList = productRepository.findAll();
-        return productList.stream().map(this::mapToDto).collect(Collectors.toList());
+        return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
-    public ProductDto getProductById(int id) {
+    public ProductResponse getProductById(int id) {
         Product product = productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
-        return mapToDto(product);
+        return mapToResponse(product);
     }
 
     @Override
-    public ProductDto updateProduct(int id, int brandId, int categoryId, ProductDto productDto) {
+    public ProductResponse updateProduct(int id, int brandId, int categoryId, ProductRequest productRequest) {
         Product existingProduct = productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         Brand brand = brandRepository.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", brandId));
         Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", categoryId));
-        existingProduct.setProductName(productDto.getProductName());
+        existingProduct.setProductName(productRequest.getProductName());
         existingProduct.setBrand(brand);
         existingProduct.setCategory(category);
-        existingProduct.setDescription(productDto.getDescription());
-        existingProduct.setPrice(productDto.getPrice());
-        existingProduct.setDiscount(productDto.getDiscount());
-        existingProduct.setStock(productDto.getStock());
-        return mapToDto(productRepository.save(existingProduct));
+        existingProduct.setDescription(productRequest.getDescription());
+        existingProduct.setPrice(productRequest.getPrice());
+        existingProduct.setDiscount(productRequest.getDiscount());
+        existingProduct.setStock(productRequest.getStock());
+        return mapToResponse(productRepository.save(existingProduct));
     }
 
     @Override
@@ -79,25 +80,27 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductDto> searchProductsByName(String productName) {
+    public List<ProductResponse> searchProductsByName(String productName) {
         List<Product> productList = productRepository.findByProductNameContaining(productName);
-        return productList.stream().map(this::mapToDto).collect(Collectors.toList());
+        return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductDto> getProductsByCategoryId(int categoryId) {
-        return productRepository.findByCategoryCategoryId(categoryId).stream().map(this::mapToDto).collect(Collectors.toList());
+    public List<ProductResponse> getProductsByCategoryId(int categoryId) {
+        return productRepository.findByCategoryCategoryId(categoryId).stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductDto> getProductsByBrandId(int brandId) {
-        return productRepository.findByBrandBrandId(brandId).stream().map(this::mapToDto).collect(Collectors.toList());
+    public List<ProductResponse> getProductsByBrandId(int brandId) {
+        return productRepository.findByBrandBrandId(brandId).stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
-    private ProductDto mapToDto (Product product){
-        ProductDto productResponse = new ProductDto();
+    private ProductResponse mapToResponse (Product product){
+        ProductResponse productResponse = new ProductResponse();
         productResponse.setProductId(product.getProductId());
         productResponse.setProductName(product.getProductName());
+        productResponse.setBrandName(product.getBrand().getBrandName());
+        productResponse.setCategoryName(product.getCategory().getCategoryName());
         productResponse.setDescription(product.getDescription());
         productResponse.setPrice(product.getPrice());
         productResponse.setDiscount(product.getDiscount());
@@ -105,13 +108,13 @@ public class ProductService implements IProductService {
         return productResponse;
     }
 
-    private Product mapToEntity(ProductDto productDto){
+    private Product mapToEntity(ProductRequest productRequest){
         Product product = new Product();
-        product.setProductName(productDto.getProductName());
-        product.setDescription(productDto.getDescription());
-        product.setPrice(productDto.getPrice());
-        product.setDiscount(productDto.getDiscount());
-        product.setStock(productDto.getStock());
+        product.setProductName(productRequest.getProductName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setDiscount(productRequest.getDiscount());
+        product.setStock(productRequest.getStock());
         return product;
     }
 }

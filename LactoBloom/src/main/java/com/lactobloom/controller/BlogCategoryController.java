@@ -5,6 +5,7 @@ import com.lactobloom.service.interfaces.IBlogCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class BlogCategoryController {
     @Autowired
     private IBlogCategoryService blogCategoryService;
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PostMapping("/save")
     public ResponseEntity<BlogCategoryDto> saveBlogCategory(@RequestBody BlogCategoryDto blogCategoryDto) {
         return new ResponseEntity<>(blogCategoryService.saveBlogCategory(blogCategoryDto), HttpStatus.CREATED);

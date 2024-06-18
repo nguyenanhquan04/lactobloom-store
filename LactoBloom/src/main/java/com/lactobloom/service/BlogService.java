@@ -10,6 +10,7 @@ import com.lactobloom.repository.BlogRepository;
 import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,15 +30,15 @@ public class BlogService implements IBlogService {
     private UserRepository userRepository;
 
     @Override
-    public BlogDto saveBlog(BlogDto blogDto, int categoryId, int userId) {
+    public BlogDto saveBlog(BlogDto blogDto, int categoryId) {
         Blog blog = mapToEntity(blogDto);
         BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
             new ResourceNotFoundException("Blog", "Id", categoryId));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
         blog.setBlogCategory(blogCategory);
         blog.setUser(user);
-        blog.setPublishDate(LocalDateTime.now());
         Blog newBlog = blogRepository.save(blog);
         return mapToDto(newBlog);
     }
@@ -56,18 +57,18 @@ public class BlogService implements IBlogService {
     }
 
     @Override
-    public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId, int userId) {
+    public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId) {
         Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
         BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Blog Category", "Id", categoryId));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
         existingBlog.setBlogCategory(blogCategory);
         existingBlog.setUser(user);
         existingBlog.setTitle(blogDto.getTitle());
         existingBlog.setContent(blogDto.getContent());
-        existingBlog.setPublishDate(LocalDateTime.now());
         return mapToDto(blogRepository.save(existingBlog));
     }
 
@@ -97,6 +98,7 @@ public class BlogService implements IBlogService {
         Blog blog = new Blog();
         blog.setTitle(blogDto.getTitle());
         blog.setContent(blogDto.getContent());
+        blog.setPublishDate(blogDto.getPublishDate());
         return blog;
     }
 }

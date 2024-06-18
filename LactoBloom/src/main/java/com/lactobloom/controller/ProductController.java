@@ -1,6 +1,7 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.dto.ProductDto;
+import com.lactobloom.dto.ProductRequest;
+import com.lactobloom.dto.ProductResponse;
 import com.lactobloom.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,23 +19,23 @@ public class ProductController {
     private IProductService productService;
 
     @PostMapping("/save/brand/{brandId}/category/{categoryId}")
-    public ResponseEntity<ProductDto> saveProduct(@PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductDto productDto) {
-        return new ResponseEntity<>(productService.saveProduct(brandId, categoryId, productDto), HttpStatus.CREATED);
+    public ResponseEntity<ProductResponse> saveProduct(@PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductRequest productRequest) {
+        return new ResponseEntity<>(productService.saveProduct(brandId, categoryId, productRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<ProductDto> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable int id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable int id) {
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}/brand/{brandId}/category/{categoryId}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductDto productDto) {
-        return new ResponseEntity<>(productService.updateProduct(id, brandId, categoryId, productDto), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable int id, @PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductRequest productRequest) {
+        return new ResponseEntity<>(productService.updateProduct(id, brandId, categoryId, productRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -44,17 +45,17 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public List<ProductDto> searchProductsByName(@RequestParam String productName) {
+    public List<ProductResponse> searchProductsByName(@RequestParam String productName) {
         return productService.searchProductsByName(productName);
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<ProductDto> getProductsByCategoryId(@PathVariable int categoryId) {
+    public List<ProductResponse> getProductsByCategoryId(@PathVariable int categoryId) {
         return productService.getProductsByCategoryId(categoryId);
     }
 
     @GetMapping("/brand/{brandId}")
-    public List<ProductDto> getProductsByBrandId(@PathVariable int brandId) {
+    public List<ProductResponse> getProductsByBrandId(@PathVariable int brandId) {
         return productService.getProductsByBrandId(brandId);
     }
 }
