@@ -14,16 +14,6 @@ CREATE TABLE User (
     Point INT DEFAULT 0
 );
 
-CREATE TABLE Chat (
-    Chat_id INT AUTO_INCREMENT PRIMARY KEY,
-    User1_id INT NOT NULL,
-    User2_id INT NOT NULL,
-    Message TEXT NOT NULL,
-    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (User1_id) REFERENCES User(User_id),
-    FOREIGN KEY (User2_id) REFERENCES User(User_id)
-);
-
 CREATE TABLE BlogCategory (
     Blog_category_id INT AUTO_INCREMENT PRIMARY KEY,
     Blog_category_name VARCHAR(50) NOT NULL
@@ -129,48 +119,16 @@ CREATE TABLE OrderDetail (
 
 -- User table
 INSERT INTO User (Full_name, Role, Email, Password, Phone, Address, Point) VALUES
-('John Doe', 'MEMBER', 'john.doe@example.com', '123', '1234567890', '123 Main St', 10),
-('Jane Smith', 'STAFF', 'jane.smith@example.com', '123', '0987654321', '456 Elm St', 20),
-('Michael Brown', 'ADMIN', 'michael.brown@example.com', '123', '1231231234', '789 Maple St', 30),
-('Emily Davis', 'MEMBER', 'emily.davis@example.com', '123', '9879879876', '101 Oak St', 40),
-('Chris Wilson', 'STAFF', 'chris.wilson@example.com', '123', '6546546543', '102 Pine St', 50),
-('Amanda Taylor', 'ADMIN', 'amanda.taylor@example.com', '123', '3213213211', '103 Birch St', 60),
-('Joshua Moore', 'MEMBER', 'joshua.moore@example.com', '123', '5555555555', '104 Cedar St', 70),
-('Megan Jackson', 'STAFF', 'megan.jackson@example.com', '123', '4444444444', '105 Spruce St', 80),
-('Matthew White', 'ADMIN', 'matthew.white@example.com', '123', '3333333333', '106 Fir St', 90),
-('Laura Harris', 'MEMBER', 'laura.harris@example.com', '123', '2222222222', '107 Ash St', 100);
-
--- Chat table
-INSERT INTO Chat (User1_id, User2_id, Message, Timestamp) VALUES
-(1, 3, 'I need help finding the right milk for my baby.', '2023-05-10 11:00:00'),
-(3, 1, 'Sure, what age is your baby?', '2023-05-10 11:01:00'),
-(1, 3, 'She is 6 months old.', '2023-05-10 11:02:00'),
-(3, 1, 'We have a great selection for 0-1 year olds. Would you like some recommendations?', '2023-05-10 11:03:00'),
-(1, 3, 'Yes, please. That would be great.', '2023-05-10 11:04:00'),
-
-(4, 6, 'Hi, I have a question about my recent order.', '2023-05-11 09:00:00'),
-(6, 4, 'Sure, how can I help?', '2023-05-11 09:01:00'),
-(4, 6, 'I received the wrong product.', '2023-05-11 09:02:00'),
-(6, 4, 'I apologize for the mistake. Could you please provide your order number?', '2023-05-11 09:03:00'),
-(4, 6, 'The order number is 12345.', '2023-05-11 09:04:00'),
-(6, 4, 'Thank you. I will look into this and get back to you shortly.', '2023-05-11 09:05:00'),
-
-(7, 9, 'Can I pre-order a product that is out of stock?', '2023-05-12 14:00:00'),
-(9, 7, 'Yes, you can. Which product are you interested in?', '2023-05-12 14:01:00'),
-(7, 9, 'I want to pre-order the Similac Advance for 1-2 years.', '2023-05-12 14:02:00'),
-(9, 7, 'I can help with that. How many units would you like to pre-order?', '2023-05-12 14:03:00'),
-(7, 9, 'I would like to pre-order 2 units.', '2023-05-12 14:04:00'),
-(9, 7, 'Your pre-order has been placed. You will be notified once the product is back in stock.', '2023-05-12 14:05:00'),
-
-(10, 9, 'Do you have any discounts available?', '2023-05-13 16:00:00'),
-(9, 10, 'Yes, we have several discount vouchers available. How can I assist you?', '2023-05-13 16:01:00'),
-(10, 9, 'I am looking for a 10% discount voucher.', '2023-05-13 16:02:00'),
-(9, 10, 'I can provide you with a 10% discount voucher. The code is DISC10B.', '2023-05-13 16:03:00'),
-(10, 9, 'Thank you so much!', '2023-05-13 16:04:00'),
-
-(4, 3, 'Can you recommend a milk for toddlers?', '2023-05-14 10:00:00'),
-(3, 4, 'Of course. For toddlers over 2 years old, I recommend Similac Go & Grow or Enfamil Toddler.', '2023-05-14 10:01:00'),
-(4, 3, 'Thank you, I will check them out.', '2023-05-14 10:02:00');
+('John Doe', 'MEMBER', 'john.doe@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1234567890', '123 Main St', 10),
+('Jane Smith', 'STAFF', 'jane.smith@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '0987654321', '456 Elm St', 20),
+('Michael Brown', 'ADMIN', 'michael.brown@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1231231234', '789 Maple St', 30),
+('Emily Davis', 'MEMBER', 'emily.davis@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '9879879876', '101 Oak St', 40),
+('Chris Wilson', 'STAFF', 'chris.wilson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '6546546543', '102 Pine St', 50),
+('Amanda Taylor', 'ADMIN', 'amanda.taylor@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3213213211', '103 Birch St', 60),
+('Joshua Moore', 'MEMBER', 'joshua.moore@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '5555555555', '104 Cedar St', 70),
+('Megan Jackson', 'STAFF', 'megan.jackson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '4444444444', '105 Spruce St', 80),
+('Matthew White', 'ADMIN', 'matthew.white@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3333333333', '106 Fir St', 90),
+('Laura Harris', 'MEMBER', 'laura.harris@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '2222222222', '107 Ash St', 100);
 
 -- Blog table
 INSERT INTO BlogCategory (Blog_category_name) VALUES
