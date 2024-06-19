@@ -10,6 +10,7 @@ import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class BlogController {
     @Autowired
     private IBlogService blogService;
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PostMapping("/save/category/{categoryId}")
     public ResponseEntity<BlogDto> saveBlog(@PathVariable int categoryId, @RequestBody BlogDto blogDto) {
         return new ResponseEntity<>(blogService.saveBlog(blogDto, categoryId), HttpStatus.CREATED);
@@ -37,11 +39,13 @@ public class BlogController {
         return new ResponseEntity<>(blogService.getBlogById(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/update/{id}/category/{categoryId}")
     public ResponseEntity<BlogDto> updateBlog(@PathVariable int id, @PathVariable int categoryId, @RequestBody BlogDto blogDto) {
         return new ResponseEntity<>(blogService.updateBlog(blogDto, id, categoryId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBlog(@PathVariable int id) {
         blogService.deleteBlog(id);

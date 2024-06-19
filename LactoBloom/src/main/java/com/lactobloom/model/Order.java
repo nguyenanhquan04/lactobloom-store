@@ -39,20 +39,23 @@ public class Order {
     @NotNull(message = "Phone must not be null")
     private String phone;
 
-    @Column(name = "Address", nullable = false)
+    @Column(name = "Address", columnDefinition = "TEXT", nullable = false)
     @NotNull(message = "Address must not be null")
     private String address;
+
+    @Column(name = "Note", columnDefinition = "TEXT")
+    private String note;
 
     @ManyToOne
     @JoinColumn(name = "Voucher_id")
     @JsonBackReference
     private Voucher voucher;
 
-    @Column(name = "Shipping_fee", nullable = false)
+    @Column(name = "Shipping_fee", columnDefinition = "DECIMAL(10, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Shipping fee must not be null")
     private double shippingFee;
 
-    @Column(name = "Total_price", nullable = false)
+    @Column(name = "Total_price", columnDefinition = "DECIMAL(15, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Total price must not be null")
     private double totalPrice;
 

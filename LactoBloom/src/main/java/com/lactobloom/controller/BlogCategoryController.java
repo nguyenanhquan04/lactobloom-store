@@ -29,16 +29,19 @@ public class BlogCategoryController {
         return blogCategoryService.getAllBlogCategories();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/get/{id}")
     public ResponseEntity<BlogCategoryDto> getBlogCategoryById(@PathVariable int id) {
         return new ResponseEntity<>(blogCategoryService.getBlogCategoryById(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
     public ResponseEntity<BlogCategoryDto> updateBlogCategory(@PathVariable int id, @RequestBody BlogCategoryDto blogCategoryDto) {
         return new ResponseEntity<>(blogCategoryService.updateBlogCategory(blogCategoryDto, id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBlogCategory(@PathVariable int id) {
         blogCategoryService.deleteBlogCategory(id);

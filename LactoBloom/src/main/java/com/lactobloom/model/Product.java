@@ -24,24 +24,24 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "Brand_id")
     @JsonBackReference
-//    @NotNull(message = "Brand must not be null")
+    @NotNull(message = "Brand must not be null")
     private Brand brand;
 
     @ManyToOne
     @JoinColumn(name = "Category_id")
     @JsonBackReference
-//    @NotNull(message = "Category must not be null")
+    @NotNull(message = "Category must not be null")
     private Category category;
 
-    @Column(name = "Description", length = 10000)
-    @NotNull(message = "Description must not be null")
+    @Column(name = "Description", columnDefinition = "TEXT")
+//    @NotNull(message = "Description must not be null")
     private String description;
 
-    @Column(name = "Price", nullable = false)
+    @Column(name = "Price", columnDefinition = "DECIMAL(15, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Price must not be null")
     private double price;
 
-    @Column(name = "Discount", columnDefinition = "DECIMAL(5, 2) DEFAULT 0")
+    @Column(name = "Discount", columnDefinition = "DECIMAL(5, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Discount must not be null")
     private double discount;
 
@@ -51,7 +51,7 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     @JsonManagedReference
-    private List<Review> reviews;
+    private List<ProductReview> productReviews;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     @JsonManagedReference

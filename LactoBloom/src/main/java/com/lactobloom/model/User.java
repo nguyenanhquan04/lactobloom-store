@@ -51,7 +51,7 @@ public class User implements UserDetails {
     @Column(name = "Phone")
     private String phone;
 
-    @Column(name = "Address")
+    @Column(name = "Address", columnDefinition = "TEXT")
     private String address;
 
     @Column(name = "Point", columnDefinition = "INT DEFAULT 0")
@@ -67,7 +67,11 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
-    private List<Review> reviews;
+    private List<ProductReview> productReviews;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
+    private List<BlogReview> blogReviews;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference

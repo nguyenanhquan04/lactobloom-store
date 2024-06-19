@@ -34,10 +34,18 @@ public class OrderDetailService implements IOrderDetailService {
                 new ResourceNotFoundException("Order", "Id", orderId));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
+        product.setStock(product.getStock() - orderDetail.getQuantity());
+        Product boughtProduct = productRepository.save(product);
         orderDetail.setOrder(order);
-        orderDetail.setProduct(product);
+        orderDetail.setProduct(boughtProduct);
         OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
         return mapToDto(newOrderDetail);
+    }
+
+    @Override
+    public List<OrderDetailDto> getOrderDetailsByOrder(int orderId) {
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
+        return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override

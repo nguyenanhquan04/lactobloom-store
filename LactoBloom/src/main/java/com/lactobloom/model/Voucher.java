@@ -25,7 +25,7 @@ public class Voucher {
     @JsonBackReference
     private User user;
 
-    @Column(name = "Discount", nullable = false)
+    @Column(name = "Discount", columnDefinition = "DECIMAL(5, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Discount must not be null")
     private double discount;
 

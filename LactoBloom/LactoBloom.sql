@@ -14,9 +14,19 @@ CREATE TABLE User (
     Point INT DEFAULT 0
 );
 
+CREATE TABLE Token (
+	Token_id INT AUTO_INCREMENT PRIMARY KEY,
+    Token VARCHAR(255) NOT NULL,
+    Token_type ENUM('BEARER') DEFAULT 'BEARER',
+    Expired BIT NOT NULL,
+    Revoked BIT NOT NULL,
+    User_id INT NOT NULL,
+    FOREIGN KEY (User_id) REFERENCES User(User_id)
+);
+
 CREATE TABLE BlogCategory (
     Blog_category_id INT AUTO_INCREMENT PRIMARY KEY,
-    Blog_category_name VARCHAR(50) NOT NULL
+    Blog_category_name NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Blog (
@@ -28,6 +38,16 @@ CREATE TABLE Blog (
     Publish_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Blog_category_id) REFERENCES BlogCategory(Blog_category_id)
+);
+
+CREATE TABLE BlogReview (
+    Review_id INT AUTO_INCREMENT PRIMARY KEY,
+    User_id INT,
+    Blog_id INT,
+    Comment TEXT NOT NULL,
+    Review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (User_id) REFERENCES User(User_id),
+    FOREIGN KEY (Blog_id) REFERENCES Blog(Blog_id)
 );
 
 CREATE TABLE Brand (
@@ -42,23 +62,23 @@ CREATE TABLE Category (
 
 CREATE TABLE Product (
     Product_id INT AUTO_INCREMENT PRIMARY KEY,
-    Product_name NVARCHAR(100) NOT NULL,
+    Product_name NVARCHAR(255) NOT NULL,
     Brand_id INT,
     Category_id INT,
     Description TEXT,
-    Price DECIMAL(15, 2) NOT NULL,
-    Discount DECIMAL(5, 2) DEFAULT 0,
+    Price DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    Discount DECIMAL(5, 2) NOT NULL DEFAULT 0,
     Stock INT NOT NULL,
     FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id),
     FOREIGN KEY (Category_id) REFERENCES Category(Category_id)
 );
 
-CREATE TABLE Review (
+CREATE TABLE ProductReview (
     Review_id INT AUTO_INCREMENT PRIMARY KEY,
     User_id INT,
     Product_id INT,
     Rate INT CHECK (Rate BETWEEN 1 AND 5),
-    Comment TEXT,
+    Comment TEXT NOT NULL,
     Review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
@@ -96,6 +116,7 @@ CREATE TABLE `Order` (
     Email VARCHAR(100) NOT NULL,
     Phone VARCHAR(15) NOT NULL,
     Address TEXT NOT NULL,
+    Note TEXT,
     Voucher_id INT,
     Shipping_fee DECIMAL(10, 2) NOT NULL,
     Total_price DECIMAL(15, 2) NOT NULL,
@@ -119,16 +140,16 @@ CREATE TABLE OrderDetail (
 
 -- User table
 INSERT INTO User (Full_name, Role, Email, Password, Phone, Address, Point) VALUES
-('John Doe', 'MEMBER', 'john.doe@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1234567890', '123 Main St', 10),
-('Jane Smith', 'STAFF', 'jane.smith@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '0987654321', '456 Elm St', 20),
-('Michael Brown', 'ADMIN', 'michael.brown@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1231231234', '789 Maple St', 30),
-('Emily Davis', 'MEMBER', 'emily.davis@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '9879879876', '101 Oak St', 40),
-('Chris Wilson', 'STAFF', 'chris.wilson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '6546546543', '102 Pine St', 50),
-('Amanda Taylor', 'ADMIN', 'amanda.taylor@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3213213211', '103 Birch St', 60),
-('Joshua Moore', 'MEMBER', 'joshua.moore@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '5555555555', '104 Cedar St', 70),
-('Megan Jackson', 'STAFF', 'megan.jackson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '4444444444', '105 Spruce St', 80),
-('Matthew White', 'ADMIN', 'matthew.white@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3333333333', '106 Fir St', 90),
-('Laura Harris', 'MEMBER', 'laura.harris@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '2222222222', '107 Ash St', 100);
+('John Doe', 'MEMBER', 'john.doe@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1234567890', '123 Main St', 100),
+('Jane Smith', 'STAFF', 'jane.smith@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '0987654321', '456 Elm St', 200),
+('Michael Brown', 'ADMIN', 'michael.brown@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1231231234', '789 Maple St', 1000),
+('Emily Davis', 'MEMBER', 'emily.davis@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '9879879876', '101 Oak St', 400),
+('Chris Wilson', 'STAFF', 'chris.wilson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '6546546543', '102 Pine St', 500),
+('Amanda Taylor', 'ADMIN', 'amanda.taylor@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3213213211', '103 Birch St', 600),
+('Joshua Moore', 'MEMBER', 'joshua.moore@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '5555555555', '104 Cedar St', 700),
+('Megan Jackson', 'STAFF', 'megan.jackson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '4444444444', '105 Spruce St', 800),
+('Matthew White', 'ADMIN', 'matthew.white@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3333333333', '106 Fir St', 900),
+('Laura Harris', 'MEMBER', 'laura.harris@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '2222222222', '107 Ash St', 1000);
 
 -- Blog table
 INSERT INTO BlogCategory (Blog_category_name) VALUES
@@ -146,6 +167,27 @@ INSERT INTO Blog (Blog_category_id, User_id, Title, Content, Publish_date) VALUE
 (6, 9, 'Employee Spotlight', 'Meet some of the amazing people behind our brand.', '2024-02-23'),
 (3, 9, 'Recipe Ideas', 'Delicious recipes you can make with our products.', '2024-04-01'),
 (5, 3, 'Community Involvement', 'How we are giving back to the community.', '2023-05-15');
+
+-- Blog Review table
+INSERT INTO BlogReview (User_id, Blog_id, Comment, Review_date) VALUES
+(1, 1, 'Great quality blog!', '2023-05-01'),
+(2, 2, 'Very tasty indeed, the powder that is.', '2023-06-01'),
+(3, 3, 'Good, but a bit expensive.', '2023-05-16'),
+(4, 4, 'Whoa, that was not expected', '2024-05-01'),
+(4, 1, 'Excellent product for my baby!', '2023-05-01'),
+(4, 2, 'Very good, but a bit expensive.', '2023-05-02'),
+(5, 1, 'Good quality, my baby likes it.', '2023-05-03'),
+(5, 3, 'Not bad, but my baby prefers another brand.', '2023-05-04'),
+(5, 5, 'Very fresh.', '2024-02-01'),
+(6, 1, 'Best formula we have tried.', '2023-05-05'),
+(6, 4, 'Great for pregnant moms.', '2023-05-06'),
+(6, 6, 'Best product ever!', '2023-12-30'),
+(7, 5, 'My newborn loves it.', '2023-05-07'),
+(7, 6, 'Good product, but shipping was slow.', '2023-05-08'),
+(7, 7, 'Effective but pricey.', '2023-11-28'),
+(8, 8, 'Nice taste, not that I tasted it.', '2024-03-24'),
+(9, 9, 'My child loves it.', '2024-02-24'),
+(10, 10, 'Healthy and tasty.', '2024-01-19');
 
 -- Brand table
 INSERT INTO Brand (Brand_name) VALUES
@@ -207,8 +249,8 @@ INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Price, Di
 ('Sữa bầu Friso Mum Gold 900g hương cam', 9, 6, 'Thực phẩm bổ sung cho mẹ mang thai và cho con bú, hương cam nhãn hiệu Frisomum Gold DualCare+TM.', 539000, 0, 28),
 ('Sữa Friso Gold số 4 850g (2 - 6 tuổi)', 9, 5, 'Sữa Friso® Gold 4 là sản phẩm dinh dưỡng dành cho trẻ em từ 2 - 6 tuổi. Đây là giai đoạn trẻ phát triển mạnh mẽ về thể chất, trí tuệ và tò mò khám phá về thế giới xung quanh.', 495000, 0, 34);
 
--- Review table
-INSERT INTO Review (User_id, Product_id, Rate, Comment, Review_date) VALUES
+-- Product Review table
+INSERT INTO ProductReview (User_id, Product_id, Rate, Comment, Review_date) VALUES
 (1, 1, 5, 'Great quality!', '2023-05-01'),
 (2, 2, 4, 'Very tasty.', '2023-06-01'),
 (3, 3, 3, 'Good, but a bit expensive.', '2023-05-16'),
@@ -282,12 +324,12 @@ INSERT INTO Voucher (Point, User_id, Discount, Expiration_date, Available) VALUE
 (200, 7, 20.00, '2024-10-01', 1);
 
 -- Order table
-INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Voucher_id, Shipping_fee, Total_price, Status, Order_date) VALUES
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 7, 15000, 1300350, 0, '2023-07-21'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 3, 30000, 606300, 1,'2024-04-05'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', NULL, 10000, 687000, 1,'2024-05-23'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', NULL, 0, 1944750 , 0,'2024-03-27'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 5, 20000, 1117640, 1, '2024-01-22');
+INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Note, Voucher_id, Shipping_fee, Total_price, Status, Order_date) VALUES
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 'Send me in 7-10 days', 7, 15000, 1300350, 0, '2023-07-21'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 'It would be great if you can call me 1 day before delivery', 3, 30000, 606300, 1,'2024-04-05'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'I want to receive my order in the afternoon', NULL, 10000, 687000, 1,'2024-05-23'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1944750 , 0,'2024-03-27'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 'You can give my package to the security guard at the door', 5, 20000, 1117640, 1, '2024-01-22');
 
 -- OrderDetail table with 10 entries
 INSERT INTO OrderDetail (Order_id, Product_id, Quantity, Total_price) VALUES

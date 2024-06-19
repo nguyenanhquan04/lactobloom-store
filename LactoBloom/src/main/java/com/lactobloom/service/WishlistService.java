@@ -10,6 +10,7 @@ import com.lactobloom.repository.UserRepository;
 import com.lactobloom.repository.WishlistRepository;
 import com.lactobloom.service.interfaces.IWishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +29,11 @@ public class WishlistService implements IWishlistService {
     private ProductRepository productRepository;
 
     @Override
-    public WishlistDto saveWishlist(WishlistDto wishlistDto, int userId, int productId) {
+    public WishlistDto saveWishlist(int productId) {
         Wishlist wishlist = new Wishlist();
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         wishlist.setUser(user);
@@ -53,28 +55,10 @@ public class WishlistService implements IWishlistService {
     }
 
     @Override
-    public WishlistDto updateWishlist(WishlistDto wishlistDto, int id, int userId, int productId) {
-        Wishlist existingWishlist = wishlistRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Wishlist", "Id", id));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
-        Product product = productRepository.findById((long) productId).orElseThrow(() ->
-                new ResourceNotFoundException("Product", "Id", productId));
-        existingWishlist.setUser(user);
-        existingWishlist.setProduct(product);
-        return mapToDto(wishlistRepository.save(existingWishlist));
-    }
-
-    @Override
     public void deleteWishlist(int id) {
         wishlistRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Wishlist", "Id", id));
         wishlistRepository.deleteById(id);
-    }
-
-    @Override
-    public List<WishlistDto> getWishlistsByUserId(int userId) {
-        return wishlistRepository.findByUserUserId(userId).stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     private WishlistDto mapToDto (Wishlist wishlist){

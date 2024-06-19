@@ -3,14 +3,11 @@ package com.lactobloom.service;
 import com.lactobloom.dto.ProductRequest;
 import com.lactobloom.dto.ProductResponse;
 import com.lactobloom.exception.ResourceNotFoundException;
-import com.lactobloom.model.Brand;
-import com.lactobloom.model.Category;
-import com.lactobloom.model.Product;
-import com.lactobloom.repository.BrandRepository;
-import com.lactobloom.repository.CategoryRepository;
-import com.lactobloom.repository.ProductRepository;
+import com.lactobloom.model.*;
+import com.lactobloom.repository.*;
 import com.lactobloom.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +24,12 @@ public class ProductService implements IProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private WishlistRepository wishlistRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public ProductResponse saveProduct(int brandId, int categoryId, ProductRequest productRequest) {
@@ -52,6 +55,16 @@ public class ProductService implements IProductService {
         Product product = productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         return mapToResponse(product);
+    }
+
+    @Override
+    public List<ProductResponse> getUserWishlist(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        List<Wishlist> wishlist = wishlistRepository.findByUserUserId(user.getUserId());
+        List<Product> productList = wishlist.stream().map(Wishlist::getProduct).toList();
+        return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -81,7 +94,7 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductResponse> searchProductsByName(String productName) {
-        List<Product> productList = productRepository.findByProductNameContaining(productName);
+        List<Product> productList = productRepository.findByProductNameContainingIgnoreCase(productName);
         return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 

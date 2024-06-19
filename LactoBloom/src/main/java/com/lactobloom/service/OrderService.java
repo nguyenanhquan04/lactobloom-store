@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,17 +30,24 @@ public class OrderService implements IOrderService {
     public OrderDto saveOrder(OrderDto orderDto, Integer voucherId) {
         Order order = mapToEntity(orderDto);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException("User", "email", email));
+        User user = new User();
+        if(email != null && !email.equals("anonymousUser")){
+            user = userRepository.findByEmail(email).orElseThrow(() ->
+                    new ResourceNotFoundException("User", "email", email));
+            user.setPoint(user.getPoint() + (int) (orderDto.getTotalPrice()/100000));
+            User newUser = userRepository.save(user);
+            order.setUser(newUser);
+        }
         if (voucherId != null) {
             Voucher existingVoucher = voucherRepository.findById(voucherId).orElseThrow(() ->
                     new ResourceNotFoundException("Voucher", "Id", voucherId));
-            existingVoucher.setAvailable(false);
-            Voucher voucher = voucherRepository.save(existingVoucher);
-            order.setVoucher(voucher);
+            if(existingVoucher.isAvailable() && existingVoucher.getUser().getUserId() == user.getUserId()){
+                existingVoucher.setAvailable(false);
+                Voucher voucher = voucherRepository.save(existingVoucher);
+                order.setVoucher(voucher);
+            }
         }
-        order.setUser(user);
-        order.setOrderDate(LocalDateTime.now());
+        order.setOrderDate(orderDto.getOrderDate());
         Order newOrder = orderRepository.save(order);
         return mapToDto(newOrder);
     }
@@ -49,6 +55,15 @@ public class OrderService implements IOrderService {
     @Override
     public List<OrderDto> getAllOrders() {
         List<Order> orderList = orderRepository.findAll();
+        return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDto> getOrdersByUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        List<Order> orderList = orderRepository.findByUserUserId(user.getUserId());
         return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -82,11 +97,12 @@ public class OrderService implements IOrderService {
 
     private OrderDto mapToDto (Order order){
         OrderDto orderResponse = new OrderDto();
-        orderResponse.setOrderId(order.getOrderId());
         orderResponse.setFullName(order.getFullName());
+        orderResponse.setOrderId(order.getOrderId());
         orderResponse.setEmail(order.getEmail());
         orderResponse.setPhone(order.getPhone());
         orderResponse.setAddress(order.getAddress());
+        orderResponse.setNote(order.getNote());
         orderResponse.setShippingFee(order.getShippingFee());
         orderResponse.setTotalPrice(order.getTotalPrice());
         orderResponse.setStatus(order.isStatus());
@@ -100,6 +116,7 @@ public class OrderService implements IOrderService {
         order.setEmail(orderDto.getEmail());
         order.setPhone(orderDto.getPhone());
         order.setAddress(orderDto.getAddress());
+        order.setNote(orderDto.getNote());
         order.setShippingFee(orderDto.getShippingFee());
         order.setTotalPrice(orderDto.getTotalPrice());
         order.setStatus(false);

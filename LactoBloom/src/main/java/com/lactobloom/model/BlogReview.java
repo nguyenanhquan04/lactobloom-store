@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "review")
-public class Review {
+@Table(name = "blogreview")
+public class BlogReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,16 +23,12 @@ public class Review {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "Product_id")
+    @JoinColumn(name = "Blog_id")
     @JsonBackReference
-    @NotNull(message = "Product must not be null")
-    private Product product;
+    @NotNull(message = "Blog must not be null")
+    private Blog blog;
 
-    @Column(name = "Rate", nullable = false)
-    @NotNull(message = "Rate must not be null")
-    private int rate;
-
-    @Column(name = "Comment")
+    @Column(name = "Comment", columnDefinition = "TEXT", nullable = false)
     @NotNull(message = "Comment must not be null")
     private String comment;
 

@@ -31,7 +31,7 @@ public class OrderDetail {
     @NotNull(message = "Quantity must not be null")
     private int quantity;
 
-    @Column(name = "Total_price", nullable = false)
+    @Column(name = "Total_price", columnDefinition = "DECIMAL(10, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Total price must not be null")
     private double totalPrice;
 }

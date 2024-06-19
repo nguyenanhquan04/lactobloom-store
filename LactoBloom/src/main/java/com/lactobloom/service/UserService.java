@@ -1,5 +1,6 @@
 package com.lactobloom.service;
 
+import com.lactobloom.dto.ResetPasswordDto;
 import com.lactobloom.dto.UserDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Role;
@@ -8,6 +9,7 @@ import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserDto> getAllUsers() {
@@ -50,6 +55,19 @@ public class UserService implements IUserService {
         existingUser.setAddress(userDto.getAddress());
         existingUser.setPhone(userDto.getPhone());
         return mapToDto(userRepository.save(existingUser));
+    }
+
+    @Override
+    public boolean resetPassword(ResetPasswordDto resetPasswordDto){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        if (passwordEncoder.matches(resetPasswordDto.getPassword(), existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+            userRepository.save(existingUser);
+            return true;
+        }
+        return false;
     }
 
     @Override

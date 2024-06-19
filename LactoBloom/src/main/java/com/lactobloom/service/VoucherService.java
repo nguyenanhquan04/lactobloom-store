@@ -8,8 +8,11 @@ import com.lactobloom.repository.UserRepository;
 import com.lactobloom.repository.VoucherRepository;
 import com.lactobloom.service.interfaces.IVoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,21 @@ public class VoucherService implements IVoucherService {
         Voucher voucher = mapToEntity(voucherDto);
         Voucher newVoucher = voucherRepository.save(voucher);
         return mapToDto(newVoucher);
+    }
+
+    @Override
+    public List<VoucherDto> getAvailableVouchers(){
+        List<Voucher> voucherList = voucherRepository.findByUserIsNullAndAvailableTrue();
+        return voucherList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VoucherDto> getUserVouchers(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        List<Voucher> voucherList = voucherRepository.findByUserUserIdAndAvailableTrue(user.getUserId());
+        return voucherList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -54,10 +72,33 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
+    public VoucherDto exchangeVoucher(int id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Voucher", "Id", id));
+        if(existingVoucher.getPoint() < user.getPoint()){
+            user.setPoint(user.getPoint() - existingVoucher.getPoint());
+            User newUser = userRepository.save(user);
+            existingVoucher.setUser(newUser);
+        }
+        return mapToDto(voucherRepository.save(existingVoucher));
+    }
+
+    @Override
     public void deleteVoucher(int id) {
         voucherRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Voucher", "Id", id));
         voucherRepository.deleteById(id);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateVoucherAvailability() {
+        List<Voucher> expiredVouchers = voucherRepository.findByExpirationDateBefore(LocalDate.now());
+        for (Voucher voucher : expiredVouchers)
+            voucher.setAvailable(false);
+        voucherRepository.saveAll(expiredVouchers);
     }
 
     private VoucherDto mapToDto (Voucher voucher){
@@ -76,7 +117,7 @@ public class VoucherService implements IVoucherService {
         voucher.setPoint(voucherDto.getPoint());
         voucher.setDiscount(voucherDto.getDiscount());
         voucher.setExpirationDate(voucherDto.getExpirationDate());
-        voucher.setAvailable(voucherDto.isAvailable());
+        voucher.setAvailable(true);
         return voucher;
     }
 }

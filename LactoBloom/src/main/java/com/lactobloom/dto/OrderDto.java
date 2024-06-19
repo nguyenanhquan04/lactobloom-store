@@ -15,6 +15,7 @@ public class OrderDto {
     private String email;
     private String phone;
     private String address;
+    private String note;
     private double shippingFee;
     private double totalPrice;
     private boolean status;

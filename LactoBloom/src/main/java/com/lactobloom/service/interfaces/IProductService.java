@@ -9,6 +9,7 @@ public interface IProductService {
     ProductResponse saveProduct(int brandId, int categoryId, ProductRequest productRequest);
     List<ProductResponse> getAllProducts();
     ProductResponse getProductById(int id);
+    List<ProductResponse> getUserWishlist();
     ProductResponse updateProduct(int id, int brandId, int cateoryId, ProductRequest productRequest);
     void deleteProduct(int id);
     List<ProductResponse> searchProductsByName(String productName);
