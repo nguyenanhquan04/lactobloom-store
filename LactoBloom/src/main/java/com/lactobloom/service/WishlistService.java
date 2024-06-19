@@ -56,9 +56,13 @@ public class WishlistService implements IWishlistService {
 
     @Override
     public void deleteWishlist(int id) {
-        wishlistRepository.findById(id).orElseThrow(() ->
+        Wishlist wishlist = wishlistRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Wishlist", "Id", id));
-        wishlistRepository.deleteById(id);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        if(user.getUserId() == wishlist.getUser().getUserId())
+            wishlistRepository.deleteById(id);
     }
 
     private WishlistDto mapToDto (Wishlist wishlist){

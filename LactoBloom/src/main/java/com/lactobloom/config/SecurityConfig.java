@@ -22,6 +22,7 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST = {"/auth/**",
             "/blog/**",
             "/blog-category/**",
+            "/blog-review/**",
             "/brand/**",
             "/category/**",
             "/chat/**",
@@ -29,7 +30,7 @@ public class SecurityConfig {
             "/order/**",
             "/order-detail/**",
             "/product/**",
-            "/review/**",
+            "/product-review/**",
             "/user/**",
             "/voucher/**",
             "/wishlist/**",};
