@@ -3,7 +3,7 @@ import axios from "axios";
 import Card from "@mui/material/Card";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
-;
+import Cookies from "js-cookie";
 
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -13,34 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import OrdersTable from './data/ordersTableData';
 
 const Orders = () => {
-  const navigate = useNavigate();
+  
   const rows = OrdersTable();
-
-  // useEffect(() => {
-  //   const authToken = Cookies.get("authToken");
-
-  //   if (!authToken) {
-  //     navigate("/authentication/login");
-  //     return;
-  //   }
-
-  //   try {
-  //     const decodedToken = jwtDecode(authToken);
-  //     const currentTime = Date.now() / 1000;
-
-  //     if (decodedToken.exp < currentTime) {
-  //       Cookies.remove("authToken");
-  //       navigate("/authentication/login");
-  //     } else {
-  //       // Fetch orders data if authentication is successful
-  //       fetchOrders(authToken);
-  //     }
-  //   } catch (e) {
-  //     Cookies.remove("authToken");
-  //     navigate("/authentication/login");
-  //   }
-  // }, [navigate]);
-
 
   const ordersTableData = {
     columns: [

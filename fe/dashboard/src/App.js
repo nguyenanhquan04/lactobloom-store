@@ -18,6 +18,8 @@ import EditCategory from "layouts/category/editCagetory/edit";
 import EditBrand from "layouts/brand/editBrand/edit";
 import ViewForm from "layouts/product/viewProduct/view";
 import ViewOrderForm from "layouts/order/viewOrder/view";
+import EditUser from "layouts/user/editUser/edit";
+
 
 
 export default function App() {
@@ -105,7 +107,7 @@ export default function App() {
           {configsButton}
         </>
       )}
-      {layout === "vr" && <Configurator />}
+      
       <Routes>
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/authentication/login" />} />
@@ -126,7 +128,11 @@ export default function App() {
 
         {/* Routes of Order */}
         <Route path ="/orders/view/:orderId" element={<ViewOrderForm />}/>
+
+        {/* Routes for User */}
         
+        <Route path ="/users/edit/:userId" element={<EditUser />}/>
+        {/* <Route path ="/users/view/:userId" element={<ViewUSer />}/> */}
       </Routes>
     </ThemeProvider>
   );

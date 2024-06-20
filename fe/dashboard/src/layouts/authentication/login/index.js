@@ -124,7 +124,7 @@ function Login() {
         </SoftBox>
         <SoftBox mt={4} mb={1}>
           <SoftButton type="submit" variant="gradient" color="info" fullWidth>
-            Sign In
+            Login
           </SoftButton>
         </SoftBox>
       </SoftBox>
