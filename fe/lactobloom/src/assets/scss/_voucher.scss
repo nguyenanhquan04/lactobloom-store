@@ -1,0 +1,40 @@
+.voucher-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-around;
+  }
+  
+  .voucher {
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    width: calc(33.333% - 32px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .voucher h3 {
+    margin-top: 0;
+  }
+  
+  .voucher-details {
+    flex-grow: 1;
+  }
+  
+  .redeem-button {
+    background-color: $theme-color;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-left: 20px;
+  }
+  
+  .redeem-button:hover {
+    background-color: #0056b3;
+  }
+  

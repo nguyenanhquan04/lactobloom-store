@@ -1,16 +1,76 @@
-import { Fragment } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { Fragment, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import Cookies from "js-cookie";
+import { myVoucher } from "../../utils/VoucherService";
+import { userInfo } from "../../utils/UserService"; // Import the userInfo function from your UserService
 
 const Checkout = () => {
   let cartTotalPrice = 0;
 
   let { pathname } = useLocation();
+  let navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.cart);
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedVoucher, setSelectedVoucher] = useState(null); // State to hold selected voucher
+  const authToken = Cookies.get("authToken"); // Get authToken from cookies
+
+  // State to hold user information
+  const [user, setUser] = useState(null);
+  const [fullName, setFullName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+
+  useEffect(() => {
+    // Fetch user's vouchers from the API
+    const fetchVouchers = async () => {
+      try {
+        const response = await myVoucher({
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        setVouchers(response.data);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+      }
+    };
+
+    fetchVouchers();
+  }, [authToken]);
+
+  useEffect(() => {
+    // Fetch user info from the API
+    const fetchUserInfo = async () => {
+      try {
+        const response = await userInfo();
+        setUser(response.data);
+        setFullName(response.data.fullName);
+        setAddress(response.data.address);
+        setPhone(response.data.phone);
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const handleVoucherChange = (event) => {
+    const selectedVoucherId = event.target.value;
+    const selectedVoucher = vouchers.find(
+      (voucher) => voucher.voucherId === parseInt(selectedVoucherId)
+    );
+    setSelectedVoucher(selectedVoucher);
+  };
+
+  // Calculate discounted price and new total price based on selected voucher
+  if (selectedVoucher) {
+    const discountAmount = (cartTotalPrice * selectedVoucher.discount) / 100;
+    cartTotalPrice -= discountAmount;
+  }
 
   return (
     <Fragment>
@@ -34,7 +94,11 @@ const Checkout = () => {
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
                           <label>Full Name</label>
-                          <input type="text" />
+                          <input
+                            type="text"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                          />
                         </div>
                       </div>
                       <div className="col-lg-12">
@@ -44,13 +108,36 @@ const Checkout = () => {
                             className="billing-address"
                             placeholder="House number and street name"
                             type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
                           />
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Phone</label>
-                          <input type="text" />
+                          <input
+                            type="text"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6">
+                        <div className="billing-info mb-20">
+                          <label>Voucher</label>
+                          <select onChange={handleVoucherChange}>
+                            <option value="">Select a voucher</option>
+                            {vouchers.map((voucher) => (
+                              <option
+                                key={voucher.voucherId}
+                                value={voucher.voucherId}
+                              >
+                                Discount {voucher.discount}%, Expire Date:{" "}
+                                {voucher.expirationDate}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -121,12 +208,34 @@ const Checkout = () => {
                             <li className="your-order-shipping">Shipping</li>
                             <li>Free shipping</li>
                           </ul>
+                          {selectedVoucher && (
+                            <div className="your-order-discount">
+                              <ul>
+                                <li className="order-discount">Discount</li>
+                                <li>
+                                  {(
+                                    cartTotalPrice -
+                                    getDiscountPrice(
+                                      cartTotalPrice,
+                                      selectedVoucher.discount
+                                    )
+                                  ).toLocaleString("vi-VN") + " VND"}
+                                </li>
+                              </ul>
+                            </div>
+                          )}
                         </div>
                         <div className="your-order-total">
                           <ul>
                             <li className="order-total">Total</li>
                             <li>
-                              {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
+                              {selectedVoucher
+                                ? getDiscountPrice(
+                                    cartTotalPrice,
+                                    selectedVoucher.discount
+                                  ).toLocaleString("vi-VN") + " VND"
+                                : cartTotalPrice.toLocaleString("vi-VN") +
+                                  " VND"}
                             </li>
                           </ul>
                         </div>
