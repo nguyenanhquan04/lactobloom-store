@@ -8,6 +8,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import CategoryEditForm from "./form";
+import React, { useEffect } from "react";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 // Sample product data for demonstration
 const sampleProduct = {
@@ -25,6 +29,31 @@ function EditCategory() {
     console.log('Product saved:', updatedProduct);
     // Handle save logic here, such as sending the updated product to a server
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = Cookies.get("authToken");
+
+    if (!authToken) {
+      navigate("/authentication/login");
+    }
+
+    try {
+      const decodedToken = jwtDecode(authToken);
+      const currentTime = Date.now() / 1000;
+
+      // Check if the token is expired
+      if (decodedToken.exp < currentTime) {
+        Cookies.remove("authToken");
+        navigate("/authentication/login");
+      }
+    } catch (e) {
+      // If token is invalid, remove it and redirect to login
+      Cookies.remove("authToken");
+      navigate("/authentication/login");
+    }
+  }, [navigate]);
 
   return (
     <DashboardLayout>

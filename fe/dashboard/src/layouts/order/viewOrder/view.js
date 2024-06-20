@@ -1,21 +1,19 @@
+// ViewForm.js
+/* eslint-disable react/prop-types */
+// @mui material components
 import Card from "@mui/material/Card";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ProductAddForm from "./form";
+import OrderViewForm from "./form";  // Import the OrderViewForm component
 import React, { useEffect } from "react";
 import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
-function AddForm() {
-  const handleSave = (newProduct) => {
-    console.log('New product added:', newProduct);
-    // Handle save logic here, such as sending the new product to a server
-  };
-
+function ViewOrderForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,10 +46,10 @@ function AddForm() {
         <SoftBox mb={5}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">Add New Product</SoftTypography>
+              <SoftTypography variant="h6">View Order</SoftTypography>
             </SoftBox>
             <SoftBox p={3}>
-              <ProductAddForm onSave={handleSave} />  {/* Render the form */}
+              <OrderViewForm />  {/* Render the form */}
             </SoftBox>
           </Card>
         </SoftBox>
@@ -61,4 +59,4 @@ function AddForm() {
   );
 }
 
-export default AddForm;
+export default ViewOrderForm;

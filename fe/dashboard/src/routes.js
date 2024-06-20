@@ -3,7 +3,7 @@ import Dashboard from "layouts/dashboard";
 import User from "layouts/user";
 import Billing from "layouts/billing";
 import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
+import Login from "layouts/authentication/login";
 import Product from "layouts/product";
 import Category from "layouts/category";
 import Brand from "layouts/brand";
@@ -20,6 +20,8 @@ import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
+import ViewForm from "layouts/order/viewOrder/view";
+import Orders from "layouts/order";
 
 
 const routes = [
@@ -77,15 +79,15 @@ const routes = [
   //   component: <Billing />,
   //   noCollapse: true,
   // },
-  // {
-  //   type: "collapse",
-  //   name: "Edit Demo",
-  //   key: "editProduct",
-  //   route: "/products/:productId",
-  //   icon: <CreditCard size="12px" />,
-  //   component: <EditForm />,
-  //   noCollapse: true,
-  // },
+  {
+    type: "collapse",
+    name: "Order Management",
+    key: "orders",
+    route: "/orders",
+    icon: <CreditCard size="12px" />,
+    component: <Orders />,
+    noCollapse: true,
+  },
   
   { type: "title", title: "Account Pages", key: "account-pages" },
   {
@@ -99,11 +101,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    route: "/authentication/sign-in",
+    name: "Login",
+    key: "login",
+    route: "/authentication/login",
     icon: <Document size="12px" />,
-    component: <SignIn />,
+    component: <Login />,
     noCollapse: true,
   },
   
