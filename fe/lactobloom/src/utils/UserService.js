@@ -23,4 +23,12 @@ const userInfo =() => {
     return request.get('user/info');
 }
 
-export { login, register, logOut, userInfo }; 
+const updateUserInfo = (userData, config) => {
+    return request.put(`user/updateInfo`, userData, config);
+}
+
+const changePassword = (password, config) => {
+    return request.put(`user/resetPassword`, password, config);
+}
+
+export { login, register, logOut, userInfo, updateUserInfo, changePassword }; 
