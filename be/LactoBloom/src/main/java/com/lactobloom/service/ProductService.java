@@ -52,7 +52,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse getProductById(int id) {
-        Product product = productRepository.findById((long) id).orElseThrow(() ->
+        Product product = productRepository.findById((int) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         return mapToResponse(product);
     }
@@ -69,7 +69,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse updateProduct(int id, int brandId, int categoryId, ProductRequest productRequest) {
-        Product existingProduct = productRepository.findById((long) id).orElseThrow(() ->
+        Product existingProduct = productRepository.findById((int) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         Brand brand = brandRepository.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", brandId));
@@ -87,9 +87,9 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(int id) {
-        productRepository.findById((long) id).orElseThrow(() ->
+        productRepository.findById((int) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
-        productRepository.deleteById((long) id);
+        productRepository.deleteById((int) id);
     }
 
     @Override
