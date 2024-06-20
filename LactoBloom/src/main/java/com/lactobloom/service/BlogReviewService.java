@@ -94,6 +94,7 @@ public class BlogReviewService implements IBlogReviewService {
     private BlogReviewDto mapToDto (BlogReview blogReview){
         BlogReviewDto reviewResponse = new BlogReviewDto();
         reviewResponse.setReviewId(blogReview.getReviewId());
+        reviewResponse.setEmail(blogReview.getUser().getEmail());
         reviewResponse.setComment(blogReview.getComment());
         reviewResponse.setReviewDate(blogReview.getReviewDate());
         return reviewResponse;

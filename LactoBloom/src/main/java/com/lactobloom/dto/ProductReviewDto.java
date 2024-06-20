@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ProductReviewDto {
     private int reviewId;
+    private String email;
     private int rate;
     private String comment;
     private LocalDateTime reviewDate;

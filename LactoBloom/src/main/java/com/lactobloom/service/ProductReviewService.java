@@ -96,6 +96,7 @@ public class ProductReviewService implements IProductReviewService {
     private ProductReviewDto mapToDto (ProductReview productReview){
         ProductReviewDto reviewResponse = new ProductReviewDto();
         reviewResponse.setReviewId(productReview.getReviewId());
+        reviewResponse.setEmail(productReview.getUser().getEmail());
         reviewResponse.setRate(productReview.getRate());
         reviewResponse.setComment(productReview.getComment());
         reviewResponse.setReviewDate(productReview.getReviewDate());
