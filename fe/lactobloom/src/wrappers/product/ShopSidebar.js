@@ -3,6 +3,7 @@ import clsx from "clsx";
 import ShopSearch from "../../components/product/ShopSearch";
 import ShopCategories from "../../components/product/ShopCategories";
 import ShopBrand from "../../components/product/ShopBrand";
+import ShopCategoryAndBrand from "../../components/product/ShopCategoryAndBrand";
 
 const ShopSidebar = ({
   products,
@@ -16,17 +17,24 @@ const ShopSidebar = ({
       {/* shop search */}
       <ShopSearch />
 
-      {/* filter by categories */}
-      <ShopCategories
-        getSortParams={getSortParams}
-        onCategorySelect={onCategorySelect}
+      <ShopCategoryAndBrand
+      getSortParams={getSortParams}
+      onCategorySelect={onCategorySelect}
+      onBrandSelect={onBrandSelect}
       />
 
+
+      {/* filter by categories */}
+      {/* <ShopCategories
+        getSortParams={getSortParams}
+        onCategorySelect={onCategorySelect}
+      /> */}
+
       {/* filter by brands */}
-      <ShopBrand
+      {/* <ShopBrand
         getSortParams={getSortParams}
         onBrandSelect={onBrandSelect}
-      />
+      /> */}
     </div>
   );
 };

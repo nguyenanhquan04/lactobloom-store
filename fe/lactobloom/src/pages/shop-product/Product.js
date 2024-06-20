@@ -16,7 +16,7 @@ const Product = () => {
   
 
   return (
-    console.log(product),
+    // console.log(product.productId),
 
     <Fragment>
       <SEO
@@ -46,6 +46,7 @@ const Product = () => {
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
           productFullDesc={product.description}
+          productId={product.productId}
         />
 
         {/* related product slider */}

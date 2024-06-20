@@ -19,8 +19,9 @@ const BlogDetails = lazy(() => import("./pages/blog/BlogDetails"));
 const About = lazy(() => import("./pages/other/About"));
 const Contact = lazy(() => import("./pages/other/Contact"));
 const MyAccount = lazy(() => import("./pages/other/MyAccount"));
-const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
-
+const Login = lazy(() => import("./pages/other/Login"));
+const Register = lazy(() => import("./pages/other/Register"));
+const Voucher = lazy(() => import("./pages/other/Voucher"));
 const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
 const Compare = lazy(() => import("./pages/other/Compare"));
@@ -84,8 +85,12 @@ const App = () => {
                 element={<MyAccount/>}
               />
               <Route
-                path={process.env.PUBLIC_URL + "/login-register"}
-                element={<LoginRegister/>}
+                path={process.env.PUBLIC_URL + "/login"}
+                element={<Login/>}
+              />
+              <Route
+                path={process.env.PUBLIC_URL + "/register"}
+                element={<Register/>}
               />
 
               <Route
@@ -103,6 +108,10 @@ const App = () => {
               <Route
                 path={process.env.PUBLIC_URL + "/checkout"}
                 element={<Checkout/>}
+              />
+              <Route
+                path={process.env.PUBLIC_URL + "/voucher"}
+                element={<Voucher/>}
               /> 
 
               <Route path="*" element={<NotFound/>} />
