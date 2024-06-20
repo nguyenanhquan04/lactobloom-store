@@ -64,11 +64,6 @@ function Brand() {
         <Card>
           <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
             <SoftTypography variant="h6">Brand table</SoftTypography>
-            <SoftInput
-                placeholder="Type here..."
-                fullWidth
-                icon={{ component: "search", direction: "left" }}
-              />
             <IconButton onClick={handleAddBrandClick}>
               <SoftButton type="submit" variant="contained" color="dark">
                 Add New Brand

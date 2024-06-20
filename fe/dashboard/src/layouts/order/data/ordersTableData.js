@@ -11,7 +11,7 @@ const OrdersTable = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const authToken = Cookies.get("authToken"); // Retrieve authToken from localStorage
+    const authToken = Cookies.get("authToken"); 
     if (!authToken) {
       navigate('/authentication/login'); // Redirect to login if authToken is missing
       return;

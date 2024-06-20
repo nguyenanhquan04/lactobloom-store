@@ -1,92 +1,78 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
-
-// Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
+import { IconButton } from "@mui/material";
+import SoftButton from "components/SoftButton";
+import SoftInput from "components/SoftInput";
+import {jwtDecode} from "jwt-decode";
+import Cookies from "js-cookie";
 
-// Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
-
-// Data
-import usersTableData from "layouts/user/data/usersTableData";
-
-import React, { useEffect } from "react";
-import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
-
+import UsersTable from "./data/usersTableData";
 
 function User() {
-  const { columns, rows } = usersTableData;
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const authToken = Cookies.get("authToken");
-
-    if (!authToken) {
-      navigate("/authentication/login");
-    }
-
-    try {
-      const decodedToken = jwtDecode(authToken);
-      const currentTime = Date.now() / 1000;
-
-      // Check if the token is expired
-      if (decodedToken.exp < currentTime) {
-        Cookies.remove("authToken");
-        navigate("/authentication/login");
-      }
-    } catch (e) {
-      // If token is invalid, remove it and redirect to login
-      Cookies.remove("authToken");
-      navigate("/authentication/login");
-    }
-  }, [navigate]);
   
+
+  // Add a new state variable for the search value
+  const [searchValue, setSearchValue] = useState("");
+
+  // Update the search value when the user types in the input
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const rows = UsersTable({searchValue}); // Call UsersTable to get data
+
+ 
+
+  const usersTableData = {
+    columns: [
+      { name: "userId", align: "center" },
+      { name: "fullName", align: "center" },
+      { name: "role", align: "center" },
+      { name: "email", align: "center" },
+      { name: "phone", align: "center" },
+      { name: "address", align: "center" },
+      { name: "point", align: "center" },
+      // { name: "action", align: "center" },
+    ],
+    rows: rows,
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <SoftBox py={3}>
-        <SoftBox mb={5}>
-          <Card>
-            <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">User table</SoftTypography>
-            </SoftBox>
-            <SoftBox
-              sx={{
-                "& .MuiTableRow-root:not(:last-child)": {
-                  "& td": {
-                    borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                      `${borderWidth[1]} solid ${borderColor}`,
-                  },
+        <Card>
+          <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+            <SoftTypography variant="h6">Users Table</SoftTypography>
+            <SoftInput
+              placeholder="Type user here..."
+              fullWidth
+              icon={{ component: "search", direction: "left" }}
+              value={searchValue} // Set the value of the input to the current search value
+              onChange={handleSearchChange} // Update the search value when the user types
+            />
+            
+          </SoftBox>
+          <SoftBox
+            sx={{
+              "& .MuiTableRow-root:not(:last-child)": {
+                "& td": {
+                  borderBottom: ({ borders: { borderWidth, borderColor } }) =>
+                    `${borderWidth[1]} solid ${borderColor}`,
                 },
-              }}
-            >
-              <Table columns={columns} rows={rows} />
-            </SoftBox>
-          </Card>
-        </SoftBox>
+              },
+            }}
+          >
+            <Table columns={usersTableData.columns} rows={usersTableData.rows} />
+          </SoftBox>
+        </Card>
       </SoftBox>
       <Footer />
     </DashboardLayout>
