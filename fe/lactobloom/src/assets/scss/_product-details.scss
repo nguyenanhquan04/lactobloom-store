@@ -266,6 +266,11 @@
   }
 }
 
+.login-required {
+  padding-top: 20px;
+  color: red;
+}
+
 .ratting-form-wrapper {
   @media #{$md-layout} {
     &.pl-50 {

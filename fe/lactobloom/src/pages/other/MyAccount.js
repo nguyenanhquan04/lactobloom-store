@@ -1,12 +1,39 @@
-import { Fragment } from "react"; 
-import { useLocation } from "react-router-dom"; 
+import React, { Fragment, useEffect, useState } from "react"; 
+import { useLocation, useNavigate } from "react-router-dom"; 
 import Accordion from "react-bootstrap/Accordion";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import Cookies from 'js-cookie'; // Import js-cookie
+import { userInfo } from "../../utils/UserService";
 
 const MyAccount = () => {
   let { pathname } = useLocation();
+  let navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = Cookies.get('authToken');
+    if (!token) {
+      // Redirect to login if token does not exist or is invalid
+      navigate("/login");
+    }
+    // Optionally, add further validation for token expiration or format
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await userInfo();
+        setUser(response.data);
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        // Optionally handle error or redirect to login if necessary
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   return (
     <Fragment>
@@ -40,34 +67,34 @@ const MyAccount = () => {
                               <h5>Your Personal Details</h5>
                             </div>
                             <div className="row">
-                              <div className="col-lg-6 col-md-6">
+                              <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>First Name</label>
-                                  <input type="text" />
-                                </div>
-                              </div>
-                              <div className="col-lg-6 col-md-6">
-                                <div className="billing-info">
-                                  <label>Last Name</label>
-                                  <input type="text" />
+                                  <label>Full Name</label>
+                                  <input type="text" value={user?.fullName || ''} />
                                 </div>
                               </div>
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>Email Address</label>
-                                  <input type="email" />
+                                  <label>Email</label>
+                                  <input type="email" value={user?.email || ''} />
+                                </div>
+                              </div>
+                              <div className="col-lg-12 col-md-12">
+                                <div className="billing-info">
+                                  <label>Address</label>
+                                  <input type="text" value={user?.address || ''} />
                                 </div>
                               </div>
                               <div className="col-lg-6 col-md-6">
                                 <div className="billing-info">
-                                  <label>Telephone</label>
-                                  <input type="text" />
+                                  <label>Phone</label>
+                                  <input type="text" value={user?.phone || ''} />
                                 </div>
                               </div>
                               <div className="col-lg-6 col-md-6">
                                 <div className="billing-info">
-                                  <label>Fax</label>
-                                  <input type="text" />
+                                  <label>Point</label>
+                                  <input type="text" value={user?.point || 0 } />
                                 </div>
                               </div>
                             </div>
@@ -127,11 +154,7 @@ const MyAccount = () => {
                               <div className="row">
                                 <div className="col-lg-6 col-md-6 d-flex align-items-center justify-content-center">
                                   <div className="entries-info text-center">
-                                    <p>John Doe</p>
-                                    <p>Paul Park </p>
-                                    <p>Lorem ipsum dolor set amet</p>
-                                    <p>NYC</p>
-                                    <p>New York</p>
+                                    <p>{user?.address || ''}</p>
                                   </div>
                                 </div>
                                 <div className="col-lg-6 col-md-6 d-flex align-items-center justify-content-center">
