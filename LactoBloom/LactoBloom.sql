@@ -321,7 +321,10 @@ INSERT INTO Voucher (Point, User_id, Discount, Expiration_date, Available) VALUE
 (100, NULL, 10.00, '2024-10-31', 0),
 (50, 7, 5.00, '2024-08-29', 1),
 (50, NULL, 5.00, '2024-01-02', 0),
-(200, 7, 20.00, '2024-10-01', 1);
+(200, 7, 20.00, '2024-10-01', 1),
+(100, Null, 10.00, '2024-08-01', 1),
+(100, Null, 10.00, '2025-08-01', 1),
+(100, Null, 10.00, '2025-07-01', 1);
 
 -- Order table
 INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Note, Voucher_id, Shipping_fee, Total_price, Status, Order_date) VALUES
