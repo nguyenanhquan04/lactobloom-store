@@ -29,9 +29,40 @@ import Table from "examples/Tables/Table";
 // Data
 import usersTableData from "layouts/user/data/usersTableData";
 
+import React, { useEffect } from "react";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+
+
 
 function User() {
   const { columns, rows } = usersTableData;
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = Cookies.get("authToken");
+
+    if (!authToken) {
+      navigate("/authentication/login");
+    }
+
+    try {
+      const decodedToken = jwtDecode(authToken);
+      const currentTime = Date.now() / 1000;
+
+      // Check if the token is expired
+      if (decodedToken.exp < currentTime) {
+        Cookies.remove("authToken");
+        navigate("/authentication/login");
+      }
+    } catch (e) {
+      // If token is invalid, remove it and redirect to login
+      Cookies.remove("authToken");
+      navigate("/authentication/login");
+    }
+  }, [navigate]);
   
   return (
     <DashboardLayout>

@@ -1,17 +1,7 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+import React, { useEffect } from "react";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -33,8 +23,6 @@ import GradientLineChart from "examples/Charts/LineCharts/GradientLineChart";
 import typography from "assets/theme/base/typography";
 
 // Dashboard layout components
-// import BuildByDevelopers from "layouts/dashboard/components/BuildByDevelopers";
-// import WorkWithTheRockets from "layouts/dashboard/components/WorkWithTheRockets";
 import Projects from "layouts/dashboard/components/Projects";
 import OrderOverview from "layouts/dashboard/components/OrderOverview";
 
@@ -45,6 +33,30 @@ import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData"
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = Cookies.get("authToken");
+
+    if (!authToken) {
+      navigate("/authentication/login");
+    }
+
+    try {
+      const decodedToken = jwtDecode(authToken);
+      const currentTime = Date.now() / 1000;
+
+      // Check if the token is expired
+      if (decodedToken.exp < currentTime) {
+        Cookies.remove("authToken");
+        navigate("/authentication/login");
+      }
+    } catch (e) {
+      // If token is invalid, remove it and redirect to login
+      Cookies.remove("authToken");
+      navigate("/authentication/login");
+    }
+  }, [navigate]);
 
   return (
     <DashboardLayout>
@@ -89,16 +101,6 @@ function Dashboard() {
             </Grid>
           </Grid>
         </SoftBox>
-        {/* <SoftBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} lg={7}>
-              <BuildByDevelopers />
-            </Grid>
-            <Grid item xs={12} lg={5}>
-              <WorkWithTheRockets />
-            </Grid>
-          </Grid>
-        </SoftBox> */}
         <SoftBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={5}>

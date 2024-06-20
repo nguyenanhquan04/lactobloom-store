@@ -17,6 +17,7 @@ import AddBrand from "layouts/brand/addBrand/add";
 import EditCategory from "layouts/category/editCagetory/edit";
 import EditBrand from "layouts/brand/editBrand/edit";
 import ViewForm from "layouts/product/viewProduct/view";
+import ViewOrderForm from "layouts/order/viewOrder/view";
 
 
 export default function App() {
@@ -107,12 +108,13 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
+        <Route path="*" element={<Navigate to="/authentication/login" />} />
 
         {/* Routes of product */}
         <Route path="/products/view/:productId" element={<ViewForm />} /> 
         <Route path="/products/:productId" element={<EditForm />} /> 
         <Route path="/products/new" element={<AddForm />} />
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        
 
         { /* Routes of Category */ }
         <Route path="/categories/new" element={<AddCategory />} />
@@ -121,6 +123,9 @@ export default function App() {
         {/* Routes of Brand */}
         <Route path="/brands/new" element={<AddBrand />} />
         <Route path="/brands/:brandId" element={<EditBrand/>} />
+
+        {/* Routes of Order */}
+        <Route path ="/orders/view/:orderId" element={<ViewOrderForm />}/>
         
       </Routes>
     </ThemeProvider>

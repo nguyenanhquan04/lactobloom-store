@@ -8,6 +8,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ProductViewForm from "./form";  // Import the ProductViewForm component
+import React, { useEffect } from "react";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 const sampleProduct = {
     id: '123',
     brand: 'Sample Brand',
@@ -23,6 +27,31 @@ function ViewForm() {
     console.log('Product viewed:', product);
     // Additional logic if needed when a product is viewed
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = Cookies.get("authToken");
+
+    if (!authToken) {
+      navigate("/authentication/login");
+    }
+
+    try {
+      const decodedToken = jwtDecode(authToken);
+      const currentTime = Date.now() / 1000;
+
+      // Check if the token is expired
+      if (decodedToken.exp < currentTime) {
+        Cookies.remove("authToken");
+        navigate("/authentication/login");
+      }
+    } catch (e) {
+      // If token is invalid, remove it and redirect to login
+      Cookies.remove("authToken");
+      navigate("/authentication/login");
+    }
+  }, [navigate]);
 
   return (
     <DashboardLayout>
