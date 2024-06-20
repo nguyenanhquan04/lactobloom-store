@@ -1,10 +1,9 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
-
 import java.util.List;
 
 @Data
@@ -18,10 +17,10 @@ public class Category {
     private int categoryId;
 
     @Column(name = "Category_name", nullable = false)
+    @NotNull(message = "Category name must not be null")
     private String categoryName;
 
-    @OneToMany(mappedBy = "category")
-    @JsonBackReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
+    @JsonManagedReference
     private List<Product> products;
-
 }

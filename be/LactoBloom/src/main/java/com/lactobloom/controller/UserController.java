@@ -1,49 +1,75 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.model.User;
+import com.lactobloom.dto.ResetPasswordDto;
+import com.lactobloom.dto.UserDto;
 import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
     private IUserService userService;
 
-    @PostMapping("/save")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
-        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
-    }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<UserDto> getUserInfo() {
+        return new ResponseEntity<>(userService.getUserInfo(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/get/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable int id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
-        return new ResponseEntity<>(userService.updateUser(user, id), HttpStatus.OK);
+    @PutMapping("/updateInfo")
+    public ResponseEntity<UserDto> updateUserInfo(@RequestBody UserDto userDto) {
+        return new ResponseEntity<>(userService.updateUserInfo(userDto), HttpStatus.OK);
     }
 
+    @PutMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        if(userService.resetPassword(resetPasswordDto))
+            return new ResponseEntity<>("Password reset successfully!", HttpStatus.OK);
+        return new ResponseEntity<>("Failed to reset password!", HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable int id, @RequestBody UserDto userDto) {
+        return new ResponseEntity<>(userService.updateUser(userDto, id), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
         return new ResponseEntity<>("User deleted successfully!", HttpStatus.OK);
     }
 
-    @GetMapping("/search/{fullName}")
-    public List<User> searchUsersByFullName(@PathVariable String fullName) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/search")
+    public List<UserDto> searchUsersByFullName(@RequestParam String fullName) {
         return userService.searchUsersByFullName(fullName);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/findByEmail")
+    public UserDto searchUsersByEmail(@RequestParam String email) {
+        return userService.findByEmail(email);
     }
 }

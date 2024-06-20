@@ -1,38 +1,32 @@
--- DROP DATABASE LactoBloom;
+DROP DATABASE IF EXISTS LactoBloom;
 CREATE DATABASE LactoBloom;
 
 USE LactoBloom;
 
-CREATE TABLE Role (
-    Role_id INT AUTO_INCREMENT PRIMARY KEY,
-    Role_name VARCHAR(50) NOT NULL
-);
-
 CREATE TABLE User (
     User_id INT AUTO_INCREMENT PRIMARY KEY,
     Full_name NVARCHAR(100) NOT NULL,
-    Role_id INT,
+    Role ENUM('MEMBER', 'STAFF', 'ADMIN') DEFAULT 'MEMBER',
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    Address TEXT,
     Phone VARCHAR(15),
-    Point INT DEFAULT 0,
-    FOREIGN KEY (Role_id) REFERENCES Role(Role_id)
+    Address TEXT,
+    Point INT DEFAULT 0
 );
 
-CREATE TABLE Chat (
-    Chat_id INT AUTO_INCREMENT PRIMARY KEY,
-    User_id INT,
-    Staff_id INT,
-    Message TEXT NOT NULL,
-    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Staff_id) REFERENCES User(User_id)
+CREATE TABLE Token (
+	Token_id INT AUTO_INCREMENT PRIMARY KEY,
+    Token VARCHAR(255) NOT NULL,
+    Token_type ENUM('BEARER') DEFAULT 'BEARER',
+    Expired BIT NOT NULL,
+    Revoked BIT NOT NULL,
+    User_id INT NOT NULL,
+    FOREIGN KEY (User_id) REFERENCES User(User_id)
 );
 
 CREATE TABLE BlogCategory (
     Blog_category_id INT AUTO_INCREMENT PRIMARY KEY,
-    Blog_category_name VARCHAR(50) NOT NULL
+    Blog_category_name NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Blog (
@@ -44,6 +38,16 @@ CREATE TABLE Blog (
     Publish_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Blog_category_id) REFERENCES BlogCategory(Blog_category_id)
+);
+
+CREATE TABLE BlogReview (
+    Review_id INT AUTO_INCREMENT PRIMARY KEY,
+    User_id INT,
+    Blog_id INT,
+    Comment TEXT NOT NULL,
+    Review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (User_id) REFERENCES User(User_id),
+    FOREIGN KEY (Blog_id) REFERENCES Blog(Blog_id)
 );
 
 CREATE TABLE Brand (
@@ -58,23 +62,23 @@ CREATE TABLE Category (
 
 CREATE TABLE Product (
     Product_id INT AUTO_INCREMENT PRIMARY KEY,
-    Product_name NVARCHAR(100) NOT NULL,
+    Product_name NVARCHAR(255) NOT NULL,
     Brand_id INT,
     Category_id INT,
     Description TEXT,
-    Price DECIMAL(10, 2) NOT NULL,
-    Discount DECIMAL(5, 2) DEFAULT 0,
+    Price DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    Discount DECIMAL(5, 2) NOT NULL DEFAULT 0,
     Stock INT NOT NULL,
     FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id),
     FOREIGN KEY (Category_id) REFERENCES Category(Category_id)
 );
 
-CREATE TABLE Review (
+CREATE TABLE ProductReview (
     Review_id INT AUTO_INCREMENT PRIMARY KEY,
     User_id INT,
     Product_id INT,
     Rate INT CHECK (Rate BETWEEN 1 AND 5),
-    Comment TEXT,
+    Comment TEXT NOT NULL,
     Review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
@@ -97,23 +101,27 @@ CREATE TABLE Wishlist (
 
 CREATE TABLE Voucher (
     Voucher_id INT AUTO_INCREMENT PRIMARY KEY,
+    Point INT NOT NULL,
     User_id INT,
     Discount DECIMAL(5, 2) NOT NULL,
-    Start_date DATE NOT NULL,
     Expiration_date DATE NOT NULL,
-    Status BIT,
+    Available BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (User_id) REFERENCES User(User_id)
 );
 
 CREATE TABLE `Order` (
     Order_id INT AUTO_INCREMENT PRIMARY KEY,
     User_id INT,
+    Full_name NVARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Phone VARCHAR(15) NOT NULL,
+    Address TEXT NOT NULL,
+    Note TEXT,
     Voucher_id INT,
     Shipping_fee DECIMAL(10, 2) NOT NULL,
-    Total_price DECIMAL(10, 2) NOT NULL,
+    Total_price DECIMAL(15, 2) NOT NULL,
+    Status BIT NOT NULL DEFAULT 0,
     Order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Payment_method VARCHAR(50) NOT NULL,
-    Shipping_address TEXT NOT NULL,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Voucher_id) REFERENCES Voucher(Voucher_id)
 );
@@ -130,54 +138,18 @@ CREATE TABLE OrderDetail (
 
 -- Insert data into tables
 
--- Role table
-INSERT INTO Role (Role_name) VALUES 
-('Member'), ('Admin'), ('Staff');
-
 -- User table
-INSERT INTO User (Full_name, Role_id, Email, Password, Address, Phone, Point) VALUES
-('John Doe', 1, 'john.doe@example.com', 'password123', '123 Main St', '1234567890', 10),
-('Jane Smith', 2, 'jane.smith@example.com', 'password123', '456 Elm St', '0987654321', 20),
-('Michael Brown', 3, 'michael.brown@example.com', 'password123', '789 Maple St', '1231231234', 30),
-('Emily Davis', 1, 'emily.davis@example.com', 'password123', '101 Oak St', '9879879876', 40),
-('Chris Wilson', 2, 'chris.wilson@example.com', 'password123', '102 Pine St', '6546546543', 50),
-('Amanda Taylor', 3, 'amanda.taylor@example.com', 'password123', '103 Birch St', '3213213211', 60),
-('Joshua Moore', 1, 'joshua.moore@example.com', 'password123', '104 Cedar St', '5555555555', 70),
-('Megan Jackson', 2, 'megan.jackson@example.com', 'password123', '105 Spruce St', '4444444444', 80),
-('Matthew White', 3, 'matthew.white@example.com', 'password123', '106 Fir St', '3333333333', 90),
-('Laura Harris', 1, 'laura.harris@example.com', 'password123', '107 Ash St', '2222222222', 100);
-
--- Chat table
-INSERT INTO Chat (User_id, Staff_id, Message, Timestamp) VALUES
-(1, 3, 'I need help finding the right milk for my baby.', '2023-05-10 11:00:00'),
-(3, 1, 'Sure, what age is your baby?', '2023-05-10 11:01:00'),
-(1, 3, 'She is 6 months old.', '2023-05-10 11:02:00'),
-(3, 1, 'We have a great selection for 0-1 year olds. Would you like some recommendations?', '2023-05-10 11:03:00'),
-(1, 3, 'Yes, please. That would be great.', '2023-05-10 11:04:00'),
-
-(4, 6, 'Hi, I have a question about my recent order.', '2023-05-11 09:00:00'),
-(6, 4, 'Sure, how can I help?', '2023-05-11 09:01:00'),
-(4, 6, 'I received the wrong product.', '2023-05-11 09:02:00'),
-(6, 4, 'I apologize for the mistake. Could you please provide your order number?', '2023-05-11 09:03:00'),
-(4, 6, 'The order number is 12345.', '2023-05-11 09:04:00'),
-(6, 4, 'Thank you. I will look into this and get back to you shortly.', '2023-05-11 09:05:00'),
-
-(7, 9, 'Can I pre-order a product that is out of stock?', '2023-05-12 14:00:00'),
-(9, 7, 'Yes, you can. Which product are you interested in?', '2023-05-12 14:01:00'),
-(7, 9, 'I want to pre-order the Similac Advance for 1-2 years.', '2023-05-12 14:02:00'),
-(9, 7, 'I can help with that. How many units would you like to pre-order?', '2023-05-12 14:03:00'),
-(7, 9, 'I would like to pre-order 2 units.', '2023-05-12 14:04:00'),
-(9, 7, 'Your pre-order has been placed. You will be notified once the product is back in stock.', '2023-05-12 14:05:00'),
-
-(10, 9, 'Do you have any discounts available?', '2023-05-13 16:00:00'),
-(9, 10, 'Yes, we have several discount vouchers available. How can I assist you?', '2023-05-13 16:01:00'),
-(10, 9, 'I am looking for a 10% discount voucher.', '2023-05-13 16:02:00'),
-(9, 10, 'I can provide you with a 10% discount voucher. The code is DISC10B.', '2023-05-13 16:03:00'),
-(10, 9, 'Thank you so much!', '2023-05-13 16:04:00'),
-
-(4, 3, 'Can you recommend a milk for toddlers?', '2023-05-14 10:00:00'),
-(3, 4, 'Of course. For toddlers over 2 years old, I recommend Similac Go & Grow or Enfamil Toddler.', '2023-05-14 10:01:00'),
-(4, 3, 'Thank you, I will check them out.', '2023-05-14 10:02:00');
+INSERT INTO User (Full_name, Role, Email, Password, Phone, Address, Point) VALUES
+('John Doe', 'MEMBER', 'john.doe@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1234567890', '123 Main St', 100),
+('Jane Smith', 'STAFF', 'jane.smith@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '0987654321', '456 Elm St', 200),
+('Michael Brown', 'ADMIN', 'michael.brown@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '1231231234', '789 Maple St', 1000),
+('Emily Davis', 'MEMBER', 'emily.davis@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '9879879876', '101 Oak St', 400),
+('Chris Wilson', 'STAFF', 'chris.wilson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '6546546543', '102 Pine St', 500),
+('Amanda Taylor', 'ADMIN', 'amanda.taylor@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3213213211', '103 Birch St', 600),
+('Joshua Moore', 'MEMBER', 'joshua.moore@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '5555555555', '104 Cedar St', 700),
+('Megan Jackson', 'STAFF', 'megan.jackson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '4444444444', '105 Spruce St', 800),
+('Matthew White', 'ADMIN', 'matthew.white@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3333333333', '106 Fir St', 900),
+('Laura Harris', 'MEMBER', 'laura.harris@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '2222222222', '107 Ash St', 1000);
 
 -- Blog table
 INSERT INTO BlogCategory (Blog_category_name) VALUES
@@ -195,6 +167,27 @@ INSERT INTO Blog (Blog_category_id, User_id, Title, Content, Publish_date) VALUE
 (6, 9, 'Employee Spotlight', 'Meet some of the amazing people behind our brand.', '2024-02-23'),
 (3, 9, 'Recipe Ideas', 'Delicious recipes you can make with our products.', '2024-04-01'),
 (5, 3, 'Community Involvement', 'How we are giving back to the community.', '2023-05-15');
+
+-- Blog Review table
+INSERT INTO BlogReview (User_id, Blog_id, Comment, Review_date) VALUES
+(1, 1, 'Great quality blog!', '2023-05-01'),
+(2, 2, 'Very tasty indeed, the powder that is.', '2023-06-01'),
+(3, 3, 'Good, but a bit expensive.', '2023-05-16'),
+(4, 4, 'Whoa, that was not expected', '2024-05-01'),
+(4, 1, 'Excellent product for my baby!', '2023-05-01'),
+(4, 2, 'Very good, but a bit expensive.', '2023-05-02'),
+(5, 1, 'Good quality, my baby likes it.', '2023-05-03'),
+(5, 3, 'Not bad, but my baby prefers another brand.', '2023-05-04'),
+(5, 5, 'Very fresh.', '2024-02-01'),
+(6, 1, 'Best formula we have tried.', '2023-05-05'),
+(6, 4, 'Great for pregnant moms.', '2023-05-06'),
+(6, 6, 'Best product ever!', '2023-12-30'),
+(7, 5, 'My newborn loves it.', '2023-05-07'),
+(7, 6, 'Good product, but shipping was slow.', '2023-05-08'),
+(7, 7, 'Effective but pricey.', '2023-11-28'),
+(8, 8, 'Nice taste, not that I tasted it.', '2024-03-24'),
+(9, 9, 'My child loves it.', '2024-02-24'),
+(10, 10, 'Healthy and tasty.', '2024-01-19');
 
 -- Brand table
 INSERT INTO Brand (Brand_name) VALUES
@@ -256,8 +249,8 @@ INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Price, Di
 ('Sữa bầu Friso Mum Gold 900g hương cam', 9, 6, 'Thực phẩm bổ sung cho mẹ mang thai và cho con bú, hương cam nhãn hiệu Frisomum Gold DualCare+TM.', 539000, 0, 28),
 ('Sữa Friso Gold số 4 850g (2 - 6 tuổi)', 9, 5, 'Sữa Friso® Gold 4 là sản phẩm dinh dưỡng dành cho trẻ em từ 2 - 6 tuổi. Đây là giai đoạn trẻ phát triển mạnh mẽ về thể chất, trí tuệ và tò mò khám phá về thế giới xung quanh.', 495000, 0, 34);
 
--- Review table
-INSERT INTO Review (User_id, Product_id, Rate, Comment, Review_date) VALUES
+-- Product Review table
+INSERT INTO ProductReview (User_id, Product_id, Rate, Comment, Review_date) VALUES
 (1, 1, 5, 'Great quality!', '2023-05-01'),
 (2, 2, 4, 'Very tasty.', '2023-06-01'),
 (3, 3, 3, 'Good, but a bit expensive.', '2023-05-16'),
@@ -279,16 +272,36 @@ INSERT INTO Review (User_id, Product_id, Rate, Comment, Review_date) VALUES
 
 -- Image table
 INSERT INTO Image (Product_id, Image_url) VALUES
-(1, 'milk.jpg'),
-(2, 'bread.jpg'),
-(3, 'juice.jpg'),
-(4, 'chips.jpg'),
-(5, 'apples.jpg'),
-(6, 'icecream.jpg'),
-(7, 'detergent.jpg'),
-(8, 'shampoo.jpg'),
-(9, 'dogfood.jpg'),
-(10, 'pasta.jpg');
+(1, 'https://cdn1.concung.com/2023/04/43264-99868/sua-similac-5g-so-2-900g-6-12-thang.png'),
+(2, 'https://cdn1.concung.com/2022/06/57793-89274-large_mobile/sua-similac-total-protection-1-5-hmo-400g-0-6-thang.jpg'),
+(3, 'https://cdn1.concung.com/2024/01/65020-107920-large_mobile/sua-similac-5g-so-4-1-7kg-2-6-tuoi.png'),
+(4, 'https://cdn1.concung.com/2023/04/57792-99852-large_mobile/sua-similac-total-protection-2-5-hmo-900g-6-12-thang.png'),
+(5, 'https://cdn1.concung.com/2021/10/25412-75708-large_mobile/similac-mom-huong-vani-900g.jpg'),
+(6, 'https://cdn1.concung.com/2019/01/25411-45806-large_mobile/similac-mom-huong-vani-400g.jpg'),
+(7, 'https://cdn1.concung.com/2021/04/27426-72037-large_mobile/meiji-infant-formula-800g-0-12-thang.jpg'),
+(8, 'https://cdn1.concung.com/2021/04/27427-72039/meiji-growing-up-formula-800g-1-3-tuoi.jpg'),
+(9, 'https://cdn1.concung.com/2023/10/64137-105389-large_mobile/san-pham-dinh-duong-cong-thuc-cho-tre-tu-0-12-thang-meiji-0-1-year-old-infant-formula-ezcube-540g.png'),
+(10, 'https://cdn1.concung.com/2024/04/66308-109691-large_mobile/san-pham-dinh-duong-cong-thuc-cho-tre-tu-1-3-tuoi-meiji-1-3-years-old-growing-up-formula-ezcube-560g.png'),
+(11, 'https://cdn1.concung.com/2015/05/27423-31742-large_mobile/sua-bau-meiji-mama-milk-350g.jpg'),
+(12, 'https://cdn1.concung.com/2023/09/61772-104859-large_mobile/san-pham-dinh-duong-cong-thuc-voi-muc-dich-an-bo-sung-danh-cho-tre-tu-12-36-thang-tuoi-bubs-supreme-toddler-milk-drink-3.png'),
+(13, 'https://cdn1.concung.com/2023/03/61773-98457-large_mobile/thuc-pham-bo-sung-bubs-supreme-junior-nutrition.png'),
+(14, 'https://cdn1.concung.com/2023/04/53324-100516-large_mobile/sua-kid-essentials-australia-800g-huong-vani-1-10-tuoi.jpg'),
+(15, 'https://cdn1.concung.com/2023/07/60332-102783-large_mobile/sua-kid-essentials-australia-800g-huong-vani-1-10-tuoi.png'),
+(16, 'https://cdn1.concung.com/2023/03/25418-99316/sua-abbott-pediasure-1-10-tuoi-850g.png'),
+(17, 'https://cdn1.concung.com/2024/05/66496-110494-large_mobile/thuc-pham-dinh-duong-y-hoc-cho-tre-1-10-tuoi-pediasure-dang-long-huong-vani-237ml-loc-6-chai.png'),
+(18, 'https://cdn1.concung.com/2024/06/55037-110822/sua-nan-a2-infinipro-800g-so-1-0-1-tuoi.png'),
+(19, 'https://cdn1.concung.com/2024/04/66280-109655-large_mobile/thuc-pham-bo-sung-nestle-nangrow-6-8x110ml-mua-6-tang-2.png'),
+(20, 'https://cdn1.concung.com/2023/04/52750-100260-large_mobile/nan-supreme-pro-2-800g.png'),
+(21, 'https://cdn1.concung.com/2023/08/61838-104160-large_mobile/san-pham-dinh-duong-cong-thuc-nestle-nan-optipro-plus-2-800g.png'),
+(22, 'https://cdn1.concung.com/2024/05/64566-110434/spddct-aptamil-profutura-cesarbiotik-2-follow-on-formula-danh-cho-tre-tu-12--24-thang-tuoi-800g.png'),
+(23, 'https://cdn1.concung.com/2024/05/64567-110438-large_mobile/tpbs-aptamil-profutura-kid-cesarbiotik-3-growing-up-milk-formula-tre-tu-24-thang-tuoi-tro-len-800g.png'),
+(24, 'https://cdn1.concung.com/2022/05/57287-88169-large_mobile/vinamilk-optimum-gold-4-850g-2-6-tuoi.jpg'),
+(25, 'https://cdn1.concung.com/2022/05/57288-88175-large_mobile/sua-uong-dinh-duong-optimum-gold-110ml-loc-4-hop.jpg'),
+(26, 'https://cdn1.concung.com/2022/05/57289-88180-large_mobile/sua-uong-dinh-duong-optimum-gold-180ml-loc-4-hop.jpg'),
+(27, 'https://cdn1.concung.com/2022/01/59986-94820-large_mobile/sua-non-vinamilk-colosgold-110ml-tu-1-tuoi-loc-4-hop.jpg'),
+(28, 'https://cdn1.concung.com/2022/01/54559-79245-large_mobile/sua-vinamilk-colosgold-so-3-800g-2-6-tuoi.jpg'),
+(29, 'https://cdn1.concung.com/2020/06/25354-62108-large_mobile/friso-mum-gold-huong-cam-900g.jpg'),
+(30, 'https://cdn1.concung.com/2021/10/51147-75767-large_mobile/friso-gold-4-2-6-tuoi-850gr.jpg');
 
 -- Wishlist table
 INSERT INTO Wishlist (User_id, Product_id) VALUES
@@ -298,25 +311,25 @@ INSERT INTO Wishlist (User_id, Product_id) VALUES
 (10, 4), (10, 8), (10, 12);
 
 -- Voucher table
-INSERT INTO Voucher (User_id, Discount, Start_date, Expiration_date, Status) VALUES
-(1, 10.00, '2023-12-01', '2024-08-01', 1),
-(4, 20.00, '2024-01-01', '2025-01-01', 1),
-(4, 15.00, '2024-3-30', '2024-04-30', 0),
-(7, 5.00, '2023-06-01', '2023-09-30', 0),
-(10, 25.00, '2024-01-01', '2024-02-28', 0),
-(10, 10.00, '2024-03-30', '2024-09-30', 1),
-(1, 10.00, '2024-03-30', '2024-10-31', 0),
-(7, 5.00, '2024-01-30', '2024-08-29', 1),
-(1, 5.00, '2023-12-31', '2024-01-02', 0),
-(7, 20.00, '2023-12-31', '2024-10-01', 1);
+INSERT INTO Voucher (Point, User_id, Discount, Expiration_date, Available) VALUES
+(100, 1, 10.00, '2024-08-01', 1),
+(200, 4, 20.00, '2025-01-01', 1),
+(150, 4, 15.00, '2024-04-30', 0),
+(50, 7, 5.00, '2023-09-30', 0),
+(250, NULL, 25.00, '2024-02-28', 0),
+(100, 10, 10.00, '2024-09-30', 1),
+(100, NULL, 10.00, '2024-10-31', 0),
+(50, 7, 5.00, '2024-08-29', 1),
+(50, NULL, 5.00, '2024-01-02', 0),
+(200, 7, 20.00, '2024-10-01', 1);
 
 -- Order table
-INSERT INTO `Order` (User_id, Voucher_id, Shipping_fee, Total_price, Order_date, Payment_method, Shipping_address) VALUES
-(1, 7, 15000, 1300350, '2023-07-21', 'Credit Card', '123 Main St'),
-(4, 3, 30000, 606300, '2024-04-05', 'PayPal', '456 Elm St'),
-(7, NULL, 10000, 687000, '2024-05-23', 'VnPay', '101 Oak St'),
-(1, NULL, 0, 1944750 , '2024-03-27', 'PayPal', '102 Pine St'),
-(10, 5, 20000, 1117640, '2024-01-22', 'Momo', '103 Birch St');
+INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Note, Voucher_id, Shipping_fee, Total_price, Status, Order_date) VALUES
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 'Send me in 7-10 days', 7, 15000, 1300350, 0, '2023-07-21'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 'It would be great if you can call me 1 day before delivery', 3, 30000, 606300, 1,'2024-04-05'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'I want to receive my order in the afternoon', NULL, 10000, 687000, 1,'2024-05-23'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1944750 , 0,'2024-03-27'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 'You can give my package to the security guard at the door', 5, 20000, 1117640, 1, '2024-01-22');
 
 -- OrderDetail table with 10 entries
 INSERT INTO OrderDetail (Order_id, Product_id, Quantity, Total_price) VALUES

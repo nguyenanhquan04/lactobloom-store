@@ -1,5 +1,6 @@
 package com.lactobloom.service;
 
+import com.lactobloom.dto.BrandDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Brand;
 import com.lactobloom.repository.BrandRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BrandService implements IBrandService {
@@ -16,29 +18,30 @@ public class BrandService implements IBrandService {
     private BrandRepository brandRepository;
 
     @Override
-    public Brand saveBrand(Brand brand) {
-        return brandRepository.save(brand);
+    public BrandDto saveBrand(BrandDto brandDto) {
+        Brand brand = mapToEntity(brandDto);
+        return mapToDto(brandRepository.save(brand));
     }
 
     @Override
-    public List<Brand> getAllBrands() {
-        return brandRepository.findAll();
+    public List<BrandDto> getAllBrands() {
+        List<Brand> brandList = brandRepository.findAll();
+        return brandList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
-    public Brand getBrandById(int id) {
-        return brandRepository.findById(id).orElseThrow(() ->
+    public BrandDto getBrandById(int id) {
+        Brand brand = brandRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", id));
+        return mapToDto(brand);
     }
 
     @Override
-    public Brand updateBrand(Brand brand, int id) {
+    public BrandDto updateBrand(BrandDto brandDto, int id) {
         Brand existingBrand = brandRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", id));
-
-        existingBrand.setBrandName(brand.getBrandName());
-        // Update other fields as needed
-        return brandRepository.save(existingBrand);
+        existingBrand.setBrandName(brandDto.getBrandName());
+        return mapToDto(brandRepository.save(existingBrand));
     }
 
     @Override
@@ -46,5 +49,23 @@ public class BrandService implements IBrandService {
         brandRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", id));
         brandRepository.deleteById(id);
+    }
+
+    @Override
+    public BrandDto findBrandByProductId(int id){
+        return mapToDto(brandRepository.findByProductsProductId(id));
+    }
+
+    private BrandDto mapToDto (Brand brand){
+        BrandDto brandResponse = new BrandDto();
+        brandResponse.setBrandId(brand.getBrandId());
+        brandResponse.setBrandName(brand.getBrandName());
+        return brandResponse;
+    }
+
+    private Brand mapToEntity(BrandDto brandDto){
+        Brand brand = new Brand();
+        brand.setBrandName(brandDto.getBrandName());
+        return brand;
     }
 }

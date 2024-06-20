@@ -1,13 +1,13 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.BlogCategory;
+import com.lactobloom.dto.BlogCategoryDto;
 
 import java.util.List;
 
 public interface IBlogCategoryService {
-    BlogCategory saveBlogCategory(BlogCategory blogCategory);
-    List<BlogCategory> getAllBlogCategories();
-    BlogCategory getBlogCategoryById(int id);
-    BlogCategory updateBlogCategory(BlogCategory blogCategory, int id);
+    BlogCategoryDto saveBlogCategory(BlogCategoryDto blogCategoryDto);
+    List<BlogCategoryDto> getAllBlogCategories();
+    BlogCategoryDto getBlogCategoryById(int id);
+    BlogCategoryDto updateBlogCategory(BlogCategoryDto blogCategoryDto, int id);
     void deleteBlogCategory(int id);
 }

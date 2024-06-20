@@ -1,16 +1,18 @@
 package com.lactobloom.service.interfaces;
 
-import com.lactobloom.model.Product;
+import com.lactobloom.dto.ProductRequest;
+import com.lactobloom.dto.ProductResponse;
 
 import java.util.List;
 
 public interface IProductService {
-    Product saveProduct(Product product);
-    List<Product> getAllProducts();
-    Product getProductById(int id);
-    Product updateProduct(Product product, int id);
+    ProductResponse saveProduct(int brandId, int categoryId, ProductRequest productRequest);
+    List<ProductResponse> getAllProducts();
+    ProductResponse getProductById(int id);
+    List<ProductResponse> getUserWishlist();
+    ProductResponse updateProduct(int id, int brandId, int cateoryId, ProductRequest productRequest);
     void deleteProduct(int id);
-    List<Product> searchProductsByName(String productName);
-    List<Product> getProductsByCategoryId(int categoryId);
-    List<Product> getProductsByBrandId(int brandId);
+    List<ProductResponse> searchProductsByName(String productName);
+    List<ProductResponse> getProductsByCategoryId(int categoryId);
+    List<ProductResponse> getProductsByBrandId(int brandId);
 }

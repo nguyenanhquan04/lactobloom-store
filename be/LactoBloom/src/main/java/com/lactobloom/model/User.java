@@ -1,15 +1,28 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,60 +30,93 @@ public class User {
     private int userId;
 
     @Column(name = "Full_name", nullable = false)
+    @NotNull(message = "Full name must not be null")
     private String fullName;
 
-    @ManyToOne
-    @JoinColumn(name = "Role_id")
-    @JsonBackReference
+    @Column(name = "Role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Role must not be null")
     private Role role;
 
     @Column(name = "Email", nullable = false, unique = true)
+    @NotNull(message = "Email must not be null")
+    @Email
+    @Pattern(regexp = "^[\\w!#$%&'*+/=?`{|}~^.-]+@[\\w.-]+$")
     private String email;
 
     @Column(name = "Password", nullable = false)
+    @NotNull(message = "Password must not be null")
     private String password;
-
-    @Column(name = "Address")
-    private String address;
 
     @Column(name = "Phone")
     private String phone;
 
-    @Column(name = "Avatar")
-    private String avatar;
+    @Column(name = "Address", columnDefinition = "TEXT")
+    private String address;
 
     @Column(name = "Point", columnDefinition = "INT DEFAULT 0")
     private int point;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
-    private List<Chat> chats;
+    private List<Token> tokens;
 
-    @OneToMany(mappedBy = "staff")
-    @JsonManagedReference
-    private List<Chat> staffChats;
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
     private List<Blog> blogs;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
-    private List<Review> reviews;
+    private List<ProductReview> productReviews;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
+    private List<BlogReview> blogReviews;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
     private List<Wishlist> wishlists;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
     private List<Voucher> vouchers;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
-    private List<PreOrder> preOrders;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority((role.name())));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

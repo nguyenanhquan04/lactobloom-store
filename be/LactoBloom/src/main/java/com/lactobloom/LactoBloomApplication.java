@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan({ "com.lactobloom.controller","com.lactobloom.service" })
+@ComponentScan({ "com.lactobloom.controller","com.lactobloom.service","com.lactobloom.config"})
 @EnableJpaRepositories(basePackages = "com.lactobloom.repository")
 @EntityScan(basePackages = "com.lactobloom.model")
 public class LactoBloomApplication {

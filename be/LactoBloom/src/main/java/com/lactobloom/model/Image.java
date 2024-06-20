@@ -2,6 +2,7 @@ package com.lactobloom.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -17,8 +18,10 @@ public class Image {
     @ManyToOne
     @JoinColumn(name = "Product_id")
     @JsonBackReference
+    @NotNull(message = "Product must not be null")
     private Product product;
 
     @Column(name = "Image_url", nullable = false)
+    @NotNull(message = "Image must not be null")
     private String imageUrl;
 }

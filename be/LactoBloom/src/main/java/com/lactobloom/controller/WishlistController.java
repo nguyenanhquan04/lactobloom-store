@@ -1,39 +1,38 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.model.Wishlist;
+import com.lactobloom.dto.WishlistDto;
 import com.lactobloom.service.interfaces.IWishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/wishlist")
+@CrossOrigin(origins = "*")
 public class WishlistController {
 
     @Autowired
     private IWishlistService wishlistService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Wishlist> saveWishlist(@RequestBody Wishlist wishlist) {
-        return new ResponseEntity<>(wishlistService.saveWishlist(wishlist), HttpStatus.CREATED);
+    @PostMapping("/save/product/{productId}")
+    public ResponseEntity<WishlistDto> saveWishlist(@PathVariable int productId) {
+        return new ResponseEntity<>(wishlistService.saveWishlist(productId), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/all")
-    public List<Wishlist> getAllWishlists() {
+    public List<WishlistDto> getAllWishlists() {
         return wishlistService.getAllWishlists();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/get/{id}")
-    public ResponseEntity<Wishlist> getWishlistById(@PathVariable int id) {
+    public ResponseEntity<WishlistDto> getWishlistById(@PathVariable int id) {
         return new ResponseEntity<>(wishlistService.getWishlistById(id), HttpStatus.OK);
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Wishlist> updateWishlist(@PathVariable int id, @RequestBody Wishlist wishlist) {
-        return new ResponseEntity<>(wishlistService.updateWishlist(wishlist, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

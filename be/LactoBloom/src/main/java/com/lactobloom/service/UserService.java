@@ -1,13 +1,19 @@
 package com.lactobloom.service;
 
+import com.lactobloom.dto.ResetPasswordDto;
+import com.lactobloom.dto.UserDto;
 import com.lactobloom.exception.ResourceNotFoundException;
+import com.lactobloom.model.Role;
 import com.lactobloom.model.User;
 import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService {
@@ -15,37 +21,66 @@ public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public List<UserDto> getAllUsers() {
+        List<User> userList = userRepository.findAll();
+        return userList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public UserDto getUserInfo() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        return mapToDto(user);
     }
 
     @Override
-    public User getUserById(int id) {
-        return userRepository.findById(id).orElseThrow(() ->
+    public UserDto getUserById(int id) {
+        User user = userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Id", id));
+        return mapToDto(user);
     }
 
     @Override
-    public User updateUser(User user, int id) {
+    public UserDto updateUserInfo(UserDto userDto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        existingUser.setFullName(userDto.getFullName());
+        existingUser.setEmail(userDto.getEmail());
+        existingUser.setAddress(userDto.getAddress());
+        existingUser.setPhone(userDto.getPhone());
+        return mapToDto(userRepository.save(existingUser));
+    }
+
+    @Override
+    public boolean resetPassword(ResetPasswordDto resetPasswordDto){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        if (passwordEncoder.matches(resetPasswordDto.getPassword(), existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+            userRepository.save(existingUser);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public UserDto updateUser(UserDto userDto, int id) {
         User existingUser = userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Id", id));
-
-        existingUser.setFullName(user.getFullName());
-        existingUser.setRole(user.getRole());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(user.getPassword());
-        existingUser.setAddress(user.getAddress());
-        existingUser.setPhone(user.getPhone());
-        existingUser.setAvatar(user.getAvatar());
-        existingUser.setPoint(user.getPoint());
-
-        return userRepository.save(existingUser);
+        existingUser.setFullName(userDto.getFullName());
+        existingUser.setRole(Role.valueOf(userDto.getRole()));
+        existingUser.setEmail(userDto.getEmail());
+        existingUser.setAddress(userDto.getAddress());
+        existingUser.setPhone(userDto.getPhone());
+        existingUser.setPoint(userDto.getPoint());
+        return mapToDto(userRepository.save(existingUser));
     }
 
     @Override
@@ -56,7 +91,36 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> searchUsersByFullName(String fullName) {
-        return userRepository.findByFullNameContaining(fullName);
+    public List<UserDto> searchUsersByFullName(String fullName) {
+        return userRepository.findByFullNameContaining(fullName).stream().map(this::mapToDto).collect(Collectors.toList());
     }
+
+    @Override
+    public UserDto findByEmail(String email) {
+        User user= userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Email", email));
+        return mapToDto(user);
+    }
+
+    private UserDto mapToDto (User user){
+        UserDto userResponse = new UserDto();
+        userResponse.setUserId(user.getUserId());
+        userResponse.setFullName(user.getFullName());
+        userResponse.setRole(user.getRole().name());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setPhone(user.getPhone());
+        userResponse.setAddress(user.getAddress());
+        userResponse.setPoint(user.getPoint());
+        return userResponse;
+    }
+
+//    private User mapToEntity (UserDto userDto){
+//        User user = new User();
+//        user.setFullName(userDto.getFullName());
+//        user.setEmail(userDto.getEmail());
+//        user.setPhone(userDto.getPhone());
+//        user.setAddress(userDto.getAddress());
+//        user.setPoint(userDto.getPoint());
+//        return user;
+//    }
 }
