@@ -56,6 +56,12 @@ public class BlogService implements IBlogService {
     }
 
     @Override
+    public List<BlogDto> getBlogsByCategory(int blogCategoryId) {
+        List<Blog> blogList = blogRepository.findByBlogCategory_BlogCategoryId(blogCategoryId);
+        return blogList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId) {
         Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));

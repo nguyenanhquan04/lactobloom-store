@@ -93,9 +93,21 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> searchProductsByName(String productName) {
-        List<Product> productList = productRepository.findByProductNameContainingIgnoreCase(productName);
-        return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<ProductResponse> searchProducts(String productName, Integer categoryId, Integer brandId) {
+        if (categoryId != null && brandId != null) {
+            return productRepository.findByProductNameContainingIgnoreCaseAndCategoryCategoryIdAndBrandBrandId(productName, categoryId, brandId)
+                    .stream().map(this::mapToResponse).collect(Collectors.toList());
+        }
+        else if (categoryId != null) {
+            return productRepository.findByProductNameContainingIgnoreCaseAndCategoryCategoryId(productName, categoryId)
+                    .stream().map(this::mapToResponse).collect(Collectors.toList());
+        }
+        else if (brandId != null) {
+            return productRepository.findByProductNameContainingIgnoreCaseAndBrandBrandId(productName, brandId)
+                    .stream().map(this::mapToResponse).collect(Collectors.toList());
+        }
+        return productRepository.findByProductNameContainingIgnoreCase(productName)
+                .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override

@@ -55,8 +55,8 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public List<ProductResponse> searchProductsByName(@RequestParam String productName) {
-        return productService.searchProductsByName(productName);
+    public List<ProductResponse> searchProducts(@RequestParam String productName, @RequestParam(required = false) Integer categoryId, @RequestParam(required = false) Integer brandId) {
+        return productService.searchProducts(productName, categoryId, brandId);
     }
 
     @GetMapping("/category/{categoryId}")

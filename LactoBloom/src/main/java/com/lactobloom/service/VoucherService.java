@@ -79,7 +79,7 @@ public class VoucherService implements IVoucherService {
                     new ResourceNotFoundException("User", "email", email));
             Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
                     new ResourceNotFoundException("Voucher", "Id", id));
-            if(existingVoucher.getPoint() <= user.getPoint() && existingVoucher.getUser() != user){
+            if(existingVoucher.getPoint() <= user.getPoint() && existingVoucher.getUser() == null){
                 user.setPoint(user.getPoint() - existingVoucher.getPoint());
                 User newUser = userRepository.save(user);
                 existingVoucher.setUser(newUser);

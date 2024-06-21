@@ -4,13 +4,9 @@ import com.lactobloom.dto.AuthenticationRequest;
 import com.lactobloom.dto.AuthenticationResponse;
 import com.lactobloom.dto.RegisterRequest;
 import com.lactobloom.service.AuthenticationService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/auth")

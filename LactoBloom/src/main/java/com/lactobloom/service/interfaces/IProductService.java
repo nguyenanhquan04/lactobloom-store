@@ -12,7 +12,7 @@ public interface IProductService {
     List<ProductResponse> getUserWishlist();
     ProductResponse updateProduct(int id, int brandId, int cateoryId, ProductRequest productRequest);
     void deleteProduct(int id);
-    List<ProductResponse> searchProductsByName(String productName);
+    List<ProductResponse> searchProducts(String productName, Integer categoryId, Integer brandId);
     List<ProductResponse> getProductsByCategoryId(int categoryId);
     List<ProductResponse> getProductsByBrandId(int brandId);
 }

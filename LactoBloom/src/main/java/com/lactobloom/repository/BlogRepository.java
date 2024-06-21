@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface BlogRepository extends JpaRepository<Blog, Integer> {
     List<Blog> findByTitleContaining(String title);
+    List<Blog> findByBlogCategory_BlogCategoryId(int id);
 }
