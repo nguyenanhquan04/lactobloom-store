@@ -6,6 +6,7 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import BlogSidebar from "../../wrappers/blog/BlogSidebar";
 import BlogComment from "../../wrappers/blog/BlogComment";
 import BlogPost from "../../wrappers/blog/BlogPost";
+import { getBlogByBlogId } from "../../utils/BlogService";
 
 const BlogDetailsStandard = () => {
   let { blogId } = useParams();
@@ -17,14 +18,9 @@ const BlogDetailsStandard = () => {
     setLoading(true);
     setError(null);
 
-    fetch(`http://localhost:8080/blog/get/${blogId}`)
+    getBlogByBlogId(blogId)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
+        const data = response.data; // Accessing data directly from Axios response
         setBlog(data);
         setLoading(false);
       })

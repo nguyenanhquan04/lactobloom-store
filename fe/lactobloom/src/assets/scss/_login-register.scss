@@ -1,5 +1,10 @@
 /*------ 24. login register Page  --------*/
 
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
 .login-register-wrapper {
   .login-register-tab-list {
     display: flex;

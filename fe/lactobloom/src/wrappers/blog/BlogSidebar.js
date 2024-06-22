@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { getAllBlogs } from "../../utils/BlogService";
+import { getAllBlogCategories } from "../../utils/BlogCategoryService";
 
 const BlogSidebar = () => {
   const [latestBlogs, setLatestBlogs] = useState([]);
@@ -7,9 +9,9 @@ const BlogSidebar = () => {
 
   useEffect(() => {
     // Fetch latest blogs
-    fetch("http://localhost:8080/blog/all")
-      .then(response => response.json())
-      .then(data => {
+    getAllBlogs()
+      .then(response => {
+        const data = response.data; // Accessing data directly from Axios response
         // Sort blogs by publishDate in descending order to get the latest posts
         const sortedBlogs = data.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
         // Get the top 4 latest posts
@@ -18,9 +20,11 @@ const BlogSidebar = () => {
       .catch(error => console.error('Error fetching latest blogs:', error));
 
     // Fetch blog categories
-    fetch("http://localhost:8080/blog-category/all")
-      .then(response => response.json())
-      .then(data => setCategories(data))
+    getAllBlogCategories()
+      .then(response => {
+        const data = response.data; // Accessing data directly from Axios response
+        setCategories(data);
+      })
       .catch(error => console.error('Error fetching categories:', error));
   }, []);
 

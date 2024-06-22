@@ -3,15 +3,16 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import BlogFeaturedSingle from "../../components/blog-featured/BlogFeaturedSingle";
 import SectionTitle from "../../components/section-title/SectionTitle";
+import { getAllBlogs } from "../../utils/BlogService";
 
 const BlogFeatured = ({ spaceTopClass, spaceBottomClass }) => {
   const [blogPosts, setBlogPosts] = useState([]);
 
   useEffect(() => {
     // Fetch all blogs
-    fetch("http://localhost:8080/blog/all")
-      .then(response => response.json())
-      .then(data => {
+    getAllBlogs()
+      .then(response => {
+        const data = response.data; // Accessing data directly from Axios response
         // Sort the blogs by publish date in descending order
         const sortedBlogs = data.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
         // Get the latest 3 blogs

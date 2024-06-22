@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
+import { getAllBlogs } from "../../utils/BlogService";
+import { getBlogReviewByBlogId } from "../../utils/BlogReviewService";
 
 const BlogPosts = () => {
   const [blogs, setBlogs] = useState([]);
@@ -7,15 +9,15 @@ const BlogPosts = () => {
 
   useEffect(() => {
     // Fetch all blogs
-    fetch("http://localhost:8080/blog/all")
-      .then(response => response.json())
-      .then(data => {
+    getAllBlogs()
+      .then(response => {
+        const data = response.data; // Accessing data directly from Axios response
         setBlogs(data);
         // Fetch comments for each blog
         data.forEach(blog => {
-          fetch(`http://localhost:8080/blog-review/blog/${blog.blogId}`)
-            .then(response => response.json())
-            .then(commentsData => {
+          getBlogReviewByBlogId(blog.blogId)
+            .then(response => {
+              const commentsData = response.data; // Accessing data directly from Axios response
               setComments(prevComments => ({
                 ...prevComments,
                 [blog.blogId]: commentsData.length
