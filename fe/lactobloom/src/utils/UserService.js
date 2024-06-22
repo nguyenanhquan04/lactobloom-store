@@ -15,8 +15,10 @@ const register = (fullName, email, password) => {
     });
 }
 
-const logOut = () => {
-    return request.post('auth/logout');
+const logOut = (authToken) => {
+    return request.get('auth/logout', {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
 }
 
 const userInfo =() => {

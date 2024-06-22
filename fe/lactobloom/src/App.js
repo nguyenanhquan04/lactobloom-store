@@ -67,7 +67,7 @@ const App = () => {
                 element={<Blog/>}
               />
               <Route
-                path={process.env.PUBLIC_URL + "/blog-details"}
+                path={process.env.PUBLIC_URL + "/blog-details/:blogId"}
                 element={<BlogDetails/>}
               /> 
 

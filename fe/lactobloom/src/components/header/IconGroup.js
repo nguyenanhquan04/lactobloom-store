@@ -198,8 +198,9 @@ const IconGroup = ({ iconWhiteClass }) => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     if (confirmLogout) {
       // Clear token from cookies
-      Cookies.remove('authToken');
-      logOut();
+      console.log(Cookies.get('authToken'));
+      logOut(Cookies.get('authToken'));
+      Cookies.remove('authToken'); 
     }
     // If user cancels, do nothing
   };
