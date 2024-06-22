@@ -72,6 +72,7 @@ public class BlogService implements IBlogService {
                 new ResourceNotFoundException("User", "email", email));
         existingBlog.setBlogCategory(blogCategory);
         existingBlog.setUser(user);
+        existingBlog.setImageUrl(blogDto.getImageUrl());
         existingBlog.setTitle(blogDto.getTitle());
         existingBlog.setContent(blogDto.getContent());
         return mapToDto(blogRepository.save(existingBlog));
@@ -93,6 +94,7 @@ public class BlogService implements IBlogService {
     private BlogDto mapToDto (Blog blog){
         BlogDto blogResponse = new BlogDto();
         blogResponse.setBlogId(blog.getBlogId());
+        blogResponse.setImageUrl(blog.getImageUrl());
         blogResponse.setTitle(blog.getTitle());
         blogResponse.setContent(blog.getContent());
         blogResponse.setPublishDate(blog.getPublishDate());
@@ -101,6 +103,7 @@ public class BlogService implements IBlogService {
 
     private Blog mapToEntity(BlogDto blogDto){
         Blog blog = new Blog();
+        blog.setImageUrl(blogDto.getImageUrl());
         blog.setTitle(blogDto.getTitle());
         blog.setContent(blogDto.getContent());
         blog.setPublishDate(blogDto.getPublishDate());

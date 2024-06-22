@@ -30,6 +30,10 @@ public class Blog {
     @NotNull(message = "User must not be null")
     private User user;
 
+    @Column(name = "Image_url", nullable = false)
+    @NotNull(message = "Image must not be null")
+    private String imageUrl;
+
     @Column(name = "Title", nullable = false)
     @NotNull(message = "Title must not be null")
     private String title;

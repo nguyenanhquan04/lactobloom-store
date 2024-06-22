@@ -33,6 +33,7 @@ CREATE TABLE Blog (
     Blog_id INT AUTO_INCREMENT PRIMARY KEY,
     Blog_category_id INT,
     User_id INT,
+    Image_url VARCHAR(255) NOT NULL,
     Title NVARCHAR(255) NOT NULL,
     Content TEXT NOT NULL,
     Publish_date DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -156,17 +157,13 @@ INSERT INTO BlogCategory (Blog_category_name) VALUES
 ('Product Reviews'), ('Nutrition and Health'), ('Formula Feeding'), ('Baby Care'), ('Mom''s Wellbeing'), ('Others');
 
 -- Blog table
-INSERT INTO Blog (Blog_category_id, User_id, Title, Content, Publish_date) VALUES
-(1, 3, 'New Product Launch', 'We are excited to announce our new product line.', '2023-05-10'),
-(6, 3, 'Summer Sale', 'Get ready for our biggest summer sale yet.', '2023-06-10'),
-(2, 3, 'Health Benefits of Dairy', 'Learn about the numerous health benefits of consuming dairy.', '2024-01-10'),
-(2, 6, 'Sustainable Practices', 'Our commitment to sustainable practices.', '2024-02-12'),
-(5, 6, 'Customer Testimonials', 'Hear from our satisfied customers.', '2023-05-18'),
-(6, 6, 'Holiday Specials', 'Exclusive holiday deals just for you.', '2024-03-20'),
-(6, 9, 'Behind the Scenes', 'A look behind the scenes at our production process.', '2023-12-17'),
-(6, 9, 'Employee Spotlight', 'Meet some of the amazing people behind our brand.', '2024-02-23'),
-(3, 9, 'Recipe Ideas', 'Delicious recipes you can make with our products.', '2024-04-01'),
-(5, 3, 'Community Involvement', 'How we are giving back to the community.', '2023-05-15');
+INSERT INTO Blog (Blog_category_id, User_id, Image_url, Title, Content, Publish_date) VALUES
+(1, 3, 'https://cdn1.concung.com/storage/data/2021/thong-tin-bo-ich/2024/06/sua-bau-tot-nhat.webp', 'Top 6 sữa bầu tốt nhất, dễ uống và giàu dinh dưỡng', 'Sữa bầu Morinaga E-Okasan hương trà sữa được sản xuất bởi thương hiệu Morinaga nổi tiếng đến từ Nhật Bản. Thương hiệu này đã có hơn 100 năm kinh nghiệm trong lĩnh vực sản xuất sữa và hiện là một trong hai thương hiệu sữa lớn nhất Nhật Bản. Friso Mum Gold được sản xuất bởi Tập đoàn FrieslandCampina đến từ Hà Lan, dành riêng cho mẹ đang mang thai hoặc cho con bú, ...', '2023-05-10'),
+(3, 3, 'https://cdn1.concung.com/storage/data/2021/thong-tin-bo-ich/2021/10/screen-shot-2021-10-21-at-15-43-29.webp', 'Hướng dẫn cách pha và bảo quản sữa Meiji nhập khẩu', 'Theo Intage SDI, sữa Meiji là thương hiệu dinh dưỡng công thức số 1 Nhật Bản nhờ chứa thành phần dinh dưỡng cân bằng. Và để con trẻ hấp thu trọn vẹn hàm lượng dinh dưỡng này, ba mẹ cần biết cách pha sữa với liều lượng chuẩn xác. Nhận thấy được tầm quan trọng của thông tin này, Con Cưng đã tổng hợp tất cả trong bài viết sau. Ba mẹ theo dõi ngay nhé!', '2023-06-10'),
+(1, 3, 'https://cdn1.concung.com/storage/data/2021/tin-khuyen-mai/2022/12/top-5-sua-bot-tot-cho-be-tren-1-tuoi-giup-tang-can-tang-chieu-cao-hieu-qua-2.webp', 'Top 7 sữa bột tốt cho bé trên 1 tuổi giúp tăng cân, tăng chiều cao hiệu quả', 'Trong quá trình tư vấn và bán hàng tại hệ thống siêu thị mẹ bầu & em bé Con Cưng cùng website www.concung.com và App Con Cưng, Con Cưng đã tổng hợp được danh sách 7 loại sữa bột tốt cho bé trên 1 tuổi được đông đảo ba mẹ đánh giá cao. Cùng tìm hiểu thông tin của các loại sữa này, ba mẹ nhé!', '2024-01-10'),
+(2, 6, 'https://cdn1.concung.com/storage/data/2021/tin-khuyen-mai/2022/12/top-4-sua-nhat-cho-be-duoc-ua-chuong-bac-nhat-hien-nay.webp', 'Top 4 sữa Nhật cho bé được ưa chuộng bậc nhất ', 'Trên đây là 4 dòng sữa Nhật cho bé được đông đảo ba mẹ ưa chuộng khi đến với chuỗi hơn 700 cửa hàng mẹ và bé Con Cưng ở hơn 40 tỉnh thành trên toàn quốc. Ba mẹ có thể đến ngay shop mẹ & bé gần đây của Con Cưng để có thể mua sữa Nhật chính hãng, đảm bảo chất lượng nhé! Ngoài sữa cho bé, Con Cưng còn bán rất nhiều các sản phẩm khác có xuất xứ từ Nhật như: thực phẩm cho mẹ bầu và em bé, đồ dùng cho mẹ và bé, hóa mỹ phẩm dành cho mẹ và bé,...', '2024-02-12'),
+(4, 6, 'https://cdn1.concung.com/storage/data/2021/thong-tin-bo-ich/2022/01/tre-so-sinh-nen-uong-sua-cong-thuc-gi-khi-sua-me-chua-ve-1.webp', 'Trẻ sơ sinh nên uống sữa công thức gì khi sữa mẹ chưa về?', 'Sữa mẹ luôn là nguồn thức ăn tốt nhất cho sức khỏe và sự phát triển của trẻ sơ sinh. Song vẫn có không ít mẹ gặp phải tình trạng sữa chưa về kịp trong những ngày đầu mới sinh. Vậy trẻ sơ sinh nên uống sữa gì trong trường hợp này? Liệu bé có thể uống sữa công thức không? Có những loại sữa công thức nào tốt cho trẻ sơ sinh? Hãy cùng Con Cưng tìm hiểu trong bài viết sau, ba mẹ nhé!', '2023-05-18'),
+(6, 6, 'https://cdn1.concung.com/storage/data/2021/thong-tin-bo-ich/2023/05/luu-ngay-kinh-nghiem-chon-sua-nhat-cho-tre-so-sinh-mau-an-chong-lon.webp', 'Lưu ngay kinh nghiệm chọn sữa Nhật cho trẻ sơ sinh "mau ăn chóng lớn"', 'Thị trường sữa Nhật cho trẻ sơ sinh hiện đang có nhiều dòng sản phẩm nổi bật. Để giúp ba mẹ lựa chọn được dòng sữa phù hợp nhất cho bé yêu, Con Cưng đã tổng hợp một số kinh nghiệm thiết thực từ các hội nhóm bỉm sữa uy tín. Cùng khám phá và lưu lại ngay các kinh nghiệm này, ba mẹ nhé. ', '2024-03-20');
 
 -- Blog Review table
 INSERT INTO BlogReview (User_id, Blog_id, Comment, Review_date) VALUES
@@ -184,10 +181,10 @@ INSERT INTO BlogReview (User_id, Blog_id, Comment, Review_date) VALUES
 (6, 6, 'Best product ever!', '2023-12-30'),
 (7, 5, 'My newborn loves it.', '2023-05-07'),
 (7, 6, 'Good product, but shipping was slow.', '2023-05-08'),
-(7, 7, 'Effective but pricey.', '2023-11-28'),
-(8, 8, 'Nice taste, not that I tasted it.', '2024-03-24'),
-(9, 9, 'My child loves it.', '2024-02-24'),
-(10, 10, 'Healthy and tasty.', '2024-01-19');
+(7, 1, 'Effective but pricey.', '2023-11-28'),
+(8, 2, 'Nice taste, not that I tasted it.', '2024-03-24'),
+(9, 3, 'My child loves it.', '2024-02-24'),
+(10, 5, 'Healthy and tasty.', '2024-01-19');
 
 -- Brand table
 INSERT INTO Brand (Brand_name) VALUES

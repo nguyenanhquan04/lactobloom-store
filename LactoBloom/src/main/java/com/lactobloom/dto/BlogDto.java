@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BlogDto {
     private int blogId;
+    private String imageUrl;
     private String title;
     private String content;
     private LocalDateTime publishDate;
