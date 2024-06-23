@@ -2,7 +2,6 @@ package com.lactobloom.controller;
 
 import com.lactobloom.dto.ProductRequest;
 import com.lactobloom.dto.ProductResponse;
-import com.lactobloom.dto.WishlistDto;
 import com.lactobloom.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
