@@ -6,12 +6,14 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Cookies from "js-cookie";
 import { myOrders } from "../../utils/OrderHistoryService";
+import { orderProducts } from "../../utils/OrderDetailService";
 
 const OrderHistory = () => {
   let { pathname } = useLocation();
   let navigate = useNavigate();
   const [orders, setOrders] = useState([]);
-  const [isEmpty, setIsEmpty] = useState(false); // State to track if orders are empty
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [orderDetails, setOrderDetails] = useState({});
 
   useEffect(() => {
     const token = Cookies.get("authToken");
@@ -25,13 +27,35 @@ const OrderHistory = () => {
       })
         .then(response => {
           setOrders(response.data);
-          setIsEmpty(response.data.length === 0); // Check if orders array is empty
+          setIsEmpty(response.data.length === 0);
         })
         .catch(error => {
           console.error("There was an error fetching the order data!", error);
         });
     }
   }, [navigate]);
+
+  const fetchOrderDetails = (orderId) => {
+    const token = Cookies.get("authToken");
+    orderProducts(orderId, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        setOrderDetails(prevState => ({
+          ...prevState,
+          [orderId]: response.data
+        }));
+      })
+      .catch(error => {
+        console.error("There was an error fetching the order details!", error);
+        setOrderDetails(prevState => ({
+          ...prevState,
+          [orderId]: null
+        }));
+      });
+  };
 
   return (
     <Fragment>
@@ -71,16 +95,13 @@ const OrderHistory = () => {
                           eventKey={index.toString()}
                           key={order.orderId}
                           className="single-order-history mb-20"
+                          onClick={() => fetchOrderDetails(order.orderId)}
                         >
                           <Accordion.Header className="panel-heading">
                             <div className="order-header">
                               <div className="order-header-item">
                                 {index + 1} .
                               </div>
-                              <div className="order-header-item">
-                                Order ID: {order.orderId}
-                              </div>
-                              <div className="order-header-item">|</div>
                               <div className="order-header-item">
                                 Date:{" "}
                                 {new Date(order.orderDate).toLocaleDateString()}
@@ -148,15 +169,31 @@ const OrderHistory = () => {
                                     <textarea value={order.note} disabled />
                                   </div>
                                 </div>
-                                <div className="col-lg-12 col-md-12">
-                                  <div className="billing-info">
-                                    <label>Products: </label>
-                                    {/* <textarea
-                                      value={order.note}
-                                      disabled
-                                    /> */}
+                                {orderDetails[order.orderId] && (
+                                  <div className="col-lg-12 col-md-12">
+                                    <div className="billing-info">
+                                      <label>Products: </label>
+                                      <table className="table">
+                                        <thead>
+                                          <tr>
+                                            <th>Product Name</th>
+                                            <th>Quantity</th>
+                                            <th>Total Price</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {orderDetails[order.orderId].map((item) => (
+                                            <tr key={item.orderDetailId}>
+                                              <td>{item.productName}</td>
+                                              <td>{item.quantity}</td>
+                                              <td>{item.totalPrice.toLocaleString("vi-VN")} VND</td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
                                   </div>
-                                </div>
+                                )}
                               </div>
                             </div>
                           </Accordion.Body>

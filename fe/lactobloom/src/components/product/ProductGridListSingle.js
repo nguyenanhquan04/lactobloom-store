@@ -10,6 +10,7 @@ import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import { getImagesByProductId } from "../../utils/ImageService";
+import { getProductReviewByProductId } from "../../utils/ProductReviewService";
 
 const ProductGridListSingle = ({
   product,
@@ -21,12 +22,11 @@ const ProductGridListSingle = ({
 }) => {
   const [modalShow, setModalShow] = useState(false);
   const [productImages, setProductImages] = useState("/assets/img/no-image.png");
+  const [averageRating, setAverageRating] = useState(0);
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * 1);
-  const finalDiscountedPrice = +(
-    discountedPrice * 1
-  );
+  const finalDiscountedPrice = +(discountedPrice * 1);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,7 +39,20 @@ const ProductGridListSingle = ({
       }
     };
 
+    const fetchProductReviews = async () => {
+      try {
+        const response = await getProductReviewByProductId(product.productId);
+        const reviews = response.data;
+        const totalRating = reviews.reduce((acc, review) => acc + review.rate, 0);
+        const avgRating = reviews.length ? totalRating / reviews.length : 0;
+        setAverageRating(avgRating);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
     fetchProductImages();
+    fetchProductReviews();
   }, [product.productId]);
 
   return (
@@ -133,12 +146,16 @@ const ProductGridListSingle = ({
               {product.productName}
             </Link>
           </h3>
-          {product.rating && product.rating > 0 ? (
+          {averageRating && averageRating > 0 ? (
             <div className="product-rating">
-              <Rating ratingValue={product.rating} />
+              <Rating ratingValue={averageRating} />
+              <span>({averageRating.toFixed(1)} out of 5)</span>
             </div>
           ) : (
-            ""
+            <div className="product-rating">
+            <Rating ratingValue="0" />
+            <span>(0 out of 5)</span>
+          </div>
           )}
           <div className="product-price">
             {discountedPrice !== null ? (
@@ -202,10 +219,10 @@ const ProductGridListSingle = ({
                   <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
                 )}
               </div>
-              {product.rating && product.rating > 0 ? (
+              {averageRating && averageRating > 0 ? (
                 <div className="rating-review">
                   <div className="product-list-rating">
-                    <Rating ratingValue={product.rating} />
+                    <Rating ratingValue={averageRating} />
                   </div>
                 </div>
               ) : (
