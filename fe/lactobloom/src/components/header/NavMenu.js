@@ -93,6 +93,11 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                 </Link>
               </li>
               <li>
+                <Link to={process.env.PUBLIC_URL + "/order-history"}>
+                  Order History
+                </Link>
+              </li>
+              <li>
                 <Link to={process.env.PUBLIC_URL + "/not-found"}>
                   {t("404_page")}
                 </Link>

@@ -1,17 +1,34 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getBlogReviewByBlogId } from "../../utils/BlogReviewService";
 
 const BlogPost = ({ blog }) => {
+  const [comments, setComments] = useState({}); // To store comment counts
+
+  useEffect(() => {
+    if (blog) {
+      getBlogReviewByBlogId(blog.blogId)
+        .then(response => {
+          const commentsData = response.data; // Accessing data directly from Axios response
+          setComments(prevComments => ({
+            ...prevComments,
+            [blog.blogId]: commentsData.length
+          }));
+        })
+        .catch(error => console.error('Error fetching comments:', error));
+    }
+  }, [blog]);
+
   if (!blog) return <p>Loading...</p>;
 
   return (
     <Fragment>
       <div className="blog-details-top">
         <div className="blog-details-img">
-          {blog.image && (
+          {blog.imageUrl && (
             <img
-              alt=""
-              src={process.env.PUBLIC_URL + blog.image}
+              alt={blog.title}
+              src={blog.imageUrl}
             />
           )}
         </div>
@@ -21,7 +38,7 @@ const BlogPost = ({ blog }) => {
               <li>{blog.publishDate && new Date(blog.publishDate).toLocaleDateString()}</li>
               <li>
                 <Link>
-                  {blog.commentsCount} <i className="fa fa-comments-o" />
+                  {comments[blog.blogId] || 0} <i className="fa fa-comments-o" />
                 </Link>
               </li>
             </ul>
@@ -85,7 +102,7 @@ const BlogPost = ({ blog }) => {
           </div>
         </div>
       </div>
-      <div className="next-previous-post">
+      {/* <div className="next-previous-post">
         <Link to={process.env.PUBLIC_URL + "/blog-details"}>
           {" "}
           <i className="fa fa-angle-left" /> prev post
@@ -93,7 +110,7 @@ const BlogPost = ({ blog }) => {
         <Link to={process.env.PUBLIC_URL + "/blog-details"}>
           next post <i className="fa fa-angle-right" />
         </Link>
-      </div>
+      </div> */}
     </Fragment>
   );
 };

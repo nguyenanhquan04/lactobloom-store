@@ -6,7 +6,7 @@ const BlogFeaturedSingle = ({ singlePost }) => {
     <div className="blog-wrap mb-30 scroll-zoom">
       <div className="blog-img">
         <Link to={process.env.PUBLIC_URL + "/blog-details/" + singlePost.blogId}>
-          <img src="/assets/img/blog/blog-1.jpg" alt="" />
+          <img src={singlePost.imageUrl} alt="" />
         </Link>
         {/* <div className="blog-category-names">
           {singlePost.category.map((singleCategory, key) => {
