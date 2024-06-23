@@ -8,12 +8,13 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Cookies from "js-cookie";
 import { myVoucher } from "../../utils/VoucherService";
 import { userInfo } from "../../utils/UserService"; // Import the userInfo function from your UserService
+import axios from "axios"; // Import axios for API calls
 
 const Checkout = () => {
   let cartTotalPrice = 0;
 
   let { pathname } = useLocation();
-  let navigate = useNavigate();
+
   const { cartItems } = useSelector((state) => state.cart);
   const [vouchers, setVouchers] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState(null); // State to hold selected voucher
@@ -71,6 +72,34 @@ const Checkout = () => {
     const discountAmount = (cartTotalPrice * selectedVoucher.discount) / 100;
     cartTotalPrice -= discountAmount;
   }
+
+  const placeOrder = async (amount) => {
+    let finalAmount = amount;
+  
+    // If selectedVoucher exists, calculate discounted price
+    if (selectedVoucher) {
+      finalAmount = getDiscountPrice(amount, selectedVoucher.discount);
+    }
+  
+    // Call the API to create payment
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/payment/create-payment?amount=${finalAmount}&bankCode=NCB`
+      );
+      const { status, message, url } = response.data;
+      if (status === "OK") {
+        // Redirect to the payment URL
+        window.location.href = url;
+      } else {
+        console.error("Failed to create payment:", message);
+        // Handle error or show appropriate message to the user
+      }
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      // Handle error or show appropriate message to the user
+    }
+  };
+  
 
   return (
     <Fragment>
@@ -243,7 +272,12 @@ const Checkout = () => {
                       <div className="payment-method"></div>
                     </div>
                     <div className="place-order mt-25">
-                      <button className="btn-hover">Place Order</button>
+                      <button
+                        className="btn-hover"
+                        onClick={() => placeOrder(cartTotalPrice)}
+                      >
+                        Place Order
+                      </button>
                     </div>
                   </div>
                 </div>
