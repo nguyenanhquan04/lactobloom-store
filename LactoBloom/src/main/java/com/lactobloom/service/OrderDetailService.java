@@ -5,11 +5,14 @@ import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Order;
 import com.lactobloom.model.OrderDetail;
 import com.lactobloom.model.Product;
+import com.lactobloom.model.User;
 import com.lactobloom.repository.OrderDetailRepository;
 import com.lactobloom.repository.OrderRepository;
 import com.lactobloom.repository.ProductRepository;
+import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IOrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +29,9 @@ public class OrderDetailService implements IOrderDetailService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public OrderDetailDto saveOrderDetail(OrderDetailDto orderDetailDto, int orderId, int productId) {
@@ -44,7 +50,14 @@ public class OrderDetailService implements IOrderDetailService {
 
     @Override
     public List<OrderDetailDto> getOrderDetailsByOrder(int orderId) {
-        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
+                new ResourceNotFoundException("Order", "Id", orderId));
+        List<OrderDetail> orderDetailList = null;
+        if(existingOrder.getUser() == user)
+            orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
         return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -86,6 +99,7 @@ public class OrderDetailService implements IOrderDetailService {
     private OrderDetailDto mapToDto (OrderDetail orderDetail){
         OrderDetailDto orderDetailResponse = new OrderDetailDto();
         orderDetailResponse.setOrderDetailId(orderDetail.getOrderDetailId());
+        orderDetailResponse.setProductName(orderDetail.getProduct().getProductName());
         orderDetailResponse.setQuantity(orderDetail.getQuantity());
         orderDetailResponse.setTotalPrice(orderDetail.getTotalPrice());
         return orderDetailResponse;
