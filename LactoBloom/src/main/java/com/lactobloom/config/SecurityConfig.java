@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/image/**",
             "/order/**",
             "/order-detail/**",
+            "/payment/**",
             "/product/**",
             "/product-review/**",
             "/user/**",
