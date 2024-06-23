@@ -7,8 +7,11 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { login } from "../../utils/UserService"; // Adjust the import path as needed
 import Cookies from 'js-cookie'; // Import js-cookie
+import { useDispatch } from "react-redux";
+import { deleteAllFromCart } from "../../store/slices/cart-slice";
 
 const Login = () => {
+  let dispatch = useDispatch();
   let { pathname } = useLocation();
   let navigate = useNavigate();
 
@@ -36,7 +39,8 @@ const Login = () => {
       const token = response.data.token; // Adjust according to your API response
       Cookies.set('authToken', token, { expires: 7, secure: true, sameSite: 'strict' }); // Store the token in a cookie
       alert("Login successful");
-      console.log("Login successful", response.data);
+      dispatch(deleteAllFromCart());
+      // console.log("Login successful", response.data);
       // Navigate to a different page on successful login
       navigate("/"); // Adjust the path as needed
     } catch (error) {

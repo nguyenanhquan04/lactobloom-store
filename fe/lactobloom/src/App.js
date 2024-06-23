@@ -26,6 +26,7 @@ const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
 const Compare = lazy(() => import("./pages/other/Compare"));
 const Checkout = lazy(() => import("./pages/other/Checkout"));
+const OrderHistory = lazy(() => import("./pages/other/OrderHistory"));
 
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 
@@ -112,6 +113,10 @@ const App = () => {
               <Route
                 path={process.env.PUBLIC_URL + "/voucher"}
                 element={<Voucher/>}
+              /> 
+              <Route
+                path={process.env.PUBLIC_URL + "/order-history"}
+                element={<OrderHistory/>}
               /> 
 
               <Route path="*" element={<NotFound/>} />

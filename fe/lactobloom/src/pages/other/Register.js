@@ -37,7 +37,7 @@ const Register = () => {
     try {
       const response = await register(registerData.fullName, registerData.email, registerData.password);
       alert("Registration successful", response.data);
-      console.log("Registration successful", response.data);
+      // console.log("Registration successful", response.data);
       // Navigate to a different page on successful registration
       navigate("/login"); // Adjust the path as needed
     } catch (error) {

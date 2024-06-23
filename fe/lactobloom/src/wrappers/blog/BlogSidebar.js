@@ -42,14 +42,14 @@ const BlogSidebar = () => {
         </div>
       </div>
       <div className="sidebar-widget">
-        <h4 className="pro-sidebar-title">Recent Projects </h4>
+        <h4 className="pro-sidebar-title">Recent Blogs </h4>
         <div className="sidebar-project-wrap mt-30">
           {latestBlogs.map(blog => (
             <div className="single-sidebar-blog" key={blog.blogId}>
               <div className="sidebar-blog-img">
                 <Link to={`${process.env.PUBLIC_URL}/blog-details/${blog.blogId}`}>
                   <img
-                    src={`${process.env.PUBLIC_URL}/assets/img/blog/blog-${blog.blogId}.jpg`}
+                    src={blog.imageUrl}
                     alt={blog.title}
                   />
                 </Link>
