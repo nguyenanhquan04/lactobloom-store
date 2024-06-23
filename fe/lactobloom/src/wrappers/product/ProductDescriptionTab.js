@@ -115,7 +115,7 @@ const ProductDescriptionTab = ({
                               <img
                                 src={
                                   process.env.PUBLIC_URL +
-                                  "/assets/img/testimonial/2.jpg"
+                                  "/assets/img/user.jpg"
                                 }
                                 alt="Customer"
                               />

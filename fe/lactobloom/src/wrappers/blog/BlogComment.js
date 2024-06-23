@@ -84,7 +84,7 @@ const BlogComment = () => {
           <div key={comment.reviewId} className="single-comment-wrapper mt-35">
             <div className="blog-comment-img">
               <img
-                src={process.env.PUBLIC_URL + "/assets/img/blog/comment-1.jpg"}
+                src={process.env.PUBLIC_URL + "/assets/img/user.jpg"}
                 alt=""
               />
             </div>
