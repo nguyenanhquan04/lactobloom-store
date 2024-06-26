@@ -57,6 +57,9 @@ public class User implements UserDetails {
     @Column(name = "Point", columnDefinition = "INT DEFAULT 0")
     private int point;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private Otp otp;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
     private List<Token> tokens;

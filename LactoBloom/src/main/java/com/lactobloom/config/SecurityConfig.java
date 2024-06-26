@@ -31,6 +31,7 @@ public class SecurityConfig {
             "/brand/**",
             "/category/**",
             "/chat/**",
+            "/otp/**",
             "/image/**",
             "/order/**",
             "/order-detail/**",

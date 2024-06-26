@@ -24,6 +24,14 @@ CREATE TABLE Token (
     FOREIGN KEY (User_id) REFERENCES User(User_id)
 );
 
+CREATE TABLE Otp (
+	Otp_id INT AUTO_INCREMENT PRIMARY KEY,
+    Otp INT NOT NULL,
+	Expiration_Time DATETIME DEFAULT CURRENT_TIMESTAMP,
+	User_id INT,
+	FOREIGN KEY (User_id) REFERENCES User(User_id)
+);
+
 CREATE TABLE BlogCategory (
     Blog_category_id INT AUTO_INCREMENT PRIMARY KEY,
     Blog_category_name NVARCHAR(255) NOT NULL
@@ -150,7 +158,8 @@ INSERT INTO User (Full_name, Role, Email, Password, Phone, Address, Point) VALUE
 ('Joshua Moore', 'MEMBER', 'joshua.moore@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '5555555555', '104 Cedar St', 700),
 ('Megan Jackson', 'STAFF', 'megan.jackson@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '4444444444', '105 Spruce St', 800),
 ('Matthew White', 'ADMIN', 'matthew.white@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3333333333', '106 Fir St', 900),
-('Laura Harris', 'MEMBER', 'laura.harris@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '2222222222', '107 Ash St', 1000);
+('Laura Harris', 'MEMBER', 'laura.harris@example.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '2222222222', '107 Ash St', 1000),
+('Echorio', 'ADMIN', 'nemesisechorio@gmail.com', '$2a$10$7oPlxhK1Ve2Vp0XOUWIUU.TzmpgYetLZmlqLpW2uDVrIwSz0DgxXK', '3333333333', '106 Fir St', 900);
 
 -- Blog table
 INSERT INTO BlogCategory (Blog_category_name) VALUES
