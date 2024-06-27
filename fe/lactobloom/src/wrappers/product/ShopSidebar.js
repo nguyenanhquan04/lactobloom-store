@@ -1,8 +1,6 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import ShopSearch from "../../components/product/ShopSearch";
-import ShopCategories from "../../components/product/ShopCategories";
-import ShopBrand from "../../components/product/ShopBrand";
 import ShopCategoryAndBrand from "../../components/product/ShopCategoryAndBrand";
 
 const ShopSidebar = ({

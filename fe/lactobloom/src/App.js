@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import ScrollToTop from "./helpers/scroll-top";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MessengerButton from "./components/messenger-button/MessengerButton";
 
 // home pages
 const Home = lazy(() => import("./pages/home/Home"));
@@ -27,6 +28,7 @@ const Wishlist = lazy(() => import("./pages/other/Wishlist"));
 const Compare = lazy(() => import("./pages/other/Compare"));
 const Checkout = lazy(() => import("./pages/other/Checkout"));
 const OrderHistory = lazy(() => import("./pages/other/OrderHistory"));
+const CheckoutResult = lazy(() => import("./pages/other/CheckoutResult"));
 
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 
@@ -117,10 +119,15 @@ const App = () => {
               <Route
                 path={process.env.PUBLIC_URL + "/order-history"}
                 element={<OrderHistory/>}
+              />
+               <Route
+                path={process.env.PUBLIC_URL + "/checkout-result"}
+                element={<CheckoutResult/>}
               /> 
 
               <Route path="*" element={<NotFound/>} />
             </Routes>
+            <MessengerButton />
           </Suspense>
         </ScrollToTop>
       </Router>

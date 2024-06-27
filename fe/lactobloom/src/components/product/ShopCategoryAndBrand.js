@@ -5,7 +5,11 @@ import { getAllBrands } from "../../utils/BrandService";
 import { getAllProducts } from "../../utils/ProductService";
 import { setActiveSort } from "../../helpers/product";
 
-const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }) => {
+const ShopCategoryAndBrand = ({
+  getSortParams,
+  onCategorySelect,
+  onBrandSelect,
+}) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [products, setProducts] = useState([]);
@@ -15,8 +19,8 @@ const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }
   const [errorCategories, setErrorCategories] = useState(null);
   const [errorBrands, setErrorBrands] = useState(null);
   const [errorProducts, setErrorProducts] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedBrand, setSelectedBrand] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -58,21 +62,41 @@ const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }
   }, []);
 
   const handleCategorySelect = (categoryId) => {
-    setSelectedCategory(categoryId);
-    onCategorySelect(categoryId);
-    getSortParams("categoryName", categoryId || "");
+    if (categoryId === null) {
+      // Selecting "All Categories"
+      setSelectedCategories([]);
+      onCategorySelect([]);
+      getSortParams("categoryName", []);
+    } else {
+      // Selecting a specific category
+      setSelectedCategories([categoryId]);
+      onCategorySelect([categoryId]);
+      getSortParams("categoryName", [categoryId]);
+    }
   };
 
   const handleBrandSelect = (brandId) => {
-    setSelectedBrand(brandId);
-    onBrandSelect(brandId);
-    getSortParams("brand", brandId || "");
+    if (brandId === null) {
+      // Selecting "All Brands"
+      setSelectedBrands([]);
+      onBrandSelect([]);
+      getSortParams("brand", []);
+    } else {
+      // Selecting a specific brand
+      setSelectedBrands([brandId]);
+      onBrandSelect([brandId]);
+      getSortParams("brand", [brandId]);
+    }
   };
 
   const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategory ? product.categoryId === selectedCategory : true;
-    const matchesBrand = selectedBrand ? product.brandId === selectedBrand : true;
-    return matchesCategory && matchesBrand;
+    const matchesCategories =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(product.categoryId);
+    const matchesBrands =
+      selectedBrands.length === 0 || selectedBrands.includes(product.brandId);
+
+    return matchesCategories && matchesBrands;
   });
 
   return (
@@ -93,7 +117,7 @@ const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }
                       handleCategorySelect(null);
                       setActiveSort(e);
                     }}
-                    className={selectedCategory === null ? "active" : ""}
+                    className={selectedCategories.length === 0 ? "active" : ""}
                   >
                     <span className="checkmark" /> All Categories
                   </button>
@@ -103,11 +127,12 @@ const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }
                 <li key={category.categoryId}>
                   <div className="sidebar-widget-list-left">
                     <button
-                      onClick={(e) => {
-                        handleCategorySelect(category.categoryId);
-                        setActiveSort(e);
-                      }}
-                      className={selectedCategory === category.categoryId ? "active" : ""}
+                      onClick={(e) => handleCategorySelect(category.categoryId)}
+                      className={
+                        selectedCategories.includes(category.categoryId)
+                          ? "active"
+                          : ""
+                      }
                     >
                       <span className="checkmark" /> {category.categoryName}
                     </button>
@@ -133,11 +158,11 @@ const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }
               <li>
                 <div className="sidebar-widget-list-left">
                   <button
-                    onClick={(e2) => {
+                    onClick={(e) => {
                       handleBrandSelect(null);
-                      setActiveSort(e2);
+                      setActiveSort(e);
                     }}
-                    className={selectedBrand === null ? "active" : ""}
+                    className={selectedBrands.length === 0 ? "active" : ""}
                   >
                     <span className="checkmark" /> All Brands{" "}
                   </button>
@@ -147,13 +172,12 @@ const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }
                 <li key={brand.brandId}>
                   <div className="sidebar-widget-list-left">
                     <button
-                      onClick={(e2) => {
-                        handleBrandSelect(brand.brandId);
-                        setActiveSort(e2);
-                      }}
-                      className={selectedBrand === brand.brandId ? "active" : ""}
+                      onClick={(e) => handleBrandSelect(brand.brandId)}
+                      className={
+                        selectedBrands.includes(brand.brandId) ? "active" : ""
+                      }
                     >
-                      <span className="checkmark" /> {brand.brandName}{" "}
+                      <span className="checkmark" /> {brand.brandName}
                     </button>
                   </div>
                 </li>
@@ -171,7 +195,7 @@ const ShopCategoryAndBrand = ({ getSortParams, onCategorySelect, onBrandSelect }
 ShopCategoryAndBrand.propTypes = {
   getSortParams: PropTypes.func.isRequired,
   onCategorySelect: PropTypes.func.isRequired,
-  onBrandSelect: PropTypes.func.isRequired
+  onBrandSelect: PropTypes.func.isRequired,
 };
 
 export default ShopCategoryAndBrand;
