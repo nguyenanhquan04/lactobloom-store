@@ -19,6 +19,8 @@ import EditBrand from "layouts/brand/editBrand/edit";
 import ViewForm from "layouts/product/viewProduct/view";
 import ViewOrderForm from "layouts/order/viewOrder/view";
 import EditUser from "layouts/user/editUser/edit";
+import Login from "layouts/authentication/login";
+import AddUser from "layouts/user/addUser/add";
 
 
 
@@ -98,7 +100,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={brand}
-            brandName="Soft UI Dashboard"
+            brandName="LactoBloom Admin Dashboard"
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
@@ -112,6 +114,8 @@ export default function App() {
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/authentication/login" />} />
 
+        {/* Routes of login */}
+        <Route path="/authentication/login" element={<Login />} /> 
         {/* Routes of product */}
         <Route path="/products/view/:productId" element={<ViewForm />} /> 
         <Route path="/products/:productId" element={<EditForm />} /> 
@@ -132,7 +136,7 @@ export default function App() {
         {/* Routes for User */}
         
         <Route path ="/users/edit/:userId" element={<EditUser />}/>
-        {/* <Route path ="/users/view/:userId" element={<ViewUSer />}/> */}
+        <Route path ="/users/new/" element={<AddUser />}/>
       </Routes>
     </ThemeProvider>
   );

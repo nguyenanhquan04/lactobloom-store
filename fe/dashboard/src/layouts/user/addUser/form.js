@@ -1,68 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Paper, TextField, Typography, Box, MenuItem } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Grid, Paper, Box, TextField, MenuItem } from '@mui/material';
 import axios from 'axios';
 import SoftButton from 'components/SoftButton';
-import SoftInput from 'components/SoftInput';
+import SoftBox from 'components/SoftBox';
+import SoftTypography from 'components/SoftTypography';
+import Cookies from 'js-cookie';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
-const UserEditForm = ({ onSave }) => {
-  const { userId } = useParams();
-  const navigate = useNavigate();
+const UserAddForm = ({ onSave }) => {
   const [user, setUser] = useState({
     fullName: '',
+    role: '',
     email: '',
     password: '',
     phone: '',
     address: '',
-    role: '',
-    point: '',
   });
 
-  
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const authToken = Cookies.get('authToken');
-
-        const response = await axios.get(`http://localhost:8080/user/get/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-
-        setUser(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, [userId]);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const authToken = Cookies.get('authToken');
+      const headers = {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      };
 
-      const response = await axios.put(`http://localhost:8080/user/update/${userId}`, user, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      console.log('User updated successfully:', response.data);
-      toast.success('User updated successfully!');
-      onSave(user);
+      const response = await axios.post('http://localhost:8080/user/save', user, { headers });
+      toast.success('User added successfully!');
+      onSave(); // Refresh user table
       setTimeout(() => {
-        navigate('/users');
-      }, 1000);
+        navigate('/users'); // Navigate to the user table after a short delay
+      }, 2000);
     } catch (error) {
-      console.error('Error updating user:', error);
-      toast.error('Error updating user.');
+      console.error('Error adding user:', error);
+      toast.error('Error adding user.');
     }
   };
 
@@ -80,14 +57,12 @@ const UserEditForm = ({ onSave }) => {
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
           <Paper elevation={3} style={styles.form}>
-            <Typography variant="h3" gutterBottom>
-              Edit User
-            </Typography>
+            <SoftTypography variant="h6" gutterBottom>Add New User</SoftTypography>
             <form onSubmit={handleSubmit}>
               {/* Full Name Field */}
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={4}>
-                  <Typography variant="h6">Full Name:</Typography>
+                  <SoftTypography>Full Name:</SoftTypography>
                 </Grid>
                 <Grid item xs={8}>
                   <TextField
@@ -100,13 +75,34 @@ const UserEditForm = ({ onSave }) => {
                   />
                 </Grid>
               </Grid>
+              {/* Role Field */}
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item xs={4}>
+                  <SoftTypography>Role:</SoftTypography>
+                </Grid>
+                <Grid item xs={8}>
+                  <TextField
+                    name="role"
+                    value={user.role}
+                    onChange={handleInputChange}
+                    fullWidth
+                    required
+                    margin="normal"
+                    select
+                  >
+                    <MenuItem value="ADMIN">ADMIN</MenuItem>
+                    <MenuItem value="STAFF">STAFF</MenuItem>
+                    <MenuItem value="MEMBER">MEMBER</MenuItem>
+                  </TextField>
+                </Grid>
+              </Grid>
               {/* Email Field */}
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={4}>
-                  <Typography variant="h6">Email:</Typography>
+                  <SoftTypography>Email:</SoftTypography>
                 </Grid>
                 <Grid item xs={8}>
-                  <SoftInput
+                  <TextField
                     name="email"
                     value={user.email}
                     onChange={handleInputChange}
@@ -119,7 +115,7 @@ const UserEditForm = ({ onSave }) => {
               {/* Password Field */}
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={4}>
-                  <Typography variant="h6">Password:</Typography>
+                  <SoftTypography>Password:</SoftTypography>
                 </Grid>
                 <Grid item xs={8}>
                   <TextField
@@ -127,15 +123,16 @@ const UserEditForm = ({ onSave }) => {
                     value={user.password}
                     onChange={handleInputChange}
                     fullWidth
-                    type="password"
+                    required
                     margin="normal"
+                    type="password"
                   />
                 </Grid>
               </Grid>
               {/* Phone Field */}
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={4}>
-                  <Typography variant="h6">Phone:</Typography>
+                  <SoftTypography>Phone:</SoftTypography>
                 </Grid>
                 <Grid item xs={8}>
                   <TextField
@@ -151,10 +148,10 @@ const UserEditForm = ({ onSave }) => {
               {/* Address Field */}
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={4}>
-                  <Typography variant="h6">Address:</Typography>
+                  <SoftTypography>Address:</SoftTypography>
                 </Grid>
                 <Grid item xs={8}>
-                  <SoftInput
+                  <TextField
                     name="address"
                     value={user.address}
                     onChange={handleInputChange}
@@ -164,48 +161,13 @@ const UserEditForm = ({ onSave }) => {
                   />
                 </Grid>
               </Grid>
-              {/* Role Field */}
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item xs={4}>
-                  <Typography variant="h6">Role:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <TextField
-                    name="role"
-                    select
-                    value={user.role || ''}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                    margin="normal"
-                  >
-                    <MenuItem value="ADMIN">ADMIN</MenuItem>
-                    <MenuItem value="STAFF">STAFF</MenuItem>
-                    <MenuItem value="MEMBER">MEMBER</MenuItem>
-                  </TextField>
-                </Grid>
-              </Grid>
-              {/* Point Field */}
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item xs={4}>
-                  <Typography variant="h6">Point:</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <SoftInput
-                    name="point"
-                    value={user.point}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                    margin="normal"
-                  />
-                </Grid>
-              </Grid>
               {/* Save Button */}
               <Box mt={2}>
-                <SoftButton type="submit" variant="contained" color="info">
-                  Save
-                </SoftButton>
+                <SoftBox display="flex" justifyContent="center" alignItems="center" p={3}>
+                  <SoftButton type="submit" variant="contained" color="info">
+                    Save
+                  </SoftButton>
+                </SoftBox>
               </Box>
             </form>
           </Paper>
@@ -215,7 +177,7 @@ const UserEditForm = ({ onSave }) => {
   );
 };
 
-UserEditForm.propTypes = {
+UserAddForm.propTypes = {
   onSave: PropTypes.func.isRequired,
 };
 
@@ -225,4 +187,4 @@ const styles = {
   },
 };
 
-export default UserEditForm;
+export default UserAddForm;

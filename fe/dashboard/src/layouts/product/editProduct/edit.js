@@ -14,15 +14,6 @@ import { useNavigate } from "react-router-dom";
 import React, { useEffect } from "react";
 
 // Sample product data for demonstration
-const sampleProduct = {
-  id: '123',
-  brand: 'Sample Brand',
-  name: 'Sample Product',
-  category: 'Milk',
-  price: 100,
-  stock: 50,
-  discount: 10,
-};
 
 function EditForm() {
   const handleSave = (updatedProduct) => {
@@ -66,7 +57,7 @@ function EditForm() {
               <SoftTypography variant="h6">Edit Product</SoftTypography>
             </SoftBox>
             <SoftBox p={3}>
-              <ProductEditForm product={sampleProduct} onSave={handleSave} />  
+              <ProductEditForm  onSave={handleSave} />  
             </SoftBox>
           </Card>
         </SoftBox>

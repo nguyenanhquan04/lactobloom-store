@@ -131,15 +131,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           </SoftTypography>
         </SoftBox>
         <SoftBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <SoftBox component="img" src="https://cdn.chanhtuoi.com/uploads/2020/05/icon-facebook-08-2.jpg.webp" alt="Soft UI Logos" width="2rem" />}
+          {/* {brand && <SoftBox component="img" src="brand" alt="Lactobloom Logos" width="2rem" />}
           <SoftBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            <SoftTypography component="h5" variant="button" fontWeight="medium">
-              LactoBloom
-            </SoftTypography>
-          </SoftBox>
+          </SoftBox> */}
+          LactoBloom
         </SoftBox>
       </SoftBox>
       <Divider />

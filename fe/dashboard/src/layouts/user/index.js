@@ -17,7 +17,8 @@ import UsersTable from "./data/usersTableData";
 
 function User() {
   
-
+  const navigate = useNavigate();
+  
   // Add a new state variable for the search value
   const [searchValue, setSearchValue] = useState("");
 
@@ -25,10 +26,13 @@ function User() {
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
+  
 
   const rows = UsersTable({searchValue}); // Call UsersTable to get data
 
- 
+  const handleAddUserClick = () => {
+    navigate("/users/new"); 
+  };
 
   const usersTableData = {
     columns: [
@@ -39,7 +43,7 @@ function User() {
       { name: "phone", align: "center" },
       { name: "address", align: "center" },
       { name: "point", align: "center" },
-      // { name: "action", align: "center" },
+      { name: "action", align: "center" },
     ],
     rows: rows,
   };
@@ -58,7 +62,11 @@ function User() {
               value={searchValue} // Set the value of the input to the current search value
               onChange={handleSearchChange} // Update the search value when the user types
             />
-            
+            <IconButton onClick={handleAddUserClick}>
+              <SoftButton type="submit" variant="contained" color="dark">
+                Add New User
+              </SoftButton>
+            </IconButton>
           </SoftBox>
           <SoftBox
             sx={{
