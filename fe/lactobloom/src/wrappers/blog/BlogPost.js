@@ -6,6 +6,7 @@ const BlogPost = ({ blog }) => {
   const [comments, setComments] = useState({}); // To store comment counts
 
   useEffect(() => {
+    console.log(blog);
     if (blog) {
       getBlogReviewByBlogId(blog.blogId)
         .then(response => {
@@ -44,7 +45,7 @@ const BlogPost = ({ blog }) => {
             </ul>
           </div>
           <h3>{blog.title}</h3>
-          <p>{blog.content}</p>
+          <div dangerouslySetInnerHTML={{ __html: blog.content }} />
           {blog.blockquote && (
             <blockquote>
               {blog.blockquote}
