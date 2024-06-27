@@ -1,7 +1,6 @@
 package com.lactobloom.service;
 
-import com.lactobloom.dto.ProductRequest;
-import com.lactobloom.dto.ProductResponse;
+import com.lactobloom.dto.ProductDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.*;
 import com.lactobloom.repository.*;
@@ -32,7 +31,7 @@ public class ProductService implements IProductService {
     private UserRepository userRepository;
 
     @Override
-    public ProductResponse saveProduct(int brandId, int categoryId, ProductRequest productRequest) {
+    public ProductDto.ProductResponse saveProduct(int brandId, int categoryId, ProductDto.ProductRequest productRequest) {
         Product product = mapToEntity(productRequest);
         Brand brand = brandRepository.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", brandId));
@@ -45,20 +44,20 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProducts() {
+    public List<ProductDto.ProductResponse> getAllProducts() {
         List<Product> productList = productRepository.findAll();
         return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
-    public ProductResponse getProductById(int id) {
+    public ProductDto.ProductResponse getProductById(int id) {
         Product product = productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         return mapToResponse(product);
     }
 
     @Override
-    public List<ProductResponse> getUserWishlist(){
+    public List<ProductDto.ProductResponse> getUserWishlist(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
@@ -68,7 +67,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductResponse updateProduct(int id, int brandId, int categoryId, ProductRequest productRequest) {
+    public ProductDto.ProductResponse updateProduct(int id, int brandId, int categoryId, ProductDto.ProductRequest productRequest) {
         Product existingProduct = productRepository.findById((long) id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         Brand brand = brandRepository.findById(brandId).orElseThrow(() ->
@@ -93,7 +92,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> searchProducts(String productName, Integer categoryId, Integer brandId) {
+    public List<ProductDto.ProductResponse> searchProducts(String productName, Integer categoryId, Integer brandId) {
         if (categoryId != null && brandId != null) {
             return productRepository.findByProductNameContainingIgnoreCaseAndCategoryCategoryIdAndBrandBrandId(productName, categoryId, brandId)
                     .stream().map(this::mapToResponse).collect(Collectors.toList());
@@ -111,17 +110,17 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> getProductsByCategoryId(int categoryId) {
+    public List<ProductDto.ProductResponse> getProductsByCategoryId(int categoryId) {
         return productRepository.findByCategoryCategoryId(categoryId).stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductResponse> getProductsByBrandId(int brandId) {
+    public List<ProductDto.ProductResponse> getProductsByBrandId(int brandId) {
         return productRepository.findByBrandBrandId(brandId).stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
-    private ProductResponse mapToResponse (Product product){
-        ProductResponse productResponse = new ProductResponse();
+    private ProductDto.ProductResponse mapToResponse (Product product){
+        ProductDto.ProductResponse productResponse = new ProductDto.ProductResponse();
         productResponse.setProductId(product.getProductId());
         productResponse.setProductName(product.getProductName());
         productResponse.setBrandName(product.getBrand().getBrandName());
@@ -133,7 +132,7 @@ public class ProductService implements IProductService {
         return productResponse;
     }
 
-    private Product mapToEntity(ProductRequest productRequest){
+    private Product mapToEntity(ProductDto.ProductRequest productRequest){
         Product product = new Product();
         product.setProductName(productRequest.getProductName());
         product.setDescription(productRequest.getDescription());

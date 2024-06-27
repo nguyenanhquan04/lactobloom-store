@@ -1,7 +1,5 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -20,13 +18,11 @@ public class Blog {
 
     @ManyToOne
     @JoinColumn(name = "Blog_category_id")
-    @JsonBackReference
     @NotNull(message = "Blog Category must not be null")
     private BlogCategory blogCategory;
 
     @ManyToOne
     @JoinColumn(name = "User_id")
-    @JsonBackReference
     @NotNull(message = "User must not be null")
     private User user;
 
@@ -38,6 +34,10 @@ public class Blog {
     @NotNull(message = "Title must not be null")
     private String title;
 
+    @Column(name = "Short_description", columnDefinition = "TEXT", nullable = false)
+    @NotNull(message = "Short description must not be null")
+    private String shortDescription;
+
     @Column(name = "Content", columnDefinition = "TEXT", nullable = false)
     @NotNull(message = "Content must not be null")
     private String content;
@@ -46,6 +46,5 @@ public class Blog {
     private LocalDateTime publishDate;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "blog")
-    @JsonManagedReference
     private List<BlogReview> blogReviews;
 }

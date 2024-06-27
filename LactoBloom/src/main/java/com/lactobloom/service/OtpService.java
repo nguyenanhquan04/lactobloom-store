@@ -10,6 +10,8 @@ import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IOtpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,29 +54,25 @@ public class OtpService implements IOtpService {
         return "Email sent for verification";
     }
 
-    public boolean verifyOtp(String email, int otp){
+    public ResponseEntity<String> changePassword(String email, int otp, ChangePasswordDto.ChangePasswordRequest changePasswordRequest){
         User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         Otp existingOtp = otpRepository.findByOtpAndUserUserId(otp, existingUser.getUserId()).orElseThrow(() ->
-                new ResourceNotFoundException("Forgot Password request", "OTP", otp));
-        if(existingOtp.getExpirationTime().before(Date.from(Instant.now()))){
+                new ResourceNotFoundException("OTP", "OTP", otp));
+        if(existingOtp.getExpirationTime().before(Date.from(Instant.now()))) {
             existingUser.setOtp(null);
             userRepository.save(existingUser);
             otpRepository.deleteById(existingOtp.getOtpId());
-            return false;
+            return new ResponseEntity<>("OTP has expired!", HttpStatus.EXPECTATION_FAILED);
         }
-        return true;
-    }
-
-    public boolean changePassword(String email, ChangePasswordDto changePasswordDto){
-        if(!Objects.equals(changePasswordDto.getPassword(), changePasswordDto.getRepeatPassword())){
-            return false;
-        }
-        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException("User", "email", email));
-        existingUser.setPassword(passwordEncoder.encode(changePasswordDto.getPassword()));
+        if(!Objects.equals(changePasswordRequest.getPassword(), changePasswordRequest.getRepeatPassword()))
+            return new ResponseEntity<>("Repeat password is not the same!", HttpStatus.EXPECTATION_FAILED);
+        existingUser.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
         userRepository.save(existingUser);
-        return true;
+        existingUser.setOtp(null);
+        userRepository.save(existingUser);
+        otpRepository.deleteById(existingOtp.getOtpId());
+        return new ResponseEntity<>("Password has been updated!", HttpStatus.OK);
     }
 
     public int otpGenerator(){

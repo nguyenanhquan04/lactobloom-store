@@ -1,6 +1,6 @@
 package com.lactobloom.service;
 
-import com.lactobloom.dto.ResetPasswordDto;
+import com.lactobloom.dto.ChangePasswordDto;
 import com.lactobloom.dto.UserDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Role;
@@ -58,12 +58,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean resetPassword(ResetPasswordDto resetPasswordDto){
+    public boolean resetPassword(ChangePasswordDto.ResetPasswordRequest resetPasswordRequest){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        if (passwordEncoder.matches(resetPasswordDto.getPassword(), existingUser.getPassword())) {
-            existingUser.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+        if (passwordEncoder.matches(resetPasswordRequest.getPassword(), existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
             userRepository.save(existingUser);
             return true;
         }
@@ -113,14 +113,4 @@ public class UserService implements IUserService {
         userResponse.setPoint(user.getPoint());
         return userResponse;
     }
-
-//    private User mapToEntity (UserDto userDto){
-//        User user = new User();
-//        user.setFullName(userDto.getFullName());
-//        user.setEmail(userDto.getEmail());
-//        user.setPhone(userDto.getPhone());
-//        user.setAddress(userDto.getAddress());
-//        user.setPoint(userDto.getPoint());
-//        return user;
-//    }
 }

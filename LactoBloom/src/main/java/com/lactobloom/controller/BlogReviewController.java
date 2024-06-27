@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/blog-review")
-@CrossOrigin(origins = "*")
 public class BlogReviewController {
 
     @Autowired

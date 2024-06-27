@@ -1,9 +1,7 @@
 package com.lactobloom.service;
 
 import com.lactobloom.config.JwtService;
-import com.lactobloom.dto.AuthenticationRequest;
-import com.lactobloom.dto.AuthenticationResponse;
-import com.lactobloom.dto.RegisterRequest;
+import com.lactobloom.dto.AuthenticationDto;
 import com.lactobloom.model.Role;
 import com.lactobloom.model.Token;
 import com.lactobloom.model.TokenType;
@@ -13,11 +11,8 @@ import com.lactobloom.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +23,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationDto.AuthenticationResponse register(AuthenticationDto.RegisterRequest request) {
         var newUser = User.builder()
                 .fullName(request.getFullName())
                 .role(Role.MEMBER)
@@ -41,12 +36,12 @@ public class AuthenticationService {
         var savedUser = repository.save(newUser);
         var jwtToken = jwtService.generateToken(newUser, savedUser.getUserId());
         saveUserToken(savedUser, jwtToken);
-        return AuthenticationResponse.builder()
+        return AuthenticationDto.AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public AuthenticationDto.AuthenticationResponse login(AuthenticationDto.AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -58,7 +53,7 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user, user.getUserId());
         revokeAllUserTokens(user);
         saveUserToken(user,jwtToken);
-        return AuthenticationResponse.builder()
+        return AuthenticationDto.AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }

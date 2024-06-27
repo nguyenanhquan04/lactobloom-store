@@ -1,6 +1,5 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,13 +17,11 @@ public class BlogReview {
 
     @ManyToOne
     @JoinColumn(name = "User_id")
-    @JsonBackReference
     @NotNull(message = "User must not be null")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "Blog_id")
-    @JsonBackReference
     @NotNull(message = "Blog must not be null")
     private Blog blog;
 

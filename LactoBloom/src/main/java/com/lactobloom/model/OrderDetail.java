@@ -1,6 +1,5 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -17,13 +16,11 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "Order_id")
-    @JsonBackReference
     @NotNull(message = "Order must not be null")
     private Order order;
 
     @ManyToOne
     @JoinColumn(name = "Product_id")
-    @JsonBackReference
     @NotNull(message = "Product must not be null")
     private Product product;
 

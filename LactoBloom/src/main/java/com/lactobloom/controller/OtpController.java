@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/otp")
-@CrossOrigin(origins = "*")
 public class OtpController {
 
     @Autowired
@@ -20,17 +19,8 @@ public class OtpController {
         return new ResponseEntity<>(otpService.verifyEmail(email), HttpStatus.OK);
     }
 
-    @PostMapping("/verifyOtp/{email}/{otp}")
-    public ResponseEntity<String> verifyOtp(@PathVariable String email, @PathVariable int otp){
-        if(otpService.verifyOtp(email, otp))
-            return new ResponseEntity<>("OTP verified!", HttpStatus.OK);
-        else return new ResponseEntity<>("OTP has expired!", HttpStatus.EXPECTATION_FAILED);
-    }
-
-    @PostMapping("/changePassword/{email}")
-    public ResponseEntity<String> changePassword(@PathVariable String email, @RequestBody ChangePasswordDto changePasswordDto){
-        if(otpService.changePassword(email, changePasswordDto))
-            return new ResponseEntity<>("Password has been updated!", HttpStatus.OK);
-        else return new ResponseEntity<>("Repeat Password is not the same!", HttpStatus.EXPECTATION_FAILED);
+    @PostMapping("/changePassword/{email}/{otp}")
+    public ResponseEntity<String> changePassword(@PathVariable String email, @PathVariable int otp, @RequestBody ChangePasswordDto.ChangePasswordRequest changePasswordRequest){
+        return otpService.changePassword(email, otp, changePasswordRequest);
     }
 }

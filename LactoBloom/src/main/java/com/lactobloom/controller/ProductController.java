@@ -1,7 +1,6 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.dto.ProductRequest;
-import com.lactobloom.dto.ProductResponse;
+import com.lactobloom.dto.ProductDto;
 import com.lactobloom.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product")
-@CrossOrigin(origins = "*")
 public class ProductController {
 
     @Autowired
@@ -21,28 +19,28 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PostMapping("/save/brand/{brandId}/category/{categoryId}")
-    public ResponseEntity<ProductResponse> saveProduct(@PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductRequest productRequest) {
+    public ResponseEntity<ProductDto.ProductResponse> saveProduct(@PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductDto.ProductRequest productRequest) {
         return new ResponseEntity<>(productService.saveProduct(brandId, categoryId, productRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<ProductResponse> getAllProducts() {
+    public List<ProductDto.ProductResponse> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable int id) {
+    public ResponseEntity<ProductDto.ProductResponse> getProductById(@PathVariable int id) {
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
     @GetMapping("/myWishlist")
-    public List<ProductResponse> getWishlistsByUser() {
+    public List<ProductDto.ProductResponse> getWishlistsByUser() {
         return productService.getUserWishlist();
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/update/{id}/brand/{brandId}/category/{categoryId}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable int id, @PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductRequest productRequest) {
+    public ResponseEntity<ProductDto.ProductResponse> updateProduct(@PathVariable int id, @PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductDto.ProductRequest productRequest) {
         return new ResponseEntity<>(productService.updateProduct(id, brandId, categoryId, productRequest), HttpStatus.OK);
     }
 
@@ -54,17 +52,17 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public List<ProductResponse> searchProducts(@RequestParam String productName, @RequestParam(required = false) Integer categoryId, @RequestParam(required = false) Integer brandId) {
+    public List<ProductDto.ProductResponse> searchProducts(@RequestParam String productName, @RequestParam(required = false) Integer categoryId, @RequestParam(required = false) Integer brandId) {
         return productService.searchProducts(productName, categoryId, brandId);
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<ProductResponse> getProductsByCategoryId(@PathVariable int categoryId) {
+    public List<ProductDto.ProductResponse> getProductsByCategoryId(@PathVariable int categoryId) {
         return productService.getProductsByCategoryId(categoryId);
     }
 
     @GetMapping("/brand/{brandId}")
-    public List<ProductResponse> getProductsByBrandId(@PathVariable int brandId) {
+    public List<ProductDto.ProductResponse> getProductsByBrandId(@PathVariable int brandId) {
         return productService.getProductsByBrandId(brandId);
     }
 }

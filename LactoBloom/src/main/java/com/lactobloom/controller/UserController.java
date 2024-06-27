@@ -1,6 +1,6 @@
 package com.lactobloom.controller;
 
-import com.lactobloom.dto.ResetPasswordDto;
+import com.lactobloom.dto.ChangePasswordDto;
 import com.lactobloom.dto.UserDto;
 import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -42,8 +41,8 @@ public class UserController {
     }
 
     @PutMapping("/resetPassword")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
-        if(userService.resetPassword(resetPasswordDto))
+    public ResponseEntity<String> resetPassword(@RequestBody ChangePasswordDto.ResetPasswordRequest resetPasswordRequest) {
+        if(userService.resetPassword(resetPasswordRequest))
             return new ResponseEntity<>("Password reset successfully!", HttpStatus.OK);
         return new ResponseEntity<>("Failed to reset password!", HttpStatus.OK);
     }

@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/blog-category")
-@CrossOrigin(origins = "*")
 public class BlogCategoryController {
 
     @Autowired
