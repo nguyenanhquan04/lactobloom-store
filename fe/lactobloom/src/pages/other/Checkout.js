@@ -310,7 +310,7 @@
 // export default Checkout;
 
 import React, { Fragment, useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
@@ -319,13 +319,12 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Cookies from "js-cookie";
 import { myVoucher } from "../../utils/VoucherService";
 import { userInfo } from "../../utils/UserService";
-import axios from "axios";
+import { createPayment } from "../../utils/PaymentService";
 
 const Checkout = () => {
   let cartTotalPrice = 0;
 
   let { pathname } = useLocation();
-  let navigate = useNavigate();
 
   const { cartItems } = useSelector((state) => state.cart);
   const [vouchers, setVouchers] = useState([]);
@@ -410,9 +409,7 @@ const Checkout = () => {
     localStorage.setItem('orderInfo', JSON.stringify(orderInfo));
   
     try {
-      const response = await axios.get(
-        `http://localhost:8080/payment/create-payment?amount=${finalAmount}&bankCode=NCB`
-      );
+      const response = await createPayment(finalAmount);
       const { status, message, url } = response.data;
       if (status === "OK") {
         window.location.href = url; // Redirect to the payment URL
@@ -628,7 +625,7 @@ const Checkout = () => {
                     </div>
                     <div className="item-empty-area__text">
                       No items found in cart to checkout <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                      <Link to={process.env.PUBLIC_URL + "/shop"}>
                         Shop Now
                       </Link>
                     </div>
