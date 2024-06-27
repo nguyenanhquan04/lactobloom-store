@@ -66,7 +66,7 @@ const UsersTable = ({ searchValue }) => {
   };
 
   const handleEditClick = (userId) => {
-    navigate(`/users/${userId}`);
+    navigate(`/users/edit/${userId}`);
   };
 
   const handleDeleteClick = (userId) => {

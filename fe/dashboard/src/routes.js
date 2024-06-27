@@ -19,9 +19,9 @@ import Document from "examples/Icons/Document";
 import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
-import Cube from "examples/Icons/Cube";
-import ViewForm from "layouts/order/viewOrder/view";
 import Orders from "layouts/order";
+import Blog from "layouts/blog";
+import AddBlog from "layouts/blog";
 
 
 const routes = [
@@ -70,15 +70,7 @@ const routes = [
     component: <Brand />,
     noCollapse: true,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Billing",
-  //   key: "billing",
-  //   route: "/billing",
-  //   icon: <CreditCard size="12px" />,
-  //   component: <Billing />,
-  //   noCollapse: true,
-  // },
+  
   {
     type: "collapse",
     name: "Order Management",
@@ -86,6 +78,15 @@ const routes = [
     route: "/orders",
     icon: <CreditCard size="12px" />,
     component: <Orders />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Blog",
+    key: "blog",
+    route: "/blog",
+    icon: <Document size="12px" />,
+    component: <AddBlog />,
     noCollapse: true,
   },
   
