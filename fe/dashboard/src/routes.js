@@ -86,7 +86,7 @@ const routes = [
     key: "blog",
     route: "/blog",
     icon: <Document size="12px" />,
-    component: <AddBlog />,
+    component: <Blog />,
     noCollapse: true,
   },
   
@@ -100,15 +100,7 @@ const routes = [
     component: <Profile />,
     noCollapse: true,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Login",
-  //   key: "login",
-  //   route: "/authentication/login",
-  //   icon: <Document size="12px" />,
-  //   component: <Login />,
-  //   noCollapse: true,
-  // },
+  
   
 ];
 

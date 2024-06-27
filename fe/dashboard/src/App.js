@@ -9,7 +9,7 @@ import Configurator from "examples/Configurator";
 import theme from "assets/theme";
 import routes from "routes";
 import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "context";
-import brand from "assets/images/logo-ct.png";
+import brand from "assets/images/marie.jpg";
 import EditForm from "layouts/product/editProduct/edit";
 import AddForm from "layouts/product/addProduct/add";
 import AddCategory from "layouts/category/addCategory/add";
@@ -21,6 +21,8 @@ import ViewOrderForm from "layouts/order/viewOrder/view";
 import EditUser from "layouts/user/editUser/edit";
 import Login from "layouts/authentication/login";
 import AddUser from "layouts/user/addUser/add";
+import AddBlog from "layouts/blog/addBlog/add";
+import EditBlog from "layouts/blog/editBlog/edit";
 
 
 
@@ -137,6 +139,10 @@ export default function App() {
         
         <Route path ="/users/edit/:userId" element={<EditUser />}/>
         <Route path ="/users/new/" element={<AddUser />}/>
+
+        {/* Routes of Blog */}
+        <Route path ="/blogs/new" element={<AddBlog />}/>
+        <Route path ="/blogs/edit/:blogId" element={<EditBlog />}/>
       </Routes>
     </ThemeProvider>
   );
