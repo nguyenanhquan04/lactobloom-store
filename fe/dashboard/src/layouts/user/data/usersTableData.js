@@ -42,9 +42,9 @@ const UsersTable = ({ searchValue }) => {
           point: user.point,
           action: (
             <>
-              <IconButton onClick={() => handleViewClick(user.userId)}>
+              {/* <IconButton onClick={() => handleViewClick(user.userId)}>
                 <VisibilityIcon />
-              </IconButton>
+              </IconButton> */}
               <IconButton onClick={() => handleEditClick(user.userId)}>
                 <EditIcon />
               </IconButton>
@@ -61,9 +61,9 @@ const UsersTable = ({ searchValue }) => {
       });
   };
 
-  const handleViewClick = (userId) => {
-    navigate(`/users/view/${userId}`);
-  };
+  // const handleViewClick = (userId) => {
+  //   navigate(`/users/view/${userId}`);
+  // };
 
   const handleEditClick = (userId) => {
     navigate(`/users/edit/${userId}`);
