@@ -7,9 +7,10 @@ import SoftButton from 'components/SoftButton';
 import SoftInput from 'components/SoftInput';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie'; // Import Cookies for token management
 
 const BrandEditForm = ({ onSave }) => {
-  const { brandId } = useParams(); // Get brandId from URL
+  const { brandId } = useParams(); // Get brandId from URL params
   const navigate = useNavigate();
   const [brand, setBrand] = useState({
     brandId: '',
@@ -19,22 +20,32 @@ const BrandEditForm = ({ onSave }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(`http://localhost:8080/brand/get/${brandId}`);
-        const response = await axios.get(`http://localhost:8080/brand/get/${brandId}`);
+        const authToken = Cookies.get('authToken'); // Retrieve auth token from cookies
+        const headers = {
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        };
+
+        const response = await axios.get(`http://localhost:8080/brand/get/${brandId}`, { headers });
         setBrand(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error('Error fetching brand data:', error);
       }
     };
-  
+
     fetchData();
   }, [brandId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://localhost:8080/brand/update/${brandId}`, brand);
+      const authToken = Cookies.get('authToken'); // Retrieve auth token from cookies
+      const headers = {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      };
+
+      const response = await axios.put(`http://localhost:8080/brand/update/${brandId}`, brand, { headers });
       toast.success('Brand updated successfully!');
       onSave(brand); // Handle the success scenario
       setTimeout(() => {
@@ -62,6 +73,7 @@ const BrandEditForm = ({ onSave }) => {
           <Paper elevation={3} style={styles.form}>
             <Typography variant="h3" gutterBottom>Edit Brand</Typography>
             <form onSubmit={handleSubmit}>
+              {/* Brand ID Field */}
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={4}>
                   <Typography variant="h6">Brand ID:</Typography>
@@ -74,6 +86,7 @@ const BrandEditForm = ({ onSave }) => {
                     fullWidth
                     required
                     margin="normal"
+                    disabled // Disable input field for Brand ID as it should not be editable
                   />
                 </Grid>
               </Grid>
@@ -118,7 +131,3 @@ const styles = {
 };
 
 export default BrandEditForm;
-
-
-
-

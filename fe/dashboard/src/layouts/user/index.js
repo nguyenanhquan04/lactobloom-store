@@ -34,6 +34,29 @@ function User() {
     navigate("/users/new"); 
   };
 
+  useEffect(() => {
+    const authToken = Cookies.get("authToken");
+
+    if (!authToken) {
+      navigate("/authentication/login");
+    }
+
+    try {
+      const decodedToken = jwtDecode(authToken);
+      const currentTime = Date.now() / 1000;
+
+      // Check if the token is expired
+      if (decodedToken.exp < currentTime) {
+        Cookies.remove("authToken");
+        navigate("/authentication/login");
+      }
+    } catch (e) {
+      // If token is invalid, remove it and redirect to login
+      Cookies.remove("authToken");
+      navigate("/authentication/login");
+    }
+  }, [navigate]);
+
   const usersTableData = {
     columns: [
       { name: "userId", align: "center" },
