@@ -58,7 +58,7 @@ const BlogPosts = () => {
                   {blog.title}
                 </Link>
               </h4>
-              <p>{blog.content}</p>
+              <p>{blog.shortDescription}</p>
               <div className="blog-share-comment">
                 <div className="blog-btn-2">
                   <Link to={`${process.env.PUBLIC_URL}/blog-details/${blog.blogId}`}>
