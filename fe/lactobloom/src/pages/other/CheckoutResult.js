@@ -80,9 +80,7 @@ const CheckoutResult = () => {
                   totalPrice: orderData.totalAmount,
                 },
                 {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
+                  headers: token ? { Authorization: `Bearer ${token}` } : {},
                 }
               )
               .then((response) => {
@@ -98,11 +96,9 @@ const CheckoutResult = () => {
                       { 
                         quantity: item.quantity,
                         totalPrice: getDiscountedPrice(item.price, item.discount) * item.quantity,
-                       },
+                      },
                       {
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                        },
+                        headers: token ? { Authorization: `Bearer ${token}` } : {},
                       }
                     )
                     .then((response) => {
@@ -110,6 +106,7 @@ const CheckoutResult = () => {
                     })
                     .catch((err) => console.error("Error saving order detail to database:", err));
                 });
+                
               })
               .catch((err) => console.error("Error saving order to database:", err));
           };
