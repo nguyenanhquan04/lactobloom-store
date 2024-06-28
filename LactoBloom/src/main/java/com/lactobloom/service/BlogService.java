@@ -95,7 +95,9 @@ public class BlogService implements IBlogService {
         BlogDto blogResponse = new BlogDto();
         blogResponse.setBlogId(blog.getBlogId());
         blogResponse.setImageUrl(blog.getImageUrl());
+        blogResponse.setBlogCategoryName(blog.getBlogCategory().getBlogCategoryName());
         blogResponse.setTitle(blog.getTitle());
+        blogResponse.setShortDescription(blog.getShortDescription());
         blogResponse.setContent(blog.getContent());
         blogResponse.setPublishDate(blog.getPublishDate());
         return blogResponse;
