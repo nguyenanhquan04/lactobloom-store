@@ -34,6 +34,11 @@ public class BlogCategoryController {
         return new ResponseEntity<>(blogCategoryService.getBlogCategoryById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/getByBlogId/{id}")
+    public ResponseEntity<BlogCategoryDto> getBlogCategoryByBlogId(@PathVariable int id) {
+        return new ResponseEntity<>(blogCategoryService.getBlogCategoryByBlogId(id), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
     public ResponseEntity<BlogCategoryDto> updateBlogCategory(@PathVariable int id, @RequestBody BlogCategoryDto blogCategoryDto) {

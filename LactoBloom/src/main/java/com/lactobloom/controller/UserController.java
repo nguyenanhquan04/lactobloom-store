@@ -24,6 +24,18 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/members")
+    public List<UserDto> getMembers() {
+        return userService.getMembers();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/staffs")
+    public List<UserDto> getStaffs() {
+        return userService.getStaffs();
+    }
+
     @GetMapping("/info")
     public ResponseEntity<UserDto> getUserInfo() {
         return new ResponseEntity<>(userService.getUserInfo(), HttpStatus.OK);

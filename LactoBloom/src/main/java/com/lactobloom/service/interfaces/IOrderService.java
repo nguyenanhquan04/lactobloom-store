@@ -8,6 +8,7 @@ import java.util.List;
 public interface IOrderService {
     OrderDto saveOrder(OrderDto orderDto, Integer voucherId);
     List<OrderDto> getAllOrders();
+    List<OrderDto> getPendingOrders();
     List<OrderDto> getOrdersByUser();
     OrderDto getOrderById(int id);
     OrderDto updateOrder(OrderDto orderDto, int id);

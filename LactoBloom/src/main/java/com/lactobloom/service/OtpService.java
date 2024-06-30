@@ -38,15 +38,27 @@ public class OtpService implements IOtpService {
     public String verifyEmail(String email){
         User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
+        otpRepository.findByUserUserId(existingUser.getUserId()).ifPresent(otpRepository::delete);
         int newOtp = otpGenerator();
+        String otpMessage = String.format(
+                "<html><body>" +
+                "<h2>Email Verification</h2>" +
+                "<p>Dear %s,</p>" +
+                "<p>Thank you for using our service. To complete your request, please use the following OTP:</p>" +
+                "<h3>%d</h3>" +
+                "<p>This OTP is valid for the next 5 minutes.</p>" +
+                "<p>If you did not request this, please ignore this email.</p>" +
+                "<p>Best regards,<br>Lactobloom Team</p>" +
+                "</body></html>",
+                existingUser.getFullName(), newOtp);
         MailDto mailDto = MailDto.builder()
                 .to(email)
-                .text("This is the OTP for your request: " + newOtp)
+                .text(otpMessage)
                 .subject("Verification OTP")
                 .build();
         Otp otp = Otp.builder()
                 .otp(newOtp)
-                .expirationTime(new Date(System.currentTimeMillis() + 180 * 1000))
+                .expirationTime(new Date(System.currentTimeMillis() + 60 * 5 * 1000))
                 .user(existingUser)
                 .build();
         emailService.sendSimpleMessage(mailDto);
@@ -59,14 +71,14 @@ public class OtpService implements IOtpService {
                 new ResourceNotFoundException("User", "email", email));
         Otp existingOtp = otpRepository.findByOtpAndUserUserId(otp, existingUser.getUserId()).orElseThrow(() ->
                 new ResourceNotFoundException("OTP", "OTP", otp));
+        if(!Objects.equals(changePasswordRequest.getPassword(), changePasswordRequest.getRepeatPassword()))
+            return new ResponseEntity<>("Repeat password is not the same!", HttpStatus.EXPECTATION_FAILED);
         if(existingOtp.getExpirationTime().before(Date.from(Instant.now()))) {
             existingUser.setOtp(null);
             userRepository.save(existingUser);
             otpRepository.deleteById(existingOtp.getOtpId());
             return new ResponseEntity<>("OTP has expired!", HttpStatus.EXPECTATION_FAILED);
         }
-        if(!Objects.equals(changePasswordRequest.getPassword(), changePasswordRequest.getRepeatPassword()))
-            return new ResponseEntity<>("Repeat password is not the same!", HttpStatus.EXPECTATION_FAILED);
         existingUser.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
         userRepository.save(existingUser);
         existingUser.setOtp(null);

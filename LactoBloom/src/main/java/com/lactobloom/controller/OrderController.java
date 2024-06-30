@@ -26,6 +26,12 @@ public class OrderController {
     @GetMapping("/all")
     public List<OrderDto> getAllOrders() {return orderService.getAllOrders();}
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
+    @GetMapping("/pending")
+    public List<OrderDto> getPendingOrders() {
+        return orderService.getPendingOrders();
+    }
+
     @GetMapping("/myOrders")
     public List<OrderDto> getOrdersByUser() {return orderService.getOrdersByUser();}
 

@@ -31,6 +31,18 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<UserDto> getMembers(){
+        List<User> userList = userRepository.findByRole("MEMBER");
+        return userList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDto> getStaffs(){
+        List<User> userList = userRepository.findByRole("STAFF");
+        return userList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public UserDto getUserInfo() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->

@@ -59,6 +59,12 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public List<OrderDto> getPendingOrders() {
+        List<Order> orderList = orderRepository.findPendingOrders();
+        return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<OrderDto> getOrdersByUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
@@ -95,7 +101,7 @@ public class OrderService implements IOrderService {
         orderRepository.deleteById(id);
     }
 
-    private OrderDto mapToDto (Order order){
+    public OrderDto mapToDto (Order order){
         OrderDto orderResponse = new OrderDto();
         orderResponse.setFullName(order.getFullName());
         orderResponse.setOrderId(order.getOrderId());

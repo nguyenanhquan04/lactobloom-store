@@ -1,12 +1,16 @@
 package com.lactobloom.service.interfaces;
 
+import com.lactobloom.dto.DashboardDto;
+import com.lactobloom.dto.OrderDto;
+import java.util.List;
+
 public interface IDashboardService {
-//    List<ProductResponse> getTop5SellingProducts();
-//    int getTotalMembers();
-//    int getTotalStaffs();
-//    List<OrderDto> get5RecentOrders();
-//    double getTotalRevenue();
-//    double getThisWeekRevenue();
-//    Map<String, Double> getTotalSalesByDayInWeek();
-//    Map<String, Double> getTotalSalesByMonth();
+    List<DashboardDto.ProductResponse> getTop5SellingProducts();
+    List<OrderDto> get5RecentOrders();
+    Double getTotalRevenue();
+    Double getTodayRevenue();
+    Double getMonthRevenue(int month, int year);
+    List<String> getAvailableMonths();
+    List<DashboardDto.MonthRevenue> getSalesByMonthOfYear(int year);
+    List<DashboardDto.DayRevenue> getSalesByDayOfMonth(int month, int year);
 }
