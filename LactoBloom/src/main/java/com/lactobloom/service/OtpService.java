@@ -38,19 +38,11 @@ public class OtpService implements IOtpService {
     public String verifyEmail(String email){
         User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
+        existingUser.setOtp(null);
+        userRepository.save(existingUser);
         otpRepository.findByUserUserId(existingUser.getUserId()).ifPresent(otpRepository::delete);
         int newOtp = otpGenerator();
-        String otpMessage = String.format(
-                "<html><body>" +
-                "<h2>Email Verification</h2>" +
-                "<p>Dear %s,</p>" +
-                "<p>Thank you for using our service. To complete your request, please use the following OTP:</p>" +
-                "<h3>%d</h3>" +
-                "<p>This OTP is valid for the next 5 minutes.</p>" +
-                "<p>If you did not request this, please ignore this email.</p>" +
-                "<p>Best regards,<br>Lactobloom Team</p>" +
-                "</body></html>",
-                existingUser.getFullName(), newOtp);
+        String otpMessage = String.format("Thank you for using our service. To complete your request, please use the following OTP: %d", newOtp);
         MailDto mailDto = MailDto.builder()
                 .to(email)
                 .text(otpMessage)
