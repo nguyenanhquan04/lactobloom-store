@@ -1,7 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getBlogReviewByBlogId, saveBlogReview } from "../../utils/BlogReviewService";
+import axios from "axios";
 import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisV, faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const BlogComment = () => {
   const { blogId } = useParams();
@@ -9,6 +13,18 @@ const BlogComment = () => {
   const [newReview, setNewReview] = useState({ comment: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [actionCommentId, setActionCommentId] = useState(null);
+  const [authEmail, setAuthEmail] = useState(null);
+  const [editCommentId, setEditCommentId] = useState(null);
+  const [editedComment, setEditedComment] = useState("");
+
+  useEffect(() => {
+    const token = Cookies.get("authToken");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setAuthEmail(decodedToken.sub);
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -16,7 +32,7 @@ const BlogComment = () => {
 
     getBlogReviewByBlogId(blogId)
       .then((response) => {
-        const data = response.data; // Accessing data directly from Axios response
+        const data = response.data;
         setComments(data);
         setLoading(false);
       })
@@ -42,20 +58,13 @@ const BlogComment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Get current date and time in UTC
     const currentDate = new Date();
-
-    // Convert UTC to local time zone
-    const localDate = new Date(
-      currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
-    );
-
-    // Format date as YYYY-MM-DDTHH:mm:ss
+    const localDate = new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000);
     const formattedDate = localDate.toISOString().slice(0, 19);
 
     const reviewData = {
       comment: newReview.comment,
-      reviewDate: formattedDate, // Use formatted date
+      reviewDate: formattedDate,
     };
 
     const config = {
@@ -68,11 +77,64 @@ const BlogComment = () => {
     try {
       const response = await saveBlogReview(blogId, reviewData, config);
       console.log("Review submitted:", response.data);
-      // Directly update the comments state
       setComments([...comments, response.data]);
-      setNewReview({ comment: "" }); // Reset newReview state
+      setNewReview({ comment: "" });
     } catch (error) {
       console.error("Error submitting the review:", error);
+    }
+  };
+
+  const handleActionButtonClick = (reviewId) => {
+    setActionCommentId(actionCommentId === reviewId ? null : reviewId);
+  };
+
+  const handleEditClick = (reviewId, currentComment) => {
+    setEditCommentId(reviewId);
+    setEditedComment(currentComment);
+  };
+
+  const handleCancelEdit = () => {
+    setEditCommentId(null);
+    setEditedComment("");
+  };
+
+  const handleUpdateClick = async (reviewId) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${Cookies.get("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/blog-review/update/${reviewId}`,
+        { comment: editedComment },
+        config
+      );
+      console.log("Comment updated:", response.data);
+      setComments(comments.map(comment => comment.reviewId === reviewId ? response.data : comment));
+      setEditCommentId(null);
+      setEditedComment("");
+    } catch (error) {
+      console.error("Error updating the comment:", error);
+    }
+  };
+
+  const handleDeleteClick = async (reviewId) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${Cookies.get("authToken")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      await axios.delete(`http://localhost:8080/blog-review/deleteMyReview/${reviewId}`, config);
+      console.log(`Deleted comment with ID: ${reviewId}`);
+      setComments(comments.filter((comment) => comment.reviewId !== reviewId));
+    } catch (error) {
+      console.error("Error deleting the comment:", error);
     }
   };
 
@@ -83,15 +145,44 @@ const BlogComment = () => {
         {comments.map((comment) => (
           <div key={comment.reviewId} className="single-comment-wrapper mt-35">
             <div className="blog-comment-img">
-              <img
-                src={process.env.PUBLIC_URL + "/assets/img/user.jpg"}
-                alt=""
-              />
+              <img src={process.env.PUBLIC_URL + "/assets/img/user.jpg"} alt="" />
             </div>
             <div className="blog-comment-content">
-              <h4>{comment.email}</h4>
-              <span>{new Date(comment.reviewDate).toLocaleDateString()}</span>
-              <p>{comment.comment}</p>
+              <div className="comment-header">
+                <h4>{comment.email}</h4>
+                <span>{new Date(comment.reviewDate).toLocaleDateString()}</span>
+                <FontAwesomeIcon
+                  icon={faEllipsisV}
+                  className="more-options-icon"
+                  onClick={() => handleActionButtonClick(comment.reviewId)}
+                />
+              </div>
+              {editCommentId === comment.reviewId ? (
+                <div className="edit-comment">
+                  <textarea
+                    value={editedComment}
+                    onChange={(e) => setEditedComment(e.target.value)}
+                  />
+                  <button className="cancel-button" onClick={handleCancelEdit}>Cancel</button>
+                  <button className="update-button" onClick={() => handleUpdateClick(comment.reviewId)}>Update</button>
+                </div>
+              ) : (
+                <p>{comment.comment}</p>
+              )}
+              {authEmail === comment.email && actionCommentId === comment.reviewId && (
+                <div className="action-buttons">
+                  {editCommentId !== comment.reviewId && (
+                    <>
+                      <button onClick={() => handleEditClick(comment.reviewId, comment.comment)}>
+                        <FontAwesomeIcon icon={faEdit} /> Edit
+                      </button>
+                      <button onClick={() => handleDeleteClick(comment.reviewId)}>
+                        <FontAwesomeIcon icon={faTrashAlt} /> Delete
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -115,9 +206,7 @@ const BlogComment = () => {
             </div>
           </form>
         ) : (
-          <p className="login-required">
-            You must login to submit a comment.
-          </p>
+          <p className="login-required">You must login to submit a comment.</p>
         )}
       </div>
     </Fragment>
