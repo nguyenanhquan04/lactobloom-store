@@ -704,3 +704,97 @@
     }
   }
 }
+
+.review-content {
+  flex-grow: 1; // Added to make the content take the remaining space
+  .edit-review {
+    .star-box {
+      display: flex;
+
+      margin: 6px 0 20px;
+      span {
+        margin: 0 15px 0 0;
+      }
+      .ratting-star {
+        font-size: 12px;
+
+        margin: 2px 0 0;
+
+        color: #ffa900;
+      }
+    }
+    .cancel-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      &:hover {
+        background-color: #f1f1f1;
+      }
+    }
+    .update-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      &:hover {
+        background-color: #f1f1f1;
+      }
+    }
+  }
+  .review-top-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; // Space between email and icon
+    h4 {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1;
+      margin: 0;
+    }
+    .more-options-icon {
+      cursor: pointer;
+      margin-left: 10px; // Added margin for spacing
+    }
+  }
+  span {
+    font-size: 15px;
+    display: block;
+    margin: 6px 0 8px;
+  }
+  .comment-email {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    margin: 0 0 6px 0;
+  }
+  .comment-date {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+  p {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .action-buttons {
+    display: flex;
+    gap: 10px; // Space between edit and delete buttons
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px; // Space between icon and text
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      &:hover {
+        background-color: #f1f1f1;
+      }
+    }
+  }
+}

@@ -1,14 +1,22 @@
+import React, { Fragment, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import StarRating from "../../components/star-rating/StarRating";
-import { useState, useEffect } from "react";
 import {
   getProductReviewByProductId,
   saveProductReview,
 } from "../../utils/ProductReviewService";
+import axios from "axios";
 import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEllipsisV,
+  faEdit,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ProductDescriptionTab = ({
   spaceBottomClass,
@@ -17,10 +25,20 @@ const ProductDescriptionTab = ({
 }) => {
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ comment: "", rating: 0 });
-  const [authToken, setAuthToken] = useState(Cookies.get("authToken")); // State to manage authToken
+  const [authToken, setAuthToken] = useState(Cookies.get("authToken"));
+  const [authEmail, setAuthEmail] = useState(null);
+  const [actionReviewId, setActionReviewId] = useState(null);
+  const [editReviewId, setEditReviewId] = useState(null);
+  const [editedReview, setEditedReview] = useState({ comment: "", rating: 0 });
 
   useEffect(() => {
-    // Fetch the reviews from the API
+    if (authToken) {
+      const decodedToken = jwtDecode(authToken);
+      setAuthEmail(decodedToken.sub);
+    }
+  }, [authToken]);
+
+  useEffect(() => {
     getProductReviewByProductId(productId)
       .then((response) => {
         setReviews(response.data);
@@ -42,21 +60,16 @@ const ProductDescriptionTab = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Get current date and time in UTC
     const currentDate = new Date();
-
-    // Convert UTC to local time zone
     const localDate = new Date(
       currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
     );
-
-    // Format date as YYYY-MM-DDTHH:mm:ss
     const formattedDate = localDate.toISOString().slice(0, 19);
 
     const reviewData = {
       rate: newReview.rating,
       comment: newReview.comment,
-      reviewDate: formattedDate, // Use formatted date
+      reviewDate: formattedDate,
     };
 
     const config = {
@@ -70,7 +83,6 @@ const ProductDescriptionTab = ({
       const response = await saveProductReview(productId, reviewData, config);
       console.log("Review submitted:", response.data);
       setNewReview({ comment: "", rating: 0 });
-      // Fetch the updated reviews
       getProductReviewByProductId(productId)
         .then((response) => {
           setReviews(response.data);
@@ -80,6 +92,67 @@ const ProductDescriptionTab = ({
         });
     } catch (error) {
       console.error("Error submitting the review:", error);
+    }
+  };
+
+  const handleActionButtonClick = (reviewId) => {
+    setActionReviewId(actionReviewId === reviewId ? null : reviewId);
+  };
+
+  const handleEditClick = (reviewId, currentComment, currentRating) => {
+    setEditReviewId(reviewId);
+    setEditedReview({ comment: currentComment, rating: currentRating });
+  };
+
+  const handleCancelEdit = () => {
+    setEditReviewId(null);
+    setEditedReview({ comment: "", rating: 0 });
+  };
+
+  const handleUpdateClick = async (reviewId) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/product-review/update/${reviewId}`,
+        { comment: editedReview.comment, rate: editedReview.rating },
+        config
+      );
+      console.log("Review updated:", response.data);
+      setReviews(
+        reviews.map((review) =>
+          review.reviewId === reviewId ? response.data : review
+        )
+      );
+      setEditReviewId(null);
+      setEditedReview({ comment: "", rating: 0 });
+    } catch (error) {
+      console.error("Error updating the review:", error);
+    }
+  };
+
+  const handleDeleteClick = async (reviewId) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      await axios.delete(
+        `http://localhost:8080/product-review/deleteMyReview/${reviewId}`,
+        config
+      );
+      console.log(`Deleted review with ID: ${reviewId}`);
+      setReviews(reviews.filter((review) => review.reviewId !== reviewId));
+    } catch (error) {
+      console.error("Error deleting the review:", error);
     }
   };
 
@@ -141,15 +214,88 @@ const ProductDescriptionTab = ({
                                     )}
                                   </div>
                                 </div>
+                                <FontAwesomeIcon
+                                  icon={faEllipsisV}
+                                  className="more-options-icon"
+                                  onClick={() =>
+                                    handleActionButtonClick(review.reviewId)
+                                  }
+                                />
                               </div>
-                              <div className="review-bottom">
-                                <small>
-                                  {new Date(
-                                    review.reviewDate
-                                  ).toLocaleDateString()}
-                                </small>
-                                <h5>{review.comment}</h5>
-                              </div>
+                              {editReviewId === review.reviewId ? (
+                                <div className="edit-review">
+                                   <div className="star-box">
+                                  <span>Your new rating:</span>
+                                  <StarRating
+                                    rating={editedReview.rating}
+                                    onRatingChange={(rating) =>
+                                      setEditedReview({
+                                        ...editedReview,
+                                        rating,
+                                      })
+                                    }
+                                  />
+                                  </div>
+                                  <textarea
+                                    name="comment"
+                                    value={editedReview.comment}
+                                    onChange={(e) =>
+                                      setEditedReview({
+                                        ...editedReview,
+                                        comment: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  <button
+                                    className="cancel-button"
+                                    onClick={handleCancelEdit}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    className="update-button"
+                                    onClick={() =>
+                                      handleUpdateClick(review.reviewId)
+                                    }
+                                  >
+                                    Update
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="review-bottom">
+                                  <small>
+                                    {new Date(
+                                      review.reviewDate
+                                    ).toLocaleDateString()}
+                                  </small>
+                                  <h5>{review.comment}</h5>
+                                </div>
+                              )}
+                              {authEmail === review.email &&
+                                actionReviewId === review.reviewId &&
+                                editReviewId !== review.reviewId && (
+                                  <div className="action-buttons">
+                                    <button
+                                      onClick={() =>
+                                        handleEditClick(
+                                          review.reviewId,
+                                          review.comment,
+                                          review.rate
+                                        )
+                                      }
+                                    >
+                                      <FontAwesomeIcon icon={faEdit} /> Edit
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        handleDeleteClick(review.reviewId)
+                                      }
+                                    >
+                                      <FontAwesomeIcon icon={faTrashAlt} />{" "}
+                                      Delete
+                                    </button>
+                                  </div>
+                                )}
                             </div>
                           </div>
                         ))
@@ -159,7 +305,7 @@ const ProductDescriptionTab = ({
                   <div className="col-lg-5">
                     <div className="ratting-form-wrapper pl-50">
                       <h3>Add a Review</h3>
-                      {authToken ? ( // Conditionally render based on authToken presence
+                      {authToken ? (
                         <div className="ratting-form">
                           <form onSubmit={handleSubmit}>
                             <div className="star-box">
