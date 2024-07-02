@@ -41,6 +41,8 @@ public class OrderDetailService implements IOrderDetailService {
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         product.setStock(product.getStock() - orderDetail.getQuantity());
+        if(product.getStock() < 0)
+            product.setStock(0);
         Product boughtProduct = productRepository.save(product);
         orderDetail.setOrder(order);
         orderDetail.setProduct(boughtProduct);
@@ -55,10 +57,11 @@ public class OrderDetailService implements IOrderDetailService {
                 new ResourceNotFoundException("User", "email", email));
         Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
-        List<OrderDetail> orderDetailList = null;
-        if(existingOrder.getUser() == user)
-            orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
-        return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
+        if(existingOrder.getUser() == user) {
+            List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
+            return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
@@ -86,6 +89,7 @@ public class OrderDetailService implements IOrderDetailService {
         existingOrderDetail.setProduct(product);
         existingOrderDetail.setQuantity(orderDetailDto.getQuantity());
         existingOrderDetail.setTotalPrice(orderDetailDto.getTotalPrice());
+        existingOrderDetail.setPreOrder(orderDetailDto.isPreOrder());
         return mapToDto(orderDetailRepository.save(existingOrderDetail));
     }
 
@@ -102,6 +106,7 @@ public class OrderDetailService implements IOrderDetailService {
         orderDetailResponse.setProductName(orderDetail.getProduct().getProductName());
         orderDetailResponse.setQuantity(orderDetail.getQuantity());
         orderDetailResponse.setTotalPrice(orderDetail.getTotalPrice());
+        orderDetailResponse.setPreOrder(orderDetail.isPreOrder());
         return orderDetailResponse;
     }
 
@@ -109,6 +114,7 @@ public class OrderDetailService implements IOrderDetailService {
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setQuantity(orderDetailDto.getQuantity());
         orderDetail.setTotalPrice(orderDetailDto.getTotalPrice());
+        orderDetail.setPreOrder(orderDetailDto.isPreOrder());
         return orderDetail;
     }
 }

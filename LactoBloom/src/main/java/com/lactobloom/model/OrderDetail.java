@@ -31,4 +31,8 @@ public class OrderDetail {
     @Column(name = "Total_price", columnDefinition = "DECIMAL(10, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Total price must not be null")
     private double totalPrice;
+
+    @Column(name = "Pre_order", nullable = false)
+    @NotNull(message = "Pre-order must not be null")
+    private boolean preOrder;
 }

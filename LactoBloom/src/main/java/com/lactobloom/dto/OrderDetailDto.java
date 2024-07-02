@@ -12,4 +12,5 @@ public class OrderDetailDto {
     private String productName;
     private int quantity;
     private double totalPrice;
+    private boolean preOrder;
 }
