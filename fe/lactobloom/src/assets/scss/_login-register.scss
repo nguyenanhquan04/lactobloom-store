@@ -81,6 +81,8 @@
         }
         .button-box {
           .login-toggle-btn {
+            display: flex;
+            justify-content: space-between;
             padding: 10px 0 19px;
             label {
               color: #242424;
@@ -92,7 +94,6 @@
             }
             a {
               color: #242424;
-              float: right;
               font-size: 15px;
               @media #{$xs-layout} {
                 font-size: 14px;

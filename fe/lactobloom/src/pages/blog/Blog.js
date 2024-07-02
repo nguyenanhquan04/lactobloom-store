@@ -33,9 +33,6 @@ const BlogStandard = () => {
                     {/* blog posts */}
                     <BlogPosts />
                   </div>
-
-                  {/* blog pagination */}
-                  <BlogPagination />
                 </div>
               </div>
               <div className="col-lg-3">

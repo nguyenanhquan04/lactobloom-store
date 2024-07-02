@@ -2,22 +2,23 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { getAllBlogs } from "../../utils/BlogService";
 import { getBlogReviewByBlogId } from "../../utils/BlogReviewService";
+import BlogPagination from "./BlogPagination"; // Adjust the import path as needed
 
 const BlogPosts = () => {
   const [blogs, setBlogs] = useState([]);
-  const [comments, setComments] = useState({}); // To store comment counts
+  const [comments, setComments] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [blogsPerPage] = useState(4);
 
   useEffect(() => {
-    // Fetch all blogs
     getAllBlogs()
       .then(response => {
-        const data = response.data; // Accessing data directly from Axios response
+        const data = response.data;
         setBlogs(data);
-        // Fetch comments for each blog
         data.forEach(blog => {
           getBlogReviewByBlogId(blog.blogId)
             .then(response => {
-              const commentsData = response.data; // Accessing data directly from Axios response
+              const commentsData = response.data;
               setComments(prevComments => ({
                 ...prevComments,
                 [blog.blogId]: commentsData.length
@@ -29,9 +30,16 @@ const BlogPosts = () => {
       .catch(error => console.error('Error fetching blogs:', error));
   }, []);
 
+  // Get current blogs for pagination
+  const indexOfLastBlog = currentPage * blogsPerPage;
+  const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+  const currentBlogs = blogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+  const totalPages = Math.ceil(blogs.length / blogsPerPage);
+
   return (
     <Fragment>
-      {blogs.map(blog => (
+      {currentBlogs.map(blog => (
         <div className="col-lg-6 col-md-6 col-sm-12" key={blog.blogId}>
           <div className="blog-wrap-2 mb-30">
             <div className="blog-img-2">
@@ -92,6 +100,11 @@ const BlogPosts = () => {
           </div>
         </div>
       ))}
+      <BlogPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </Fragment>
   );
 };

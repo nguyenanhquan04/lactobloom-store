@@ -1,12 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; 
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { login } from "../../utils/UserService"; // Adjust the import path as needed
-import Cookies from 'js-cookie'; // Import js-cookie
+import Cookies from "js-cookie"; // Import js-cookie
 import { useDispatch } from "react-redux";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
 
@@ -20,7 +20,7 @@ const Login = () => {
 
   // Check for authToken cookie and redirect to homepage if it exists
   useEffect(() => {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
     if (token) {
       navigate("/"); // Redirect to homepage
     }
@@ -37,7 +37,11 @@ const Login = () => {
     try {
       const response = await login(loginData.email, loginData.password);
       const token = response.data.token; // Adjust according to your API response
-      Cookies.set('authToken', token, { expires: 7, secure: true, sameSite: 'strict' }); // Store the token in a cookie
+      Cookies.set("authToken", token, {
+        expires: 7,
+        secure: true,
+        sameSite: "strict",
+      }); // Store the token in a cookie
       alert("Login successful");
       dispatch(deleteAllFromCart());
       // console.log("Login successful", response.data);
@@ -55,17 +59,14 @@ const Login = () => {
 
   return (
     <Fragment>
-      <SEO
-        titleTemplate="Login"
-        description="Lactobloom Login Page."
-      />
+      <SEO titleTemplate="Login" description="Lactobloom Login Page." />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Login", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Login", path: process.env.PUBLIC_URL + pathname },
+          ]}
         />
         <div className="login-register-area pt-100 pb-100">
           <div className="container">
@@ -100,13 +101,23 @@ const Login = () => {
                                 onChange={handleLoginChange}
                               />
                               {errorMessage && (
-                                <div className="error-message">{errorMessage}</div>
+                                <div className="error-message">
+                                  {errorMessage}
+                                </div>
                               )}
                               <div className="button-box">
                                 <div className="login-toggle-btn">
-                                  <input type="checkbox" />
-                                  <label className="ml-10">Remember me</label>
-                                  <Link to={process.env.PUBLIC_URL + "/register"}>
+                                  <Link
+                                    to={
+                                      process.env.PUBLIC_URL +
+                                      "/forgot-password"
+                                    }
+                                  >
+                                    Forgot Password
+                                  </Link>
+                                  <Link
+                                    to={process.env.PUBLIC_URL + "/register"}
+                                  >
                                     Register Now
                                   </Link>
                                 </div>
