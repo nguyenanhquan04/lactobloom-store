@@ -62,7 +62,7 @@ public class ProductController {
     }
 
     @GetMapping("/wishlist/{wishlistId}")
-    public ResponseEntity<ProductDto.ProductResponse> getWishlistsByUser(@PathVariable int wishlistId) {
+    public ResponseEntity<ProductDto.ProductResponse> getProductByWishlistId(@PathVariable int wishlistId) {
         return new ResponseEntity<>(productService.getProductByWishlistId(wishlistId), HttpStatus.OK);
     }
 }

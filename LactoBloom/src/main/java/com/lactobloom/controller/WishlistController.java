@@ -44,4 +44,10 @@ public class WishlistController {
         wishlistService.deleteWishlist(id);
         return new ResponseEntity<>("Wishlist deleted successfully!", HttpStatus.OK);
     }
+
+    @DeleteMapping("/clearAll")
+    public ResponseEntity<String> deleteMyWishlist() {
+        wishlistService.deleteUserWishlists();
+        return new ResponseEntity<>("User's Wishlists deleted successfully!", HttpStatus.OK);
+    }
 }

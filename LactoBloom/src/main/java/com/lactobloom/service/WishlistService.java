@@ -36,6 +36,9 @@ public class WishlistService implements IWishlistService {
                 new ResourceNotFoundException("User", "email", email));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
+        Wishlist existingWishlist = wishlistRepository.findByUser_UserIdAndProduct_ProductId(user.getUserId(), productId);
+        if(existingWishlist != null)
+            return null;
         wishlist.setUser(user);
         wishlist.setProduct(product);
         Wishlist newWishList = wishlistRepository.save(wishlist);
@@ -73,6 +76,13 @@ public class WishlistService implements IWishlistService {
             wishlistRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteUserWishlists() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        wishlistRepository.deleteByUser_UserId(user.getUserId());
+    }
     private WishlistDto mapToDto (Wishlist wishlist){
         WishlistDto wishListResponse = new WishlistDto();
         wishListResponse.setWishlistId(wishlist.getWishlistId());
