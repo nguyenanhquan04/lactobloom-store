@@ -48,6 +48,14 @@ public class WishlistService implements IWishlistService {
     }
 
     @Override
+    public List<WishlistDto> getMyWishlists() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        return wishlistRepository.findByUserUserId(user.getUserId()).stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public WishlistDto getWishlistById(int id) {
         Wishlist wishlist = wishlistRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Wishlist", "Id", id));

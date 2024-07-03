@@ -28,6 +28,11 @@ public class WishlistController {
         return wishlistService.getAllWishlists();
     }
 
+    @GetMapping("/myWishlist")
+    public List<WishlistDto> getMyWishlist() {
+        return wishlistService.getMyWishlists();
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/get/{id}")
     public ResponseEntity<WishlistDto> getWishlistById(@PathVariable int id) {

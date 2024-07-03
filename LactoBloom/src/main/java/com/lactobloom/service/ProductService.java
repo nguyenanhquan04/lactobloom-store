@@ -57,13 +57,15 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductDto.ProductResponse> getUserWishlist(){
+    public ProductDto.ProductResponse getProductByWishlistId(int wishlistId){
+        Wishlist wishlist = wishlistRepository.findById(wishlistId).orElseThrow(() ->
+                new ResourceNotFoundException("Wishlist", "Id", wishlistId));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        List<Wishlist> wishlist = wishlistRepository.findByUserUserId(user.getUserId());
-        List<Product> productList = wishlist.stream().map(Wishlist::getProduct).toList();
-        return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
+        if(wishlist.getUser() == user)
+            return mapToResponse(wishlist.getProduct());
+        return null;
     }
 
     @Override
