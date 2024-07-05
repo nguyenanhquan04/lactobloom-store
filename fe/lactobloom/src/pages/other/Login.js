@@ -9,6 +9,7 @@ import { login } from "../../utils/UserService"; // Adjust the import path as ne
 import Cookies from "js-cookie"; // Import js-cookie
 import { useDispatch } from "react-redux";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
+import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
 
 const Login = () => {
   let dispatch = useDispatch();
@@ -44,6 +45,7 @@ const Login = () => {
       }); // Store the token in a cookie
       alert("Login successful");
       dispatch(deleteAllFromCart());
+      dispatch(deleteAllFromWishlist())
       // console.log("Login successful", response.data);
       // Navigate to a different page on successful login
       navigate("/"); // Adjust the path as needed

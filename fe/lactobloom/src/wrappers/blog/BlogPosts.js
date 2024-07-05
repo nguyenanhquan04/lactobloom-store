@@ -59,13 +59,23 @@ const BlogPosts = () => {
                       {comments[blog.blogId] || 0} <i className="fa fa-comments-o" />
                     </Link>
                   </li>
+                  
                 </ul>
+                
               </div>
+              
               <h4>
                 <Link to={`${process.env.PUBLIC_URL}/blog-details/${blog.blogId}`}>
                   {blog.title}
                 </Link>
               </h4>
+              <h5>
+                Category:{" "}
+                  <Link>
+                      {blog.blogCategoryName}
+                    </Link>
+                  </h5>
+              
               <p>{blog.shortDescription}</p>
               <div className="blog-share-comment">
                 <div className="blog-btn-2">
