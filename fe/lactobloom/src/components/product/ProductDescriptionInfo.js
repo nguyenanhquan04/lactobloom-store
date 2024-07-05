@@ -85,7 +85,7 @@ const ProductDescriptionInfo = ({
       ) : (
         <div className="pro-details-rating-wrap">
           <div className="pro-details-rating">
-            <Rating ratingValue="0" />
+            <Rating ratingValue={0} />
           </div>
           <span>(0 out of 5)</span>
         </div>

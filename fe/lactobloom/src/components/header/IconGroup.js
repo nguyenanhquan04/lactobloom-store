@@ -7,6 +7,7 @@ import MenuCart from "./sub-components/MenuCart";
 import Cookies from 'js-cookie'; // Import js-cookie
 import { logOut } from "../../utils/UserService";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
+import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
 
 const IconGroup = ({ iconWhiteClass }) => {
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ const IconGroup = ({ iconWhiteClass }) => {
       logOut(Cookies.get('authToken'));
       Cookies.remove('authToken'); 
       dispatch(deleteAllFromCart());
+      dispatch(deleteAllFromWishlist())
     }
     // If user cancels, do nothing
   };

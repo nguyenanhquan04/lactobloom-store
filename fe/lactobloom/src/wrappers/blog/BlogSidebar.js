@@ -74,8 +74,8 @@ const BlogSidebar = () => {
               <li key={category.blogCategoryId}>
                 <div className="sidebar-widget-list-left">
                   <input type="checkbox" defaultValue />{" "}
-                  <Link to={`${process.env.PUBLIC_URL}/blog-category/${category.blogCategoryId}`}>
-                    {category.blogCategoryName} <span>4</span>{" "}
+                  <Link>
+                    {category.blogCategoryName}{" "}
                   </Link>
                   <span className="checkmark" />
                 </div>

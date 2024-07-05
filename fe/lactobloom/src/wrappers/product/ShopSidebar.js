@@ -20,19 +20,6 @@ const ShopSidebar = ({
       onCategorySelect={onCategorySelect}
       onBrandSelect={onBrandSelect}
       />
-
-
-      {/* filter by categories */}
-      {/* <ShopCategories
-        getSortParams={getSortParams}
-        onCategorySelect={onCategorySelect}
-      /> */}
-
-      {/* filter by brands */}
-      {/* <ShopBrand
-        getSortParams={getSortParams}
-        onBrandSelect={onBrandSelect}
-      /> */}
     </div>
   );
 };

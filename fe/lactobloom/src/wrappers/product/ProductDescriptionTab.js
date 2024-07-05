@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import Tab from "react-bootstrap/Tab";
@@ -10,7 +10,7 @@ import {
 } from "../../utils/ProductReviewService";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEllipsisV,
@@ -25,7 +25,7 @@ const ProductDescriptionTab = ({
 }) => {
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ comment: "", rating: 0 });
-  const [authToken, setAuthToken] = useState(Cookies.get("authToken"));
+  const [authToken] = useState(Cookies.get("authToken"));
   const [authEmail, setAuthEmail] = useState(null);
   const [actionReviewId, setActionReviewId] = useState(null);
   const [editReviewId, setEditReviewId] = useState(null);
@@ -224,17 +224,17 @@ const ProductDescriptionTab = ({
                               </div>
                               {editReviewId === review.reviewId ? (
                                 <div className="edit-review">
-                                   <div className="star-box">
-                                  <span>Your new rating:</span>
-                                  <StarRating
-                                    rating={editedReview.rating}
-                                    onRatingChange={(rating) =>
-                                      setEditedReview({
-                                        ...editedReview,
-                                        rating,
-                                      })
-                                    }
-                                  />
+                                  <div className="star-box">
+                                    <span>Your new rating:</span>
+                                    <StarRating
+                                      rating={editedReview.rating}
+                                      onRatingChange={(rating) =>
+                                        setEditedReview({
+                                          ...editedReview,
+                                          rating,
+                                        })
+                                      }
+                                    />
                                   </div>
                                   <textarea
                                     name="comment"

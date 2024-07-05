@@ -208,15 +208,34 @@ export const getIndividualSizes = product => {
   return individualSizes;
 };
 
-export const setActiveSort = e => {
-  const filterButtons = document.querySelectorAll(
-    ".sidebar-widget-list-left button, .sidebar-widget-tag button, .product-filter button"
-  );
+// export const setActiveSort = e => {
+//   const filterButtons = document.querySelectorAll(
+//     ".sidebar-widget-list-left button, .sidebar-widget-tag button, .product-filter button"
+//   );
+//   filterButtons.forEach(item => {
+//     item.classList.remove("active");
+//   });
+//   e.currentTarget.classList.add("active");
+// };
+
+export const setActiveSort = (e, filterType) => {
+  let filterButtons;
+  if (filterType === "category") {
+    filterButtons = document.querySelectorAll(".sidebar-widget-list-left.category button");
+  } else if (filterType === "brand") {
+    filterButtons = document.querySelectorAll(".sidebar-widget-list-left.brand button");
+  } else {
+    filterButtons = document.querySelectorAll(
+      ".sidebar-widget-list-left button, .sidebar-widget-tag button, .product-filter button"
+    );
+  }
+  
   filterButtons.forEach(item => {
     item.classList.remove("active");
   });
   e.currentTarget.classList.add("active");
 };
+
 
 export const setActiveLayout = e => {
   const gridSwitchBtn = document.querySelectorAll(".shop-tab button");

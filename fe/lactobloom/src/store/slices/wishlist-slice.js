@@ -17,6 +17,13 @@ const wishlistSlice = createSlice({
             }
             
         },
+        addToWishlistFormAPI(state, action) {
+            const isInWishlist = state.wishlistItems.findIndex(item => item.productId === action.payload.productId);
+            if(isInWishlist <= -1){
+                state.wishlistItems.push(action.payload);
+            }
+            
+        },
         deleteFromWishlist(state, action){
             state.wishlistItems = state.wishlistItems.filter(item => item.productId !== action.payload);
             cogoToast.error("Removed From Wishlist", {position: "bottom-left"});
@@ -27,5 +34,5 @@ const wishlistSlice = createSlice({
     },
 });
 
-export const { addToWishlist, deleteFromWishlist, deleteAllFromWishlist } = wishlistSlice.actions;
+export const { addToWishlist,addToWishlistFormAPI, deleteFromWishlist, deleteAllFromWishlist } = wishlistSlice.actions;
 export default wishlistSlice.reducer;
