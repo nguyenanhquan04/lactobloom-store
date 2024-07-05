@@ -266,39 +266,47 @@ const Wishlist = () => {
   const dispatch = useDispatch();
   let { pathname } = useLocation();
 
-  const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { wishlistItems: reduxWishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems } = useSelector((state) => state.cart);
 
+  const [wishlistItems, setWishlistItems] = useState([]);
   const [wishlistImages, setWishlistImages] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const authToken = Cookies.get("authToken");
 
   useEffect(() => {
     const fetchWishlistItems = async () => {
-      try {
-        const authToken = Cookies.get("authToken");
-        const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
-          headers: {
-            Authorization: `Bearer ${authToken}`
-          }
-        });
-        const wishlistData = response.data;
+      if (authToken) {
+        try {
+          const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
+            headers: {
+              Authorization: `Bearer ${authToken}`
+            }
+          });
+          const wishlistData = response.data;
 
-        for (const item of wishlistData) {
-          const productResponse = await axios.get(`http://localhost:8080/product/get/${item.productId}`);
-          const productData = productResponse.data;
-          console.log(item.wishlistId);
-          const wishlistItem = {
-            ...productData,
-            wishlistId: item.wishlistId // Adding the wishlistId from the wishlist API response
-          };
-          dispatch(addToWishlistFormAPI(wishlistItem));
+          const productPromises = wishlistData.map(async item => {
+            const productResponse = await axios.get(`http://localhost:8080/product/get/${item.productId}`);
+            return {
+              ...productResponse.data,
+              wishlistId: item.wishlistId // Adding the wishlistId from the wishlist API response
+            };
+          });
+
+          const productsWithWishlistId = await Promise.all(productPromises);
+          setWishlistItems(productsWithWishlistId);
+        } catch (error) {
+          console.error("Error fetching wishlist items:", error);
         }
-      } catch (error) {
-        console.error("Error fetching wishlist items:", error);
+      } else {
+        setWishlistItems(reduxWishlistItems);
       }
+      setLoading(false);
     };
 
     fetchWishlistItems();
-  }, [dispatch]);
+  }, [authToken, reduxWishlistItems]);
 
   useEffect(() => {
     const fetchWishlistImages = async () => {
@@ -321,17 +329,15 @@ const Wishlist = () => {
   }, [wishlistItems]);
 
   const handleRemoveFromWishlist = async (wishlistId, productId) => {
-    const authToken = Cookies.get("authToken");
-    console.log("wishlistId:", wishlistId);
-    console.log("productId:", productId);
     if (authToken) {
-      dispatch(deleteFromWishlist(productId));
       try {
         await axios.delete(`http://localhost:8080/wishlist/delete/${wishlistId}`, {
           headers: {
             Authorization: `Bearer ${authToken}`
           }
         });
+        setWishlistItems(wishlistItems.filter(item => item.productId !== productId));
+        dispatch(deleteFromWishlist(productId));
       } catch (error) {
         console.error("Error removing from wishlist:", error);
       }
@@ -339,6 +345,10 @@ const Wishlist = () => {
       dispatch(deleteFromWishlist(productId));
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Fragment>
