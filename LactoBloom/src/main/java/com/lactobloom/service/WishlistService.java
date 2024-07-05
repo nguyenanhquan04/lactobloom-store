@@ -86,6 +86,7 @@ public class WishlistService implements IWishlistService {
     private WishlistDto mapToDto (Wishlist wishlist){
         WishlistDto wishListResponse = new WishlistDto();
         wishListResponse.setWishlistId(wishlist.getWishlistId());
+        wishListResponse.setProductId(wishlist.getProduct().getProductId());
         return wishListResponse;
     }
 }
