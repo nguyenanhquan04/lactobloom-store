@@ -22,6 +22,7 @@ const Login = () => {
   // Check for authToken cookie and redirect to homepage if it exists
   useEffect(() => {
     const token = Cookies.get("authToken");
+    console.log(token);
     if (token) {
       navigate("/"); // Redirect to homepage
     }

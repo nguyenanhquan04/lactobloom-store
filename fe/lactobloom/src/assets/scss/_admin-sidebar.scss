@@ -1,0 +1,39 @@
+/* Sidebar container */
+.sidebar {
+    background-color: #ffffff; /* White background for a clean look */
+    padding: 15px;
+    height: 100vh; /* Full height of the viewport */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Shadow for separation */
+    border-radius: 8px; /* Rounded corners */
+    overflow-y: auto; /* Scroll if content exceeds height */
+  }
+  
+  /* Navigation list inside the sidebar */
+  .sidebar .nav {
+    list-style: none; /* Remove default list styling */
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Navigation item styling */
+  .sidebar .nav-item {
+    margin-bottom: 15px; /* Space between items */
+  }
+  
+  /* Navigation link styling specific to sidebar */
+  .sidebar .sidebar-link {
+    display: block;
+    padding: 10px 15px;
+    color: #333333; /* Dark text color */
+    text-decoration: none;
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Navigation link hover and active states */
+  .sidebar .sidebar-link:hover,
+  .sidebar .sidebar-link.active {
+    background-color: #4d4d51; /* Darker background on hover */
+    color: white; /* White text on hover */
+  }
+  

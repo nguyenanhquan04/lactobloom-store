@@ -30,6 +30,7 @@ const Checkout = lazy(() => import("./pages/other/Checkout"));
 const OrderHistory = lazy(() => import("./pages/other/OrderHistory"));
 const CheckoutResult = lazy(() => import("./pages/other/CheckoutResult"));
 const ForgotPassword = lazy(() => import("./pages/other/ForgotPassword"));
+const Admin = lazy(() => import("./pages/admin/Admin"));
 
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 
@@ -128,6 +129,10 @@ const App = () => {
               <Route
                 path={process.env.PUBLIC_URL + "/forgot-password"}
                 element={<ForgotPassword/>}
+              /> 
+              <Route
+                path={process.env.PUBLIC_URL + "/admin"}
+                element={<Admin/>}
               /> 
 
               <Route path="*" element={<NotFound/>} />
