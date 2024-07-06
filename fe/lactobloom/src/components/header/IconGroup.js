@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import MenuCart from "./sub-components/MenuCart";
 import Cookies from 'js-cookie'; // Import js-cookie
+import {jwtDecode} from 'jwt-decode'; // Import jwt-decode
 import { logOut } from "../../utils/UserService";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
 import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
@@ -30,10 +31,21 @@ const IconGroup = ({ iconWhiteClass }) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [authToken, setAuthToken] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get('authToken');
     setAuthToken(token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        // Assuming the role is stored in decodedToken.role
+        setIsAdmin(decodedToken.role !== 'MEMBER');
+      } catch (error) {
+        console.error('Token decoding failed:', error);
+        setIsAdmin(false);
+      }
+    }
   }, []);
 
   const handleSearchChange = (e) => {
@@ -55,10 +67,11 @@ const IconGroup = ({ iconWhiteClass }) => {
       logOut(Cookies.get('authToken'));
       Cookies.remove('authToken'); 
       dispatch(deleteAllFromCart());
-      dispatch(deleteAllFromWishlist())
+      dispatch(deleteAllFromWishlist());
     }
     // If user cancels, do nothing
   };
+
   return (
     <div className={clsx("header-right-wrap", iconWhiteClass)}>
       <div className="same-style header-search d-none d-lg-block">
@@ -101,6 +114,13 @@ const IconGroup = ({ iconWhiteClass }) => {
               </>
             ) : (
               <>
+              {isAdmin && (
+                  <li>
+                    <Link to={process.env.PUBLIC_URL + "/admin"}>
+                      Admin Page
+                    </Link>
+                  </li>
+                )}
                 <li>
                   <Link to={process.env.PUBLIC_URL + "/my-account"}>
                     My Account
@@ -112,7 +132,7 @@ const IconGroup = ({ iconWhiteClass }) => {
                   </Link>
                 </li>
                 <li>
-                <Link onClick={handleLogout} to="/login">
+                  <Link onClick={handleLogout} to="/login">
                     Log Out
                   </Link>
                 </li>

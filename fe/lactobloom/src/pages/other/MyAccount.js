@@ -27,6 +27,7 @@ const MyAccount = () => {
 
   useEffect(() => {
     const token = Cookies.get("authToken");
+    const decodedToken = jwtDecode(token);
     if (!token) {
       navigate("/login");
     } else {
