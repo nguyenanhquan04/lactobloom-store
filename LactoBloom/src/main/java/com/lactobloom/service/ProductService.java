@@ -128,6 +128,7 @@ public class ProductService implements IProductService {
         productResponse.setBrandName(product.getBrand().getBrandName());
         productResponse.setCategoryName(product.getCategory().getCategoryName());
         productResponse.setDescription(product.getDescription());
+        productResponse.setLongDescription(product.getLongDescription());
         productResponse.setPrice(product.getPrice());
         productResponse.setDiscount(product.getDiscount());
         productResponse.setStock(product.getStock());
@@ -138,6 +139,7 @@ public class ProductService implements IProductService {
         Product product = new Product();
         product.setProductName(productRequest.getProductName());
         product.setDescription(productRequest.getDescription());
+        product.setLongDescription(productRequest.getLongDescription());
         product.setPrice(productRequest.getPrice());
         product.setDiscount(productRequest.getDiscount());
         product.setStock(productRequest.getStock());

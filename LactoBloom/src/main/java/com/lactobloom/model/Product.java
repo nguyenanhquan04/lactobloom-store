@@ -33,6 +33,10 @@ public class Product {
     @NotNull(message = "Description must not be null")
     private String description;
 
+    @Column(name = "Long_description", columnDefinition = "TEXT")
+    @NotNull(message = "Long description must not be null")
+    private String longDescription;
+
     @Column(name = "Price", columnDefinition = "DECIMAL(15, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Price must not be null")
     private double price;

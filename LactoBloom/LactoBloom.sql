@@ -76,6 +76,7 @@ CREATE TABLE Product (
     Brand_id INT,
     Category_id INT,
     Description TEXT,
+    Long_description TEXT,
     Price DECIMAL(15, 2) NOT NULL DEFAULT 0,
     Discount DECIMAL(5, 2) NOT NULL DEFAULT 0,
     Stock INT NOT NULL,
@@ -623,76 +624,76 @@ INSERT INTO Category (Category_name) VALUES
 ('Sữa Mỹ'), ('Sữa Nhật'), ('Sữa Úc'), ('Sữa Châu Âu'), ('Sữa Việt Nam'), ('Sữa bầu');
 
 -- Product table
-INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Price, Discount, Stock) VALUES
+INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Long_description, Price, Discount, Stock) VALUES
 -- Similac products
-('Sữa Similac 5G số 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac 5G số 2 là sản phẩm dinh dưỡng cho bé từ 6-12 tháng đến từ thương hiệu uy tín Abbott.', 559000, 0, 50),
-('Sữa Similac Total Protection 1 400g (0 - 6 tháng)', 1, 1, 'Sữa Similac Total Protection 1 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 0-6 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 329000, 0, 20),
-('Combo 3 Sữa Similac 5G số 4 1,7kg (2-6 tuổi)', 1, 1, 'Thực phẩm bổ sung cho trẻ 2-6 tuổi: Combo Similac 4 x3', 2607000, 10, 10),
-('Sữa Similac Total Protection 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac Total Protection số 2 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 6-12 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 659000, 5, 50),
-('Sữa bầu Similac Mom 900g hương Vani', 1, 6, 'Sữa bầu Similac Mom là thức uống dinh dưỡng dành cho mẹ đang mang thai và cho con bú. Với hệ dưỡng chất IQ Plus, sản phẩm cung cấp Vitamin E tự nhiên, Lutein, DHA giúp bé phát triển trí não từ trong bụng mẹ.', 455000, 0, 37),
-('Similac Mom Hương Vani, 400g', 1, 6, 'Sữa bầu Similac Mom có công thức dinh dưỡng đã được chứng minh lâm sàng với nhiều lợi ích với các mẹ bầu.', 235000, 0, 61),
+('Sữa Similac 5G số 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac 5G số 2 là sản phẩm dinh dưỡng cho bé từ 6-12 tháng đến từ thương hiệu uy tín Abbott.', 'long desription temporary', 559000, 0, 50),
+('Sữa Similac Total Protection 1 400g (0 - 6 tháng)', 1, 1, 'Sữa Similac Total Protection 1 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 0-6 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 'long desription temporary', 329000, 0, 20),
+('Combo 3 Sữa Similac 5G số 4 1,7kg (2-6 tuổi)', 1, 1, 'Thực phẩm bổ sung cho trẻ 2-6 tuổi: Combo Similac 4 x3', 'long desription temporary', 2607000, 10, 10),
+('Sữa Similac Total Protection 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac Total Protection số 2 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 6-12 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 'long desription temporary', 659000, 5, 50),
+('Sữa bầu Similac Mom 900g hương Vani', 1, 6, 'Sữa bầu Similac Mom là thức uống dinh dưỡng dành cho mẹ đang mang thai và cho con bú. Với hệ dưỡng chất IQ Plus, sản phẩm cung cấp Vitamin E tự nhiên, Lutein, DHA giúp bé phát triển trí não từ trong bụng mẹ.', 'long desription temporary', 455000, 0, 37),
+('Similac Mom Hương Vani, 400g', 1, 6, 'Sữa bầu Similac Mom có công thức dinh dưỡng đã được chứng minh lâm sàng với nhiều lợi ích với các mẹ bầu.', 'long desription temporary', 235000, 0, 61),
 
 -- Meiji products
-('Sữa Meiji Infant Formula 800g (0-12 tháng)', 2, 2, 'Sữa Meiji Infant Formula 800g (0-12 tháng) là sữa bột công thức được nhập khẩu chính hãng từ Nhật Bản. Sản phẩm dành cho trẻ sơ sinh từ 0 - 12 tháng tuổi.', 529000, 0, 15),
-('Sữa Meiji Growing up Formula 800g (12-36 tháng)', 2, 2, 'Sữa Meiji Growing up Formula 800g (12-36 tháng) thuộc thương hiệu Meiji nổi tiếng hàng đầu Nhật Bản.', 465000, 5, 50),
-('Sữa Meiji thanh Infant Formula Ezcube 540g (0-12 tháng)', 2, 2, 'Sữa Meiji thanh Infant Formula Ezcube 540g là sữa bột công thức dạng viên cho trẻ sơ sinh (0 - 12 tháng tuổi).', 455000, 5, 21),
-('Sữa Meiji Growing up Formula Ezcube 560g (1-3 tuổi)', 2, 2, 'Sản phẩm dinh dưỡng công thức cho trẻ từ 1-3 tuổi: Meiji 1-3 years old Growing up Formula Ezcube 560g.', 399000, 0, 34),
-('Sữa bầu Meiji mama 350g', 2, 6, 'Sữa bầu Meiji Mama Milk 350g cung cấp các chất dinh dưỡng cần thiết hỗ trợ sức khỏe cho người mẹ đang mang thai và đang cho con bú cũng như sức khỏe và sự tăng trưởng của thai nhi và trẻ sơ sinh. Sản phẩm có chứa không chỉ các chất dinh dưỡng cơ bản như là protein, chất béo, và carbohydrates, mà còn cả các loại vitamin và khoáng chất bao gồm sắt, can-xi, kẽm, axit folic, những thành phần thường khó hấp thụ qua đường ăn uống trong quá trình mang thai và dưỡng sức.', 219000, 5, 120),
+('Sữa Meiji Infant Formula 800g (0-12 tháng)', 2, 2, 'Sữa Meiji Infant Formula 800g (0-12 tháng) là sữa bột công thức được nhập khẩu chính hãng từ Nhật Bản. Sản phẩm dành cho trẻ sơ sinh từ 0 - 12 tháng tuổi.', 'long desription temporary', 529000, 0, 15),
+('Sữa Meiji Growing up Formula 800g (12-36 tháng)', 2, 2, 'Sữa Meiji Growing up Formula 800g (12-36 tháng) thuộc thương hiệu Meiji nổi tiếng hàng đầu Nhật Bản.', 'long desription temporary', 465000, 5, 50),
+('Sữa Meiji thanh Infant Formula Ezcube 540g (0-12 tháng)', 2, 2, 'Sữa Meiji thanh Infant Formula Ezcube 540g là sữa bột công thức dạng viên cho trẻ sơ sinh (0 - 12 tháng tuổi).', 'long desription temporary', 455000, 5, 21),
+('Sữa Meiji Growing up Formula Ezcube 560g (1-3 tuổi)', 2, 2, 'Sản phẩm dinh dưỡng công thức cho trẻ từ 1-3 tuổi: Meiji 1-3 years old Growing up Formula Ezcube 560g.', 'long desription temporary', 399000, 0, 34),
+('Sữa bầu Meiji mama 350g', 2, 6, 'Sữa bầu Meiji Mama Milk 350g cung cấp các chất dinh dưỡng cần thiết hỗ trợ sức khỏe cho người mẹ đang mang thai và đang cho con bú cũng như sức khỏe và sự tăng trưởng của thai nhi và trẻ sơ sinh. Sản phẩm có chứa không chỉ các chất dinh dưỡng cơ bản như là protein, chất béo, và carbohydrates, mà còn cả các loại vitamin và khoáng chất bao gồm sắt, can-xi, kẽm, axit folic, những thành phần thường khó hấp thụ qua đường ăn uống trong quá trình mang thai và dưỡng sức.', 'long desription temporary', 219000, 5, 120),
 
 -- Bubs products
-('Sữa Bubs Supreme số 3 800g (12-36 tháng)', 3, 3, 'Bubs Supreme là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 12-36 tháng tuổi.', 975000, 0, 43),
-('Combo 2 Sữa Bubs Supreme Junior Nutrition 800g (3-12 tuổi)', 3, 3, 'Bubs Supreme Junior Nutrition là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 3 - 12 tuổi, sữa được làm từ nguồn đạm A2 tự nhiên của sữa bò, cung cấp cho bé nguồn dinh dưỡng tối ưu.', 1950000, 20, 23),
+('Sữa Bubs Supreme số 3 800g (12-36 tháng)', 3, 3, 'Bubs Supreme là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 12-36 tháng tuổi.', 'long desription temporary', 975000, 0, 43),
+('Combo 2 Sữa Bubs Supreme Junior Nutrition 800g (3-12 tuổi)', 3, 3, 'Bubs Supreme Junior Nutrition là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 3 - 12 tuổi, sữa được làm từ nguồn đạm A2 tự nhiên của sữa bò, cung cấp cho bé nguồn dinh dưỡng tối ưu.', 'long desription temporary', 1950000, 20, 23),
 
 -- Kid Essentials products
-('Kid Essentials Nutritionally Complete 800g (1-10 tuổi)', 4, 3, 'Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 695000, 10, 28),
-('Combo 4 thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi)', 4, 3, '4x Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 2780000, 15, 32),
+('Kid Essentials Nutritionally Complete 800g (1-10 tuổi)', 4, 3, 'Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 'long desription temporary', 695000, 10, 28),
+('Combo 4 thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi)', 4, 3, '4x Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 'long desription temporary', 2780000, 15, 32),
 
 -- PediaSure products
-('Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani 850g', 5, 3, 'Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani', 629000, 12, 38),
-('Pediasure dạng lỏng hương vani 237ml (Lốc 6 chai)', 5, 3, 'Lốc 6 chai sữa bột pha sẵn Abbott PediaSure vani chai 237ml hương vị thơm ngon, đóng lốc tiện dùng', 229000, 0, 50),
+('Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani 850g', 5, 3, 'Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani', 'long desription temporary', 629000, 12, 38),
+('Pediasure dạng lỏng hương vani 237ml (Lốc 6 chai)', 5, 3, 'Lốc 6 chai sữa bột pha sẵn Abbott PediaSure vani chai 237ml hương vị thơm ngon, đóng lốc tiện dùng', 'long desription temporary', 229000, 0, 50),
 
 -- Nestle products
-('Sữa NAN INFINIPRO A2 800g số 1 (0-1 tuổi)', 6, 4, 'Sữa NAN INFINIPRO A2 số 1 là sản phẩm dinh dưỡng dành cho bé 0-12 tháng đến từ thương hiệu nổi tiếng Nestle.', 729000, 15, 20),
-('Combo 1 thùng thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml)', 6, 5, 'Thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml) Mua 6 tặng 2', 405000, 5, 50),
-('Sữa NAN SUPREME PRO số 2 800g (6-24 tháng)', 6, 4, 'Nestle NAN Supreme Pro số 2 là sữa bột công thức dành riêng cho trẻ 6-24 tháng tuổi.', 605000, 0, 32),
-('Sữa Nan Optipro PLUS 2 800g, với 5HMO, sản xuất tại Thụy Sỹ (6-12 tháng)', 6, 4, 'Với công thức cải tiến được phát triển bởi Nestlé Thụy Sĩ, Nan Optipro PLUS 2, với 5HMO là sản phẩm dành cho trẻ từ 6-12 tháng tuổi.', 539000, 0, 32),
-('Combo 2 Sữa Nestle S-26 ULTIMA số 3 750g (2 - 6 tuổi)', 6, 4, 'Nestlé® S-26 ULTIMA 3 là siêu phẩm khoa học cao cấp nhất trong dòng sản phẩm Nestlé® giúp con thông minh, nhanh nhẹn', 1600000, 0, 18),
+('Sữa NAN INFINIPRO A2 800g số 1 (0-1 tuổi)', 6, 4, 'Sữa NAN INFINIPRO A2 số 1 là sản phẩm dinh dưỡng dành cho bé 0-12 tháng đến từ thương hiệu nổi tiếng Nestle.', 'long desription temporary', 729000, 15, 20),
+('Combo 1 thùng thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml)', 6, 5, 'Thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml) Mua 6 tặng 2', 'long desription temporary', 405000, 5, 50),
+('Sữa NAN SUPREME PRO số 2 800g (6-24 tháng)', 6, 4, 'Nestle NAN Supreme Pro số 2 là sữa bột công thức dành riêng cho trẻ 6-24 tháng tuổi.', 'long desription temporary', 605000, 0, 32),
+('Sữa Nan Optipro PLUS 2 800g, với 5HMO, sản xuất tại Thụy Sỹ (6-12 tháng)', 6, 4, 'Với công thức cải tiến được phát triển bởi Nestlé Thụy Sĩ, Nan Optipro PLUS 2, với 5HMO là sản phẩm dành cho trẻ từ 6-12 tháng tuổi.', 'long desription temporary', 539000, 0, 32),
+('Combo 2 Sữa Nestle S-26 ULTIMA số 3 750g (2 - 6 tuổi)', 6, 4, 'Nestlé® S-26 ULTIMA 3 là siêu phẩm khoa học cao cấp nhất trong dòng sản phẩm Nestlé® giúp con thông minh, nhanh nhẹn', 'long desription temporary', 1600000, 0, 18),
 
 -- Aptamil products
-('Sữa Aptamil số 2 900g (1-2 tuổi)', 7, 4, 'Sữa Aptamil số 2 là sản phẩm dinh dưỡng dành riêng cho bé từ 1 - 2 tuổi.', 664000, 10, 56),
-('Sữa Aptamil Profutura Duobiotik 2 800g (6-36 tháng)', 7, 4, 'Sản phẩm dinh dưỡng công thức Aptamil Profutura Duobiotik 2 dành riêng cho bé từ 6 đến 36 tháng tuổi.', 795000, 15, 13),
+('Sữa Aptamil số 2 900g (1-2 tuổi)', 7, 4, 'Sữa Aptamil số 2 là sản phẩm dinh dưỡng dành riêng cho bé từ 1 - 2 tuổi.', 'long desription temporary', 664000, 10, 56),
+('Sữa Aptamil Profutura Duobiotik 2 800g (6-36 tháng)', 7, 4, 'Sản phẩm dinh dưỡng công thức Aptamil Profutura Duobiotik 2 dành riêng cho bé từ 6 đến 36 tháng tuổi.', 'long desription temporary', 795000, 15, 13),
 
 -- Vinamilk products
-('Vinamilk Optimum Gold 4, 850g, 2-6 tuổi', 8, 5, 'Optimum Gold 4 với công thức dễ tiêu hóa, là nền tảng cho việc hấp thu các dưỡng chất thiết yếu cho trẻ từ 2 - 6 tuổi, giúp tăng cường sức đề kháng, phát triển não bộ và thể chất.', 349000, 0, 38),
-('Sữa uống dinh dưỡng Optimum Gold 110ml (Lốc 4 hộp)', 8, 5, 'Lốc 4 hộp sữa uống dinh dưỡng Optimum Gold hộp 110ml hương vị thơm ngon, dễ uống, bé nào cũng mê.', 37000, 0, 13),
-('Combo 6 Sữa uống dinh dưỡng Optimum Gold 180ml (Lốc 4 hộp)', 8, 5, 'Sữa uống Optimum Gold 180ml là sản phẩm đến từ thương hiệu uy tín của Việt Nam - Vinamilk. Sản phẩm giúp bé phát triển khoẻ mạnh và phù hợp với các bé từ 1 tuổi trở lên.', 348000, 0, 33),
-('Thùng Sữa non Vinamilk ColosGold 110ml (từ 1 tuổi) lốc 4 hộp - 12 lốc', 8, 5, 'Thùng 48 hộp sữa uống dinh dưỡng Vinamilk ColosGold hộp 110 ml (từ 1 tuổi) bổ sung đạm whey giàu alpha-lactalbumin cung cấp nhiều axit amin thiết yếu.', 468000, 0, 23),
-('Sữa Vinamilk ColosGold số 3 800g (2-6 tuổi)', 8, 5, 'Sữa Non Vinamilk Colos Gold 3 800g (sữa bột cho trẻ từ 2 - 6 tuổi) - Miễn dịch khỏe, Bé lớn nhanh', 399000, 5, 41),
+('Vinamilk Optimum Gold 4, 850g, 2-6 tuổi', 8, 5, 'Optimum Gold 4 với công thức dễ tiêu hóa, là nền tảng cho việc hấp thu các dưỡng chất thiết yếu cho trẻ từ 2 - 6 tuổi, giúp tăng cường sức đề kháng, phát triển não bộ và thể chất.', 'long desription temporary', 349000, 0, 38),
+('Sữa uống dinh dưỡng Optimum Gold 110ml (Lốc 4 hộp)', 8, 5, 'Lốc 4 hộp sữa uống dinh dưỡng Optimum Gold hộp 110ml hương vị thơm ngon, dễ uống, bé nào cũng mê.', 'long desription temporary', 37000, 0, 13),
+('Combo 6 Sữa uống dinh dưỡng Optimum Gold 180ml (Lốc 4 hộp)', 8, 5, 'Sữa uống Optimum Gold 180ml là sản phẩm đến từ thương hiệu uy tín của Việt Nam - Vinamilk. Sản phẩm giúp bé phát triển khoẻ mạnh và phù hợp với các bé từ 1 tuổi trở lên.', 'long desription temporary', 348000, 0, 33),
+('Thùng Sữa non Vinamilk ColosGold 110ml (từ 1 tuổi) lốc 4 hộp - 12 lốc', 8, 5, 'Thùng 48 hộp sữa uống dinh dưỡng Vinamilk ColosGold hộp 110 ml (từ 1 tuổi) bổ sung đạm whey giàu alpha-lactalbumin cung cấp nhiều axit amin thiết yếu.', 'long desription temporary', 468000, 0, 23),
+('Sữa Vinamilk ColosGold số 3 800g (2-6 tuổi)', 8, 5, 'Sữa Non Vinamilk Colos Gold 3 800g (sữa bột cho trẻ từ 2 - 6 tuổi) - Miễn dịch khỏe, Bé lớn nhanh', 'long desription temporary', 399000, 5, 41),
 
 -- Friso Gold products
-('Sữa bầu Friso Mum Gold 900g hương cam', 9, 6, 'Thực phẩm bổ sung cho mẹ mang thai và cho con bú, hương cam nhãn hiệu Frisomum Gold DualCare+TM.', 539000, 0, 28),
-('Sữa Friso Gold số 4 850g (2 - 6 tuổi)', 9, 5, 'Sữa Friso® Gold 4 là sản phẩm dinh dưỡng dành cho trẻ em từ 2 - 6 tuổi. Đây là giai đoạn trẻ phát triển mạnh mẽ về thể chất, trí tuệ và tò mò khám phá về thế giới xung quanh.', 495000, 0, 34),
+('Sữa bầu Friso Mum Gold 900g hương cam', 9, 6, 'Thực phẩm bổ sung cho mẹ mang thai và cho con bú, hương cam nhãn hiệu Frisomum Gold DualCare+TM.', 'long desription temporary', 539000, 0, 28),
+('Sữa Friso Gold số 4 850g (2 - 6 tuổi)', 9, 5, 'Sữa Friso® Gold 4 là sản phẩm dinh dưỡng dành cho trẻ em từ 2 - 6 tuổi. Đây là giai đoạn trẻ phát triển mạnh mẽ về thể chất, trí tuệ và tò mò khám phá về thế giới xung quanh.', 'long desription temporary', 495000, 0, 34),
 
 -- Dielac Grow Plus products
-('Combo 2 Dielac Grow Plus 2+, 2-10 tuổi, 850g', 10, 5, 'Dielac Grow Plus 2+ là sản phẩm dinh dưỡng dành cho trẻ từ 2-10 tuổi. Sở hữu công thức dinh dưỡng chuyên biệt, sản phẩm giúp trẻ suy dinh dưỡng, thấp còi bắt kịp đà tăng trưởng và phát triển khoẻ mạnh.', 718000, 12, 33),
-('Combo 4 Sữa uống dinh dưỡng Dielac Grow Plus 110ml (Sữa Non) - Lốc 4 hộp', 10, 5, '﻿﻿﻿﻿﻿﻿Sữa Uống Dinh Dưỡng Dielac Grow Plus (Sữa Non) bổ sung sữa non Colostrum, kết hợp HMO (2’-FL) là prebiotic có cấu trúc tương tự dưỡng chất được tìm thấy trong sữa mẹ, giúp tăng hệ vi khuẩn có lợi, ngăn ngừa sự bám dính của các tác nhân gây bệnh lên thành ruột, nhờ đó tăng cường miễn dịch tốt.', 136000, 12, 13),
+('Combo 2 Dielac Grow Plus 2+, 2-10 tuổi, 850g', 10, 5, 'Dielac Grow Plus 2+ là sản phẩm dinh dưỡng dành cho trẻ từ 2-10 tuổi. Sở hữu công thức dinh dưỡng chuyên biệt, sản phẩm giúp trẻ suy dinh dưỡng, thấp còi bắt kịp đà tăng trưởng và phát triển khoẻ mạnh.', 'long desription temporary', 718000, 12, 33),
+('Combo 4 Sữa uống dinh dưỡng Dielac Grow Plus 110ml (Sữa Non) - Lốc 4 hộp', 10, 5, '﻿﻿﻿﻿﻿﻿Sữa Uống Dinh Dưỡng Dielac Grow Plus (Sữa Non) bổ sung sữa non Colostrum, kết hợp HMO (2’-FL) là prebiotic có cấu trúc tương tự dưỡng chất được tìm thấy trong sữa mẹ, giúp tăng hệ vi khuẩn có lợi, ngăn ngừa sự bám dính của các tác nhân gây bệnh lên thành ruột, nhờ đó tăng cường miễn dịch tốt.', 'long desription temporary', 136000, 12, 13),
 
 -- YOKOGOLD products
-('Combo 2 lon Sữa Vinamilk Yoko Gold 3 850g (2-6 tuổi)', 11, 2, 'Sữa Vinamilk YokoGold 3, 850g (2-6 tuổi) là sữa bột công thức dành cho trẻ từ 2 đến 6 tuổi. Công thức sữa chứa hàng loạt những dưỡng chất tốt từ Nhật Bản như: chất xơ hòa tan, DHA, Taurin, Canxi,... giúp bé dễ tiêu hóa, tạo nền tảng cho việc hấp thu các dưỡng chất thiết yếu của bé, cũng như giúp bé tăng cường sức đề kháng và phát triển não bộ.', 838000, 00, 31),
-('Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp) là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 480000, 00, 20),
-('Combo 4 Sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Sữa tươi tiệt trùng có đường Vinamilk 180ml là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 160000, 00, 30),
-('Sữa uống dinh dưỡng Vinamilk Yoko Gold 180ml (Lốc 4 hộp)', 11, 2, '', 63000, 10, 121),
+('Combo 2 lon Sữa Vinamilk Yoko Gold 3 850g (2-6 tuổi)', 11, 2, 'Sữa Vinamilk YokoGold 3, 850g (2-6 tuổi) là sữa bột công thức dành cho trẻ từ 2 đến 6 tuổi. Công thức sữa chứa hàng loạt những dưỡng chất tốt từ Nhật Bản như: chất xơ hòa tan, DHA, Taurin, Canxi,... giúp bé dễ tiêu hóa, tạo nền tảng cho việc hấp thu các dưỡng chất thiết yếu của bé, cũng như giúp bé tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 838000, 00, 31),
+('Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp) là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 480000, 00, 20),
+('Combo 4 Sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Sữa tươi tiệt trùng có đường Vinamilk 180ml là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 160000, 00, 30),
+('Sữa uống dinh dưỡng Vinamilk Yoko Gold 180ml (Lốc 4 hộp)', 11, 2, 'Sữa uống dinh dưỡng Vinamilk Yoko Gold 180ml (Lốc 4 hộp)', 'long desription temporary', 63000, 10, 121),
 
 -- Nutifood products
-('Sữa Nutifood Varna Complete 850g', 12, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿Sữa Nutifood Varna Complete là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh. ', 531000, 10, 40),
-('Sữa Nutifood Varna Colostrum 850g', 12, 5, 'Sản phẩm dinh dưỡng Värna Colostrum bổ sung sữa non cho người lớn, giúp tăng đề kháng nhanh.', 750000, 00, 14),
-('Combo 4 lốc Sữa Nutifood Varna Complete 237ml (lốc 6 chai)', 12, 5, '﻿﻿Varna Complete là sản phẩm dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 780000, 00, 44),
-('Combo 2 Sữa Nutifood Varna Complete 400g', 12, 5, 'Sữa Nutifood Varna Complete 400g là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 538000, 00, 23),
-('Thùng Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ. ', 336000, 00, 23),
-('Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ.', 28000, 00, 20),
-('Combo 3 lon sữa GrowPLUS+ Đỏ 900g (từ 1 tuổi)', 12, 5, 'Sữa Grow Plus đỏ là sản phẩm đặc trị dành trẻ từ 1 tuổi trở lên và có thể trạng suy dinh dưỡng thấp còi. Được phát triển dựa trên nền tảng công thức FDA độc quyền của Viện nghiên cứu Dinh dưỡng Nutifood Thụy Điển và trải qua quá trình kiểm định chất lượng nghiêm ngặt, sữa Grow Plus đỏ sẽ là sản phẩm phù hợp mà ba mẹ nên dành cho bé từ 1 tuổi trở lên và đang bị thiếu cân nặng, thấp còi.', 1125000, 00, 13),
-('Combo 2 Sữa GrowPLUS+ Sữa non Vàng 800g (trên 1 tuổi)', 12, 5, '﻿﻿﻿﻿Nutifood GrowPLUS+ Sữa non là sản phẩm dinh dưỡng công thức dành cho bé trên 1 tuổi. Sữa được xây dựng trên nền tảng FDI cho bé đề kháng khỏe, tiêu hóa tốt.', 970000, 00, 32),
-('Combo 4 Sữa GrowPLUS+ Xanh 1.5kg (từ 1 tuổi)', 10, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿GrowPLUS+ Dinh dưỡng giúp trẻ biếng ăn tăng cân khỏe mạnh với công thức độc quyền FDI (1). Công thức này là sự kết hợp giữa thành tựu khoa học tiên tiến của Viện nghiên cứu dinh dưỡng Nutifood Thụy Điển cùng sự thấu hiểu thể trạng đặc thù của trẻ em Việt Nam của các Chuyên gia dinh dưỡng Nutifood trong 20 năm qua.', 1580000, 00, 34);
+('Sữa Nutifood Varna Complete 850g', 12, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿Sữa Nutifood Varna Complete là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh. ', 'long desription temporary', 531000, 10, 40),
+('Sữa Nutifood Varna Colostrum 850g', 12, 5, 'Sản phẩm dinh dưỡng Värna Colostrum bổ sung sữa non cho người lớn, giúp tăng đề kháng nhanh.', 'long desription temporary', 750000, 00, 14),
+('Combo 4 lốc Sữa Nutifood Varna Complete 237ml (lốc 6 chai)', 12, 5, '﻿﻿Varna Complete là sản phẩm dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 'long desription temporary', 780000, 00, 44),
+('Combo 2 Sữa Nutifood Varna Complete 400g', 12, 5, 'Sữa Nutifood Varna Complete 400g là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 'long desription temporary', 538000, 00, 23),
+('Thùng Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ. ', 'long desription temporary', 336000, 00, 23),
+('Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ.', 'long desription temporary', 28000, 00, 20),
+('Combo 3 lon sữa GrowPLUS+ Đỏ 900g (từ 1 tuổi)', 12, 5, 'Sữa Grow Plus đỏ là sản phẩm đặc trị dành trẻ từ 1 tuổi trở lên và có thể trạng suy dinh dưỡng thấp còi. Được phát triển dựa trên nền tảng công thức FDA độc quyền của Viện nghiên cứu Dinh dưỡng Nutifood Thụy Điển và trải qua quá trình kiểm định chất lượng nghiêm ngặt, sữa Grow Plus đỏ sẽ là sản phẩm phù hợp mà ba mẹ nên dành cho bé từ 1 tuổi trở lên và đang bị thiếu cân nặng, thấp còi.', 'long desription temporary', 1125000, 00, 13),
+('Combo 2 Sữa GrowPLUS+ Sữa non Vàng 800g (trên 1 tuổi)', 12, 5, '﻿﻿﻿﻿Nutifood GrowPLUS+ Sữa non là sản phẩm dinh dưỡng công thức dành cho bé trên 1 tuổi. Sữa được xây dựng trên nền tảng FDI cho bé đề kháng khỏe, tiêu hóa tốt.', 'long desription temporary', 970000, 00, 32),
+('Combo 4 Sữa GrowPLUS+ Xanh 1.5kg (từ 1 tuổi)', 10, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿GrowPLUS+ Dinh dưỡng giúp trẻ biếng ăn tăng cân khỏe mạnh với công thức độc quyền FDI (1). Công thức này là sự kết hợp giữa thành tựu khoa học tiên tiến của Viện nghiên cứu dinh dưỡng Nutifood Thụy Điển cùng sự thấu hiểu thể trạng đặc thù của trẻ em Việt Nam của các Chuyên gia dinh dưỡng Nutifood trong 20 năm qua.', 'long desription temporary', 1580000, 00, 34);
 
 -- Product Review table
 INSERT INTO ProductReview (User_id, Product_id, Rate, Comment, Review_date) VALUES
