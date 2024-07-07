@@ -2,28 +2,33 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button,
-  TextField, IconButton, TablePagination, Grid
+  TextField, IconButton, TablePagination, Grid, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from "js-cookie";
+import BrandForm from './form/BrandForm'; // Make sure to import your BrandForm component
 
 const BrandManagement = () => {
   const [brands, setBrands] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [openForm, setOpenForm] = useState(false);
+  const [formMode, setFormMode] = useState('add'); // 'add' or 'edit'
+  const [selectedBrand, setSelectedBrand] = useState(null);
+
+  // Define fetchBrands function
+  const fetchBrands = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/brand/all');
+      setBrands(response.data);
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/brand/all');
-        setBrands(response.data);
-      } catch (error) {
-        console.error('Error fetching brands:', error);
-      }
-    };
-
     fetchBrands();
   }, []);
 
@@ -45,6 +50,23 @@ const BrandManagement = () => {
         console.error('Error deleting brand:', error);
       }
     }
+  };
+
+  const handleOpenForm = (mode, brand = null) => {
+    setFormMode(mode);
+    setSelectedBrand(brand);
+    setOpenForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setOpenForm(false);
+    setSelectedBrand(null);
+  };
+
+  // Update handleFormSave to call fetchBrands
+  const handleFormSave = () => {
+    handleCloseForm();
+    fetchBrands(); // Ensure fetchBrands is called
   };
 
   const handleChangePage = (event, newPage) => {
@@ -80,6 +102,7 @@ const BrandManagement = () => {
             variant="contained"
             color="primary"
             className="brand-management-add-button"
+            onClick={() => handleOpenForm('add')}
           >
             Add New Brand
           </Button>
@@ -100,7 +123,7 @@ const BrandManagement = () => {
                 <TableCell className="brand-management-id-cell">{brand.brandId}</TableCell>
                 <TableCell>{brand.brandName}</TableCell>
                 <TableCell className="brand-management-actions">
-                  <IconButton onClick={() => {/* Navigate to edit page */}}>
+                  <IconButton onClick={() => handleOpenForm('edit', brand)}>
                     <EditIcon />
                   </IconButton>
                   <IconButton onClick={() => handleDelete(brand.brandId)}>
@@ -122,6 +145,22 @@ const BrandManagement = () => {
           className="brand-management-pagination"
         />
       </TableContainer>
+
+      {/* Brand Form Dialog */}
+      <Dialog open={openForm} onClose={handleCloseForm} fullWidth>
+        <DialogTitle>{formMode === 'add' ? 'Add Brand' : 'Edit Brand'}</DialogTitle>
+        <DialogContent>
+          <BrandForm
+            onSave={handleFormSave}
+            initialBrand={formMode === 'edit' ? selectedBrand : null}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseForm} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
