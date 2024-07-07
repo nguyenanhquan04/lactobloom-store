@@ -106,6 +106,7 @@ public class BlogService implements IBlogService {
     private Blog mapToEntity(BlogDto blogDto){
         Blog blog = new Blog();
         blog.setImageUrl(blogDto.getImageUrl());
+        blog.setShortDescription(blogDto.getShortDescription());
         blog.setTitle(blogDto.getTitle());
         blog.setContent(blogDto.getContent());
         blog.setPublishDate(blogDto.getPublishDate());
