@@ -74,6 +74,7 @@ public class BlogService implements IBlogService {
         existingBlog.setUser(user);
         existingBlog.setImageUrl(blogDto.getImageUrl());
         existingBlog.setTitle(blogDto.getTitle());
+        existingBlog.setShortDescription(blogDto.getShortDescription());
         existingBlog.setContent(blogDto.getContent());
         return mapToDto(blogRepository.save(existingBlog));
     }
