@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button,
-  TextField, IconButton, TablePagination, MenuItem, Select, FormControl, InputLabel, Grid
+  TextField, IconButton, TablePagination, MenuItem, Select, FormControl, InputLabel, Grid,
+  Dialog, DialogActions, DialogContent, DialogTitle
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from "js-cookie";
+import BlogForm from './form/BlogForm';
 
 const BlogManagement = () => {
   const [blogs, setBlogs] = useState([]);
@@ -15,6 +17,8 @@ const BlogManagement = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [open, setOpen] = useState(false);
+  const [editingBlog, setEditingBlog] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -73,6 +77,28 @@ const BlogManagement = () => {
     setPage(0);
   };
 
+  const handleAddBlog = () => {
+    setEditingBlog(null);
+    setOpen(true);
+  };
+
+  const handleEditBlog = (blog) => {
+    setEditingBlog(blog);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSave = () => {
+    setOpen(false);
+    // Refresh blogs list
+    axios.get('http://localhost:8080/blog/all')
+      .then(response => setBlogs(response.data))
+      .catch(error => console.error('Error fetching blogs:', error));
+  };
+
   const filteredBlogs = blogs.filter(blog =>
     blog.title.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -101,6 +127,7 @@ const BlogManagement = () => {
             variant="contained"
             color="primary"
             className="blog-management-add-button"
+            onClick={handleAddBlog}
           >
             Add New Blog
           </Button>
@@ -140,7 +167,7 @@ const BlogManagement = () => {
                 <TableCell>{blog.title}</TableCell>
                 <TableCell>{new Date(blog.publishDate).toLocaleDateString()}</TableCell>
                 <TableCell className="blog-management-actions">
-                  <IconButton onClick={() => {/* Navigate to edit page */}}>
+                  <IconButton onClick={() => handleEditBlog(blog)}>
                     <EditIcon />
                   </IconButton>
                   <IconButton onClick={() => handleDelete(blog.blogId)}>
@@ -162,6 +189,15 @@ const BlogManagement = () => {
           className="blog-management-pagination"
         />
       </TableContainer>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <DialogTitle>{editingBlog ? 'Edit Blog' : 'Add New Blog'}</DialogTitle>
+        <DialogContent>
+          <BlogForm onSave={handleSave} initialBlog={editingBlog} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

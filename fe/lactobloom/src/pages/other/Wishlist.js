@@ -523,11 +523,11 @@ const Wishlist = () => {
                           Continue Shopping
                         </Link>
                       </div>
-                      <div className="cart-clear">
+                      {/* <div className="cart-clear">
                         <button onClick={() => dispatch(deleteAllFromWishlist())}>
                           Clear Wishlist
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
