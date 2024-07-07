@@ -80,6 +80,7 @@ public class ProductService implements IProductService {
         existingProduct.setBrand(brand);
         existingProduct.setCategory(category);
         existingProduct.setDescription(productRequest.getDescription());
+        existingProduct.setLongDescription(productRequest.getLongDescription());
         existingProduct.setPrice(productRequest.getPrice());
         existingProduct.setDiscount(productRequest.getDiscount());
         existingProduct.setStock(productRequest.getStock());
