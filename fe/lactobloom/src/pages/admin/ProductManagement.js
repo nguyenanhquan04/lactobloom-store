@@ -396,7 +396,7 @@ const ProductManagement = () => {
                 <TableCell>{product.productName}</TableCell>
                 <TableCell>{product.brandName}</TableCell>
                 <TableCell>{product.categoryName}</TableCell>
-                <TableCell>{product.price}</TableCell>
+                <TableCell>{product.price.toLocaleString("vi-VN")}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell className="product-management-actions">
                   <IconButton onClick={() => handleEditProduct(product)}>

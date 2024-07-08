@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -13,23 +13,28 @@ import {
   TableRow,
   Paper,
   IconButton,
-} from '@mui/material';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import EditIcon from '@mui/icons-material/Edit';
+  DialogActions,
+} from "@mui/material";
+import axios from "axios";
+import Cookies from "js-cookie";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const ImageForm = ({ open, onClose, product, onSave }) => {
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState("");
   const [productImages, setProductImages] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
+  const [deleteIndex, setDeleteIndex] = useState(null);
 
   useEffect(() => {
     const fetchProductImages = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/image/get/product/${product.productId}`);
+        const response = await axios.get(
+          `http://localhost:8080/image/get/product/${product.productId}`
+        );
         setProductImages(response.data);
       } catch (error) {
-        console.error('Error fetching product images:', error);
+        console.error("Error fetching product images:", error);
       }
     };
 
@@ -40,37 +45,47 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
 
   const fetchProductImages = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/image/get/product/${product.productId}`);
+      const response = await axios.get(
+        `http://localhost:8080/image/get/product/${product.productId}`
+      );
       setProductImages(response.data);
     } catch (error) {
-      console.error('Error fetching product images:', error);
+      console.error("Error fetching product images:", error);
     }
   };
 
   const handleSaveImage = async (index) => {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
     try {
       if (index === null) {
         // Add new image
-        await axios.post(`http://localhost:8080/image/save/product/${product.productId}`, { imageUrl }, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.post(
+          `http://localhost:8080/image/save/product/${product.productId}`,
+          { imageUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } else {
         // Update existing image
         const imageId = productImages[index].imageId;
-        await axios.put(`http://localhost:8080/image/update/${imageId}/product/${product.productId}`, { imageUrl: productImages[index].imageUrl }, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.put(
+          `http://localhost:8080/image/update/${imageId}/product/${product.productId}`,
+          { imageUrl: productImages[index].imageUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       }
       onSave(); // Call onSave to refresh the product list in the parent component
       fetchProductImages(); // Refetch the images
       setEditIndex(null); // Reset the edit index
     } catch (error) {
-      console.error('Error saving product image:', error);
+      console.error("Error saving product image:", error);
     }
   };
 
@@ -84,7 +99,7 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
 
   const handleAddNewImage = () => {
     setEditIndex(productImages.length);
-    setImageUrl('');
+    setImageUrl("");
   };
 
   const handleImageChange = (e, index) => {
@@ -94,6 +109,23 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
       const updatedImages = [...productImages];
       updatedImages[index].imageUrl = e.target.value;
       setProductImages(updatedImages);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    const token = Cookies.get("authToken");
+    try {
+      const imageId = productImages[deleteIndex].imageId;
+      await axios.delete(`http://localhost:8080/image/delete/${imageId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      onSave(); // Call onSave to refresh the product list in the parent component
+      fetchProductImages(); // Refetch the images
+      setDeleteIndex(null); // Reset the delete index
+    } catch (error) {
+      console.error("Error deleting product image:", error);
     }
   };
 
@@ -125,19 +157,30 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
                     <img
                       src={img.imageUrl}
                       alt="Product"
-                      style={{ width: '200px', height: '200px', objectFit: 'contain' }}
+                      style={{
+                        width: "200px",
+                        height: "200px",
+                        objectFit: "contain",
+                      }}
                     />
                   </TableCell>
                   <TableCell>
                     {editIndex === index ? (
                       <>
-                        <Button onClick={() => handleSaveImage(index)}>Update</Button>
+                        <Button onClick={() => handleSaveImage(index)}>
+                          Update
+                        </Button>
                         <Button onClick={handleCancelEdit}>Cancel</Button>
                       </>
                     ) : (
-                      <IconButton onClick={() => handleEditImage(index)}>
-                        <EditIcon />
-                      </IconButton>
+                      <>
+                        <IconButton onClick={() => handleEditImage(index)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => setDeleteIndex(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
                     )}
                   </TableCell>
                 </TableRow>
@@ -156,7 +199,11 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
                       <img
                         src={imageUrl}
                         alt="Preview"
-                        style={{ width: '200px', height: '200px', objectFit: 'contain' }}
+                        style={{
+                          width: "200px",
+                          height: "200px",
+                          objectFit: "contain",
+                        }}
                       />
                     )}
                   </TableCell>
@@ -169,10 +216,31 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button onClick={handleAddNewImage} style={{ marginTop: '20px' }}>
+        <Button onClick={handleAddNewImage} style={{ marginTop: "20px" }}>
           Add New Image
         </Button>
       </DialogContent>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteIndex !== null}
+        onClose={() => setDeleteIndex(null)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Image"}</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this image?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteIndex(null)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteImage} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   );
 };

@@ -309,7 +309,7 @@ const OrderManagement = () => {
                 <TableCell>{order.email}</TableCell>
                 <TableCell>{order.phone}</TableCell>
                 <TableCell>{order.address}</TableCell>
-                <TableCell>{order.totalPrice}</TableCell>
+                <TableCell>{order.totalPrice.toLocaleString("vi-VN")}</TableCell>
                 <TableCell>{order.status ? 'Completed' : 'Pending'}</TableCell>
                 <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                 <TableCell className="order-management-actions">
