@@ -2,12 +2,12 @@
 // import axios from 'axios';
 // import {
 //   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button,
-//   TextField, IconButton, TablePagination, MenuItem, Select, FormControl, InputLabel, Grid
+//   TextField, IconButton, TablePagination, MenuItem, Select, FormControl, InputLabel, Grid, Dialog, DialogContent, DialogTitle
 // } from '@mui/material';
 // import EditIcon from '@mui/icons-material/Edit';
 // import DeleteIcon from '@mui/icons-material/Delete';
-// import Cookies from "js-cookie";
-
+// import Cookies from 'js-cookie';
+// import ProductForm from './form/ProductForm';
 
 // const ProductManagement = () => {
 //   const [products, setProducts] = useState([]);
@@ -16,6 +16,8 @@
 //   const [page, setPage] = useState(0);
 //   const [rowsPerPage, setRowsPerPage] = useState(15);
 //   const [selectedBrand, setSelectedBrand] = useState('all');
+//   const [open, setOpen] = useState(false);
+//   const [initialProduct, setInitialProduct] = useState(null);
 
 //   useEffect(() => {
 //     const fetchBrands = async () => {
@@ -45,7 +47,7 @@
 //   };
 
 //   const handleDelete = async (productId) => {
-//     const token = Cookies.get("authToken");
+//     const token = Cookies.get('authToken');
 //     if (window.confirm('Are you sure you want to delete this product?')) {
 //       try {
 //         await axios.delete(`http://localhost:8080/product/delete/${productId}`, {
@@ -53,7 +55,7 @@
 //             Authorization: `Bearer ${token}`,
 //           },
 //         });
-//         setProducts(products.filter(product => product.productId !== productId));
+//         setProducts(products.filter((product) => product.productId !== productId));
 //       } catch (error) {
 //         console.error('Error deleting product:', error);
 //       }
@@ -74,13 +76,39 @@
 //     setPage(0);
 //   };
 
-//   const filteredProducts = products.filter(product =>
+//   const handleAddProduct = () => {
+//     setInitialProduct(null);
+//     setOpen(true);
+//   };
+
+//   const handleEditProduct = (product) => {
+//     setInitialProduct(product);
+//     setOpen(true);
+//   };
+
+//   const handleClose = () => {
+//     setOpen(false);
+//   };
+
+//   const handleSave = () => {
+//     // Refresh the product list
+//     axios.get('http://localhost:8080/product/all')
+//       .then((response) => {
+//         setProducts(response.data);
+//       })
+//       .catch((error) => {
+//         console.error('Error fetching products:', error);
+//       });
+//     setOpen(false);
+//   };
+
+//   const filteredProducts = products.filter((product) =>
 //     product.productName.toLowerCase().includes(searchValue.toLowerCase())
 //   );
 
 //   const displayedProducts = selectedBrand === 'all'
 //     ? filteredProducts
-//     : filteredProducts.filter(product => product.brandName === selectedBrand);
+//     : filteredProducts.filter((product) => product.brandName === selectedBrand);
 
 //   const paginatedProducts = displayedProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -102,26 +130,27 @@
 //             variant="contained"
 //             color="primary"
 //             className="product-management-add-button"
+//             onClick={handleAddProduct}
 //           >
 //             Add New Product
 //           </Button>
 //         </Grid>
 //       </Grid>
 //       <FormControl variant="outlined" fullWidth className="product-management-brand-select">
-//             <InputLabel>Brand</InputLabel>
-//             <Select
-//               value={selectedBrand}
-//               onChange={handleBrandChange}
-//               label="Brand"
-//             >
-//               <MenuItem value="all">All Products</MenuItem>
-//               {brands.map((brand) => (
-//                 <MenuItem key={brand.brandId} value={brand.brandName}>
-//                   {brand.brandName}
-//                 </MenuItem>
-//               ))}
-//             </Select>
-//           </FormControl>
+//         <InputLabel>Brand</InputLabel>
+//         <Select
+//           value={selectedBrand}
+//           onChange={handleBrandChange}
+//           label="Brand"
+//         >
+//           <MenuItem value="all">All Products</MenuItem>
+//           {brands.map((brand) => (
+//             <MenuItem key={brand.brandId} value={brand.brandName}>
+//               {brand.brandName}
+//             </MenuItem>
+//           ))}
+//         </Select>
+//       </FormControl>
 //       <TableContainer component={Paper} className="product-management-table-container">
 //         <Table className="product-management-table">
 //           <TableHead>
@@ -145,7 +174,7 @@
 //                 <TableCell>{product.price}</TableCell>
 //                 <TableCell>{product.stock}</TableCell>
 //                 <TableCell className="product-management-actions">
-//                   <IconButton onClick={() => {/* Navigate to edit page */}}>
+//                   <IconButton onClick={() => handleEditProduct(product)}>
 //                     <EditIcon />
 //                   </IconButton>
 //                   <IconButton onClick={() => handleDelete(product.productId)}>
@@ -167,6 +196,12 @@
 //           className="product-management-pagination"
 //         />
 //       </TableContainer>
+//       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+//         <DialogTitle>{initialProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+//         <DialogContent>
+//           <ProductForm onSave={handleSave} initialProduct={initialProduct} />
+//         </DialogContent>
+//       </Dialog>
 //     </div>
 //   );
 // };
@@ -182,8 +217,10 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ImageIcon from '@mui/icons-material/Image';
 import Cookies from 'js-cookie';
 import ProductForm from './form/ProductForm';
+import ImageForm from './form/ImageForm';
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
@@ -194,6 +231,8 @@ const ProductManagement = () => {
   const [selectedBrand, setSelectedBrand] = useState('all');
   const [open, setOpen] = useState(false);
   const [initialProduct, setInitialProduct] = useState(null);
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -278,6 +317,16 @@ const ProductManagement = () => {
     setOpen(false);
   };
 
+  const handleOpenImageDialog = (product) => {
+    setSelectedProduct(product);
+    setImageDialogOpen(true);
+  };
+
+  const handleCloseImageDialog = () => {
+    setImageDialogOpen(false);
+    setSelectedProduct(null);
+  };
+
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -356,6 +405,9 @@ const ProductManagement = () => {
                   <IconButton onClick={() => handleDelete(product.productId)}>
                     <DeleteIcon />
                   </IconButton>
+                  <IconButton onClick={() => handleOpenImageDialog(product)}>
+                    <ImageIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -378,6 +430,12 @@ const ProductManagement = () => {
           <ProductForm onSave={handleSave} initialProduct={initialProduct} />
         </DialogContent>
       </Dialog>
+      <ImageForm
+        open={imageDialogOpen}
+        onClose={handleCloseImageDialog}
+        product={selectedProduct}
+        onSave={handleSave}
+      />
     </div>
   );
 };
