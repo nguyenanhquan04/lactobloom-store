@@ -11,6 +11,7 @@ import BlogManagement from "./BlogManagement";
 import BrandManagement from "./BrandManagement";
 import CategoryManagement from "./CategoryManagement";
 import OrderManagement from "./OrderManagement";
+import Dashboard from "./Dashboard";
 
 const Sidebar = ({ onSelect, role }) => {
   return (
@@ -63,7 +64,7 @@ const Sidebar = ({ onSelect, role }) => {
 const Admin = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState("product"); // Default selection
+  const [selected, setSelected] = useState("dashboard"); // Default selection
   const [role, setRole] = useState(""); // State to store user role
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const Admin = () => {
   const renderContent = () => {
     switch (selected) {
       case "dashboard":
-        return ;
+        return <Dashboard />;
       case "product":
         return <ProductManagement />;
       case "blog":
@@ -94,7 +95,7 @@ const Admin = () => {
       case "user":
         return <UserManagement />;
       default:
-        return ;
+        return <Dashboard />;
     }
   };
 
