@@ -18,6 +18,7 @@ public abstract class ProductDto {
         private double price;
         private double discount;
         private int stock;
+        private boolean preOrder;
     }
 
     @Data
@@ -34,5 +35,6 @@ public abstract class ProductDto {
         private double price;
         private double discount;
         private int stock;
+        private boolean preOrder;
     }
 }

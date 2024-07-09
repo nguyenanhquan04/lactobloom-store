@@ -26,18 +26,23 @@ public class OrderController {
     @GetMapping("/all")
     public List<OrderDto> getAllOrders() {return orderService.getAllOrders();}
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
-    @GetMapping("/pending")
-    public List<OrderDto> getPendingOrders() {
-        return orderService.getPendingOrders();
-    }
-
     @GetMapping("/myOrders")
     public List<OrderDto> getOrdersByUser() {return orderService.getOrdersByUser();}
 
     @GetMapping("/get/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable int id) {
         return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
+    @PutMapping("/deliver/{id}")
+    public ResponseEntity<OrderDto> deliverOrder(@PathVariable int id) {
+        return new ResponseEntity<>(orderService.deliverOrder(id), HttpStatus.OK);
+    }
+
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<OrderDto> cancelOrder(@PathVariable int id) {
+        return new ResponseEntity<>(orderService.cancelOrder(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")

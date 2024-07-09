@@ -33,6 +33,11 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/random")
+    public List<ProductDto.ProductResponse> get4RandomProducts() {
+        return productService.get4RandomProducts();
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/update/{id}/brand/{brandId}/category/{categoryId}")
     public ResponseEntity<ProductDto.ProductResponse> updateProduct(@PathVariable int id, @PathVariable int brandId, @PathVariable int categoryId, @RequestBody ProductDto.ProductRequest productRequest) {

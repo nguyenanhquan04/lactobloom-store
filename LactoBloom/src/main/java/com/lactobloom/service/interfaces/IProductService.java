@@ -8,6 +8,7 @@ public interface IProductService {
     ProductDto.ProductResponse saveProduct(int brandId, int categoryId, ProductDto.ProductRequest productRequest);
     List<ProductDto.ProductResponse> getAllProducts();
     ProductDto.ProductResponse getProductById(int id);
+    List<ProductDto.ProductResponse> get4RandomProducts();
     ProductDto.ProductResponse getProductByWishlistId(int wishlistId);
     ProductDto.ProductResponse updateProduct(int id, int brandId, int cateoryId, ProductDto.ProductRequest productRequest);
     void deleteProduct(int id);

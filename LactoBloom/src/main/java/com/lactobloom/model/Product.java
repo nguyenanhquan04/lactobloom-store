@@ -49,6 +49,10 @@ public class Product {
     @NotNull(message = "Stock must not be null")
     private int stock;
 
+    @Column(name = "Pre_order", nullable = false)
+    @NotNull(message = "Pre-order must not be null")
+    private boolean preOrder;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<ProductReview> productReviews;
 

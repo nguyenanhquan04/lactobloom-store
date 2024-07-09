@@ -73,13 +73,14 @@ CREATE TABLE Category (
 CREATE TABLE Product (
     Product_id INT AUTO_INCREMENT PRIMARY KEY,
     Product_name NVARCHAR(255) NOT NULL,
-    Brand_id INT,
-    Category_id INT,
+    Brand_id INT NOT NULL,
+    Category_id INT NOT NULL,
     Description TEXT,
     Long_description TEXT,
     Price DECIMAL(15, 2) NOT NULL DEFAULT 0,
     Discount DECIMAL(5, 2) NOT NULL DEFAULT 0,
     Stock INT NOT NULL,
+    Pre_order BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id),
     FOREIGN KEY (Category_id) REFERENCES Category(Category_id)
 );
@@ -97,15 +98,15 @@ CREATE TABLE ProductReview (
 
 CREATE TABLE Image (
     Image_id INT AUTO_INCREMENT PRIMARY KEY,
-    Product_id INT,
+    Product_id INT NOT NULL,
     Image_url VARCHAR(255) NOT NULL,
     FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
 );
 
 CREATE TABLE Wishlist (
     Wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
-    User_id INT,
-    Product_id INT,
+    User_id INT NOT NULL,
+    Product_id INT NOT NULL,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
 );
@@ -131,7 +132,7 @@ CREATE TABLE `Order` (
     Voucher_id INT,
     Shipping_fee DECIMAL(10, 2) NOT NULL,
     Total_price DECIMAL(15, 2) NOT NULL,
-    Status BIT NOT NULL DEFAULT 0,
+    Status ENUM('PENDING', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING',
     Order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Voucher_id) REFERENCES Voucher(Voucher_id)
@@ -624,76 +625,76 @@ INSERT INTO Category (Category_name) VALUES
 ('Sữa Mỹ'), ('Sữa Nhật'), ('Sữa Úc'), ('Sữa Châu Âu'), ('Sữa Việt Nam'), ('Sữa bầu');
 
 -- Product table
-INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Long_description, Price, Discount, Stock) VALUES
+INSERT INTO Product (Product_name, Brand_id, Category_id, Description, Long_description, Price, Discount, Stock, Pre_order) VALUES
 -- Similac products
-('Sữa Similac 5G số 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac 5G số 2 là sản phẩm dinh dưỡng cho bé từ 6-12 tháng đến từ thương hiệu uy tín Abbott.', 'long desription temporary', 559000, 0, 50),
-('Sữa Similac Total Protection 1 400g (0 - 6 tháng)', 1, 1, 'Sữa Similac Total Protection 1 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 0-6 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 'long desription temporary', 329000, 0, 20),
-('Combo 3 Sữa Similac 5G số 4 1,7kg (2-6 tuổi)', 1, 1, 'Thực phẩm bổ sung cho trẻ 2-6 tuổi: Combo Similac 4 x3', 'long desription temporary', 2607000, 10, 10),
-('Sữa Similac Total Protection 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac Total Protection số 2 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 6-12 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 'long desription temporary', 659000, 5, 50),
-('Sữa bầu Similac Mom 900g hương Vani', 1, 6, 'Sữa bầu Similac Mom là thức uống dinh dưỡng dành cho mẹ đang mang thai và cho con bú. Với hệ dưỡng chất IQ Plus, sản phẩm cung cấp Vitamin E tự nhiên, Lutein, DHA giúp bé phát triển trí não từ trong bụng mẹ.', 'long desription temporary', 455000, 0, 37),
-('Similac Mom Hương Vani, 400g', 1, 6, 'Sữa bầu Similac Mom có công thức dinh dưỡng đã được chứng minh lâm sàng với nhiều lợi ích với các mẹ bầu.', 'long desription temporary', 235000, 0, 61),
+('Sữa Similac 5G số 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac 5G số 2 là sản phẩm dinh dưỡng cho bé từ 6-12 tháng đến từ thương hiệu uy tín Abbott.', 'long desription temporary', 559000, 0, 50, 0),
+('Sữa Similac Total Protection 1 400g (0 - 6 tháng)', 1, 1, 'Sữa Similac Total Protection 1 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 0-6 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 'long desription temporary', 329000, 0, 20, 0),
+('Combo 3 Sữa Similac 5G số 4 1,7kg (2-6 tuổi)', 1, 1, 'Thực phẩm bổ sung cho trẻ 2-6 tuổi: Combo Similac 4 x3', 'long desription temporary', 2607000, 10, 10, 0),
+('Sữa Similac Total Protection 2 900g (6-12 tháng)', 1, 1, 'Sữa Similac Total Protection số 2 là sản phẩm bổ sung dinh dưỡng hoặc thay thế bữa ăn cho trẻ 6-12 tháng tuổi bị thiếu hoặc mất sữa mẹ.', 'long desription temporary', 659000, 5, 50, 0),
+('Sữa bầu Similac Mom 900g hương Vani', 1, 6, 'Sữa bầu Similac Mom là thức uống dinh dưỡng dành cho mẹ đang mang thai và cho con bú. Với hệ dưỡng chất IQ Plus, sản phẩm cung cấp Vitamin E tự nhiên, Lutein, DHA giúp bé phát triển trí não từ trong bụng mẹ.', 'long desription temporary', 455000, 0, 37, 0),
+('Similac Mom Hương Vani, 400g', 1, 6, 'Sữa bầu Similac Mom có công thức dinh dưỡng đã được chứng minh lâm sàng với nhiều lợi ích với các mẹ bầu.', 'long desription temporary', 235000, 0, 61, 0),
 
 -- Meiji products
-('Sữa Meiji Infant Formula 800g (0-12 tháng)', 2, 2, 'Sữa Meiji Infant Formula 800g (0-12 tháng) là sữa bột công thức được nhập khẩu chính hãng từ Nhật Bản. Sản phẩm dành cho trẻ sơ sinh từ 0 - 12 tháng tuổi.', 'long desription temporary', 529000, 0, 15),
-('Sữa Meiji Growing up Formula 800g (12-36 tháng)', 2, 2, 'Sữa Meiji Growing up Formula 800g (12-36 tháng) thuộc thương hiệu Meiji nổi tiếng hàng đầu Nhật Bản.', 'long desription temporary', 465000, 5, 50),
-('Sữa Meiji thanh Infant Formula Ezcube 540g (0-12 tháng)', 2, 2, 'Sữa Meiji thanh Infant Formula Ezcube 540g là sữa bột công thức dạng viên cho trẻ sơ sinh (0 - 12 tháng tuổi).', 'long desription temporary', 455000, 5, 21),
-('Sữa Meiji Growing up Formula Ezcube 560g (1-3 tuổi)', 2, 2, 'Sản phẩm dinh dưỡng công thức cho trẻ từ 1-3 tuổi: Meiji 1-3 years old Growing up Formula Ezcube 560g.', 'long desription temporary', 399000, 0, 34),
-('Sữa bầu Meiji mama 350g', 2, 6, 'Sữa bầu Meiji Mama Milk 350g cung cấp các chất dinh dưỡng cần thiết hỗ trợ sức khỏe cho người mẹ đang mang thai và đang cho con bú cũng như sức khỏe và sự tăng trưởng của thai nhi và trẻ sơ sinh. Sản phẩm có chứa không chỉ các chất dinh dưỡng cơ bản như là protein, chất béo, và carbohydrates, mà còn cả các loại vitamin và khoáng chất bao gồm sắt, can-xi, kẽm, axit folic, những thành phần thường khó hấp thụ qua đường ăn uống trong quá trình mang thai và dưỡng sức.', 'long desription temporary', 219000, 5, 120),
+('Sữa Meiji Infant Formula 800g (0-12 tháng)', 2, 2, 'Sữa Meiji Infant Formula 800g (0-12 tháng) là sữa bột công thức được nhập khẩu chính hãng từ Nhật Bản. Sản phẩm dành cho trẻ sơ sinh từ 0 - 12 tháng tuổi.', 'long desription temporary', 529000, 0, 15, 0),
+('Sữa Meiji Growing up Formula 800g (12-36 tháng)', 2, 2, 'Sữa Meiji Growing up Formula 800g (12-36 tháng) thuộc thương hiệu Meiji nổi tiếng hàng đầu Nhật Bản.', 'long desription temporary', 465000, 5, 50, 0),
+('Sữa Meiji thanh Infant Formula Ezcube 540g (0-12 tháng)', 2, 2, 'Sữa Meiji thanh Infant Formula Ezcube 540g là sữa bột công thức dạng viên cho trẻ sơ sinh (0 - 12 tháng tuổi).', 'long desription temporary', 455000, 5, 21, 0),
+('Sữa Meiji Growing up Formula Ezcube 560g (1-3 tuổi)', 2, 2, 'Sản phẩm dinh dưỡng công thức cho trẻ từ 1-3 tuổi: Meiji 1-3 years old Growing up Formula Ezcube 560g.', 'long desription temporary', 399000, 0, 34, 0),
+('Sữa bầu Meiji mama 350g', 2, 6, 'Sữa bầu Meiji Mama Milk 350g cung cấp các chất dinh dưỡng cần thiết hỗ trợ sức khỏe cho người mẹ đang mang thai và đang cho con bú cũng như sức khỏe và sự tăng trưởng của thai nhi và trẻ sơ sinh. Sản phẩm có chứa không chỉ các chất dinh dưỡng cơ bản như là protein, chất béo, và carbohydrates, mà còn cả các loại vitamin và khoáng chất bao gồm sắt, can-xi, kẽm, axit folic, những thành phần thường khó hấp thụ qua đường ăn uống trong quá trình mang thai và dưỡng sức.', 'long desription temporary', 219000, 5, 120, 0),
 
 -- Bubs products
-('Sữa Bubs Supreme số 3 800g (12-36 tháng)', 3, 3, 'Bubs Supreme là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 12-36 tháng tuổi.', 'long desription temporary', 975000, 0, 43),
-('Combo 2 Sữa Bubs Supreme Junior Nutrition 800g (3-12 tuổi)', 3, 3, 'Bubs Supreme Junior Nutrition là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 3 - 12 tuổi, sữa được làm từ nguồn đạm A2 tự nhiên của sữa bò, cung cấp cho bé nguồn dinh dưỡng tối ưu.', 'long desription temporary', 1950000, 20, 23),
+('Sữa Bubs Supreme số 3 800g (12-36 tháng)', 3, 3, 'Bubs Supreme là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 12-36 tháng tuổi.', 'long desription temporary', 975000, 0, 43, 0),
+('Combo 2 Sữa Bubs Supreme Junior Nutrition 800g (3-12 tuổi)', 3, 3, 'Bubs Supreme Junior Nutrition là dòng sản phẩm cao cấp nhất của BUBS dành cho trẻ từ 3 - 12 tuổi, sữa được làm từ nguồn đạm A2 tự nhiên của sữa bò, cung cấp cho bé nguồn dinh dưỡng tối ưu.', 'long desription temporary', 1950000, 20, 23, 0),
 
 -- Kid Essentials products
-('Kid Essentials Nutritionally Complete 800g (1-10 tuổi)', 4, 3, 'Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 'long desription temporary', 695000, 10, 28),
-('Combo 4 thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi)', 4, 3, '4x Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 'long desription temporary', 2780000, 15, 32),
+('Kid Essentials Nutritionally Complete 800g (1-10 tuổi)', 4, 3, 'Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 'long desription temporary', 695000, 10, 28, 0),
+('Combo 4 thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi)', 4, 3, '4x Thực phẩm dinh dưỡng y học Kid Essentials Australia 800g hương vani (1-10 tuổi).', 'long desription temporary', 2780000, 15, 32, 0),
 
 -- PediaSure products
-('Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani 850g', 5, 3, 'Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani', 'long desription temporary', 629000, 12, 38),
-('Pediasure dạng lỏng hương vani 237ml (Lốc 6 chai)', 5, 3, 'Lốc 6 chai sữa bột pha sẵn Abbott PediaSure vani chai 237ml hương vị thơm ngon, đóng lốc tiện dùng', 'long desription temporary', 229000, 0, 50),
+('Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani 850g', 5, 3, 'Thực phẩm dinh dưỡng y học cho trẻ 1-10 tuổi: Pediasure vani', 'long desription temporary', 629000, 12, 38, 0),
+('Pediasure dạng lỏng hương vani 237ml (Lốc 6 chai)', 5, 3, 'Lốc 6 chai sữa bột pha sẵn Abbott PediaSure vani chai 237ml hương vị thơm ngon, đóng lốc tiện dùng', 'long desription temporary', 229000, 0, 50, 0),
 
 -- Nestle products
-('Sữa NAN INFINIPRO A2 800g số 1 (0-1 tuổi)', 6, 4, 'Sữa NAN INFINIPRO A2 số 1 là sản phẩm dinh dưỡng dành cho bé 0-12 tháng đến từ thương hiệu nổi tiếng Nestle.', 'long desription temporary', 729000, 15, 20),
-('Combo 1 thùng thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml)', 6, 5, 'Thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml) Mua 6 tặng 2', 'long desription temporary', 405000, 5, 50),
-('Sữa NAN SUPREME PRO số 2 800g (6-24 tháng)', 6, 4, 'Nestle NAN Supreme Pro số 2 là sữa bột công thức dành riêng cho trẻ 6-24 tháng tuổi.', 'long desription temporary', 605000, 0, 32),
-('Sữa Nan Optipro PLUS 2 800g, với 5HMO, sản xuất tại Thụy Sỹ (6-12 tháng)', 6, 4, 'Với công thức cải tiến được phát triển bởi Nestlé Thụy Sĩ, Nan Optipro PLUS 2, với 5HMO là sản phẩm dành cho trẻ từ 6-12 tháng tuổi.', 'long desription temporary', 539000, 0, 32),
-('Combo 2 Sữa Nestle S-26 ULTIMA số 3 750g (2 - 6 tuổi)', 6, 4, 'Nestlé® S-26 ULTIMA 3 là siêu phẩm khoa học cao cấp nhất trong dòng sản phẩm Nestlé® giúp con thông minh, nhanh nhẹn', 'long desription temporary', 1600000, 0, 18),
+('Sữa NAN INFINIPRO A2 800g số 1 (0-1 tuổi)', 6, 4, 'Sữa NAN INFINIPRO A2 số 1 là sản phẩm dinh dưỡng dành cho bé 0-12 tháng đến từ thương hiệu nổi tiếng Nestle.', 'long desription temporary', 729000, 15, 20, 0),
+('Combo 1 thùng thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml)', 6, 5, 'Thực phẩm bổ sung Nestlé NANGROW 6 (8x110ml) Mua 6 tặng 2', 'long desription temporary', 405000, 5, 50, 0),
+('Sữa NAN SUPREME PRO số 2 800g (6-24 tháng)', 6, 4, 'Nestle NAN Supreme Pro số 2 là sữa bột công thức dành riêng cho trẻ 6-24 tháng tuổi.', 'long desription temporary', 605000, 0, 32, 0),
+('Sữa Nan Optipro PLUS 2 800g, với 5HMO, sản xuất tại Thụy Sỹ (6-12 tháng)', 6, 4, 'Với công thức cải tiến được phát triển bởi Nestlé Thụy Sĩ, Nan Optipro PLUS 2, với 5HMO là sản phẩm dành cho trẻ từ 6-12 tháng tuổi.', 'long desription temporary', 539000, 0, 32, 0),
+('Combo 2 Sữa Nestle S-26 ULTIMA số 3 750g (2 - 6 tuổi)', 6, 4, 'Nestlé® S-26 ULTIMA 3 là siêu phẩm khoa học cao cấp nhất trong dòng sản phẩm Nestlé® giúp con thông minh, nhanh nhẹn', 'long desription temporary', 1600000, 0, 18, 0),
 
 -- Aptamil products
-('Sữa Aptamil số 2 900g (1-2 tuổi)', 7, 4, 'Sữa Aptamil số 2 là sản phẩm dinh dưỡng dành riêng cho bé từ 1 - 2 tuổi.', 'long desription temporary', 664000, 10, 56),
-('Sữa Aptamil Profutura Duobiotik 2 800g (6-36 tháng)', 7, 4, 'Sản phẩm dinh dưỡng công thức Aptamil Profutura Duobiotik 2 dành riêng cho bé từ 6 đến 36 tháng tuổi.', 'long desription temporary', 795000, 15, 13),
+('Sữa Aptamil số 2 900g (1-2 tuổi)', 7, 4, 'Sữa Aptamil số 2 là sản phẩm dinh dưỡng dành riêng cho bé từ 1 - 2 tuổi.', 'long desription temporary', 664000, 10, 56, 0),
+('Sữa Aptamil Profutura Duobiotik 2 800g (6-36 tháng)', 7, 4, 'Sản phẩm dinh dưỡng công thức Aptamil Profutura Duobiotik 2 dành riêng cho bé từ 6 đến 36 tháng tuổi.', 'long desription temporary', 795000, 15, 13, 0),
 
 -- Vinamilk products
-('Vinamilk Optimum Gold 4, 850g, 2-6 tuổi', 8, 5, 'Optimum Gold 4 với công thức dễ tiêu hóa, là nền tảng cho việc hấp thu các dưỡng chất thiết yếu cho trẻ từ 2 - 6 tuổi, giúp tăng cường sức đề kháng, phát triển não bộ và thể chất.', 'long desription temporary', 349000, 0, 38),
-('Sữa uống dinh dưỡng Optimum Gold 110ml (Lốc 4 hộp)', 8, 5, 'Lốc 4 hộp sữa uống dinh dưỡng Optimum Gold hộp 110ml hương vị thơm ngon, dễ uống, bé nào cũng mê.', 'long desription temporary', 37000, 0, 13),
-('Combo 6 Sữa uống dinh dưỡng Optimum Gold 180ml (Lốc 4 hộp)', 8, 5, 'Sữa uống Optimum Gold 180ml là sản phẩm đến từ thương hiệu uy tín của Việt Nam - Vinamilk. Sản phẩm giúp bé phát triển khoẻ mạnh và phù hợp với các bé từ 1 tuổi trở lên.', 'long desription temporary', 348000, 0, 33),
-('Thùng Sữa non Vinamilk ColosGold 110ml (từ 1 tuổi) lốc 4 hộp - 12 lốc', 8, 5, 'Thùng 48 hộp sữa uống dinh dưỡng Vinamilk ColosGold hộp 110 ml (từ 1 tuổi) bổ sung đạm whey giàu alpha-lactalbumin cung cấp nhiều axit amin thiết yếu.', 'long desription temporary', 468000, 0, 23),
-('Sữa Vinamilk ColosGold số 3 800g (2-6 tuổi)', 8, 5, 'Sữa Non Vinamilk Colos Gold 3 800g (sữa bột cho trẻ từ 2 - 6 tuổi) - Miễn dịch khỏe, Bé lớn nhanh', 'long desription temporary', 399000, 5, 41),
+('Vinamilk Optimum Gold 4, 850g, 2-6 tuổi', 8, 5, 'Optimum Gold 4 với công thức dễ tiêu hóa, là nền tảng cho việc hấp thu các dưỡng chất thiết yếu cho trẻ từ 2 - 6 tuổi, giúp tăng cường sức đề kháng, phát triển não bộ và thể chất.', 'long desription temporary', 349000, 0, 38, 0),
+('Sữa uống dinh dưỡng Optimum Gold 110ml (Lốc 4 hộp)', 8, 5, 'Lốc 4 hộp sữa uống dinh dưỡng Optimum Gold hộp 110ml hương vị thơm ngon, dễ uống, bé nào cũng mê.', 'long desription temporary', 37000, 0, 13, 0),
+('Combo 6 Sữa uống dinh dưỡng Optimum Gold 180ml (Lốc 4 hộp)', 8, 5, 'Sữa uống Optimum Gold 180ml là sản phẩm đến từ thương hiệu uy tín của Việt Nam - Vinamilk. Sản phẩm giúp bé phát triển khoẻ mạnh và phù hợp với các bé từ 1 tuổi trở lên.', 'long desription temporary', 348000, 0, 33, 0),
+('Thùng Sữa non Vinamilk ColosGold 110ml (từ 1 tuổi) lốc 4 hộp - 12 lốc', 8, 5, 'Thùng 48 hộp sữa uống dinh dưỡng Vinamilk ColosGold hộp 110 ml (từ 1 tuổi) bổ sung đạm whey giàu alpha-lactalbumin cung cấp nhiều axit amin thiết yếu.', 'long desription temporary', 468000, 0, 23, 0),
+('Sữa Vinamilk ColosGold số 3 800g (2-6 tuổi)', 8, 5, 'Sữa Non Vinamilk Colos Gold 3 800g (sữa bột cho trẻ từ 2 - 6 tuổi) - Miễn dịch khỏe, Bé lớn nhanh', 'long desription temporary', 399000, 5, 41, 0),
 
 -- Friso Gold products
-('Sữa bầu Friso Mum Gold 900g hương cam', 9, 6, 'Thực phẩm bổ sung cho mẹ mang thai và cho con bú, hương cam nhãn hiệu Frisomum Gold DualCare+TM.', 'long desription temporary', 539000, 0, 28),
-('Sữa Friso Gold số 4 850g (2 - 6 tuổi)', 9, 5, 'Sữa Friso® Gold 4 là sản phẩm dinh dưỡng dành cho trẻ em từ 2 - 6 tuổi. Đây là giai đoạn trẻ phát triển mạnh mẽ về thể chất, trí tuệ và tò mò khám phá về thế giới xung quanh.', 'long desription temporary', 495000, 0, 34),
+('Sữa bầu Friso Mum Gold 900g hương cam', 9, 6, 'Thực phẩm bổ sung cho mẹ mang thai và cho con bú, hương cam nhãn hiệu Frisomum Gold DualCare+TM.', 'long desription temporary', 539000, 0, 28, 0),
+('Sữa Friso Gold số 4 850g (2 - 6 tuổi)', 9, 5, 'Sữa Friso® Gold 4 là sản phẩm dinh dưỡng dành cho trẻ em từ 2 - 6 tuổi. Đây là giai đoạn trẻ phát triển mạnh mẽ về thể chất, trí tuệ và tò mò khám phá về thế giới xung quanh.', 'long desription temporary', 495000, 0, 34, 0),
 
 -- Dielac Grow Plus products
-('Combo 2 Dielac Grow Plus 2+, 2-10 tuổi, 850g', 10, 5, 'Dielac Grow Plus 2+ là sản phẩm dinh dưỡng dành cho trẻ từ 2-10 tuổi. Sở hữu công thức dinh dưỡng chuyên biệt, sản phẩm giúp trẻ suy dinh dưỡng, thấp còi bắt kịp đà tăng trưởng và phát triển khoẻ mạnh.', 'long desription temporary', 718000, 12, 33),
-('Combo 4 Sữa uống dinh dưỡng Dielac Grow Plus 110ml (Sữa Non) - Lốc 4 hộp', 10, 5, '﻿﻿﻿﻿﻿﻿Sữa Uống Dinh Dưỡng Dielac Grow Plus (Sữa Non) bổ sung sữa non Colostrum, kết hợp HMO (2’-FL) là prebiotic có cấu trúc tương tự dưỡng chất được tìm thấy trong sữa mẹ, giúp tăng hệ vi khuẩn có lợi, ngăn ngừa sự bám dính của các tác nhân gây bệnh lên thành ruột, nhờ đó tăng cường miễn dịch tốt.', 'long desription temporary', 136000, 12, 13),
+('Combo 2 Dielac Grow Plus 2+, 2-10 tuổi, 850g', 10, 5, 'Dielac Grow Plus 2+ là sản phẩm dinh dưỡng dành cho trẻ từ 2-10 tuổi. Sở hữu công thức dinh dưỡng chuyên biệt, sản phẩm giúp trẻ suy dinh dưỡng, thấp còi bắt kịp đà tăng trưởng và phát triển khoẻ mạnh.', 'long desription temporary', 718000, 12, 33, 0),
+('Combo 4 Sữa uống dinh dưỡng Dielac Grow Plus 110ml (Sữa Non) - Lốc 4 hộp', 10, 5, '﻿﻿﻿﻿﻿﻿Sữa Uống Dinh Dưỡng Dielac Grow Plus (Sữa Non) bổ sung sữa non Colostrum, kết hợp HMO (2’-FL) là prebiotic có cấu trúc tương tự dưỡng chất được tìm thấy trong sữa mẹ, giúp tăng hệ vi khuẩn có lợi, ngăn ngừa sự bám dính của các tác nhân gây bệnh lên thành ruột, nhờ đó tăng cường miễn dịch tốt.', 'long desription temporary', 136000, 12, 13, 0),
 
 -- YOKOGOLD products
-('Combo 2 lon Sữa Vinamilk Yoko Gold 3 850g (2-6 tuổi)', 11, 2, 'Sữa Vinamilk YokoGold 3, 850g (2-6 tuổi) là sữa bột công thức dành cho trẻ từ 2 đến 6 tuổi. Công thức sữa chứa hàng loạt những dưỡng chất tốt từ Nhật Bản như: chất xơ hòa tan, DHA, Taurin, Canxi,... giúp bé dễ tiêu hóa, tạo nền tảng cho việc hấp thu các dưỡng chất thiết yếu của bé, cũng như giúp bé tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 838000, 00, 31),
-('Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp) là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 480000, 00, 20),
-('Combo 4 Sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Sữa tươi tiệt trùng có đường Vinamilk 180ml là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 160000, 00, 30),
-('Sữa uống dinh dưỡng Vinamilk Yoko Gold 180ml (Lốc 4 hộp)', 11, 2, 'Sữa uống dinh dưỡng Vinamilk Yoko Gold 180ml (Lốc 4 hộp)', 'long desription temporary', 63000, 10, 121),
+('Combo 2 lon Sữa Vinamilk Yoko Gold 3 850g (2-6 tuổi)', 11, 2, 'Sữa Vinamilk YokoGold 3, 850g (2-6 tuổi) là sữa bột công thức dành cho trẻ từ 2 đến 6 tuổi. Công thức sữa chứa hàng loạt những dưỡng chất tốt từ Nhật Bản như: chất xơ hòa tan, DHA, Taurin, Canxi,... giúp bé dễ tiêu hóa, tạo nền tảng cho việc hấp thu các dưỡng chất thiết yếu của bé, cũng như giúp bé tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 838000, 00, 31, 0),
+('Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Thùng sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp) là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 480000, 00, 20, 0),
+('Combo 4 Sữa uống dinh dưỡng Vinamilk Yoko Gold 110ml (Lốc 4 hộp)', 11, 2, 'Sữa tươi tiệt trùng có đường Vinamilk 180ml là một dòng sản phẩm của Vinamilk – Thương hiệu sữa số 1 Việt Nam. Với công thức dinh dưỡng dễ tiêu hóa và nhiều dưỡng chất tốt từ Nhật, sữa giúp bé hấp thu tốt, tăng cường sức đề kháng và phát triển não bộ.', 'long desription temporary', 160000, 00, 30, 0),
+('Sữa uống dinh dưỡng Vinamilk Yoko Gold 180ml (Lốc 4 hộp)', 11, 2, 'Sữa uống dinh dưỡng Vinamilk Yoko Gold 180ml (Lốc 4 hộp)', 'long desription temporary', 63000, 10, 121, 0),
 
 -- Nutifood products
-('Sữa Nutifood Varna Complete 850g', 12, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿Sữa Nutifood Varna Complete là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh. ', 'long desription temporary', 531000, 10, 40),
-('Sữa Nutifood Varna Colostrum 850g', 12, 5, 'Sản phẩm dinh dưỡng Värna Colostrum bổ sung sữa non cho người lớn, giúp tăng đề kháng nhanh.', 'long desription temporary', 750000, 00, 14),
-('Combo 4 lốc Sữa Nutifood Varna Complete 237ml (lốc 6 chai)', 12, 5, '﻿﻿Varna Complete là sản phẩm dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 'long desription temporary', 780000, 00, 44),
-('Combo 2 Sữa Nutifood Varna Complete 400g', 12, 5, 'Sữa Nutifood Varna Complete 400g là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 'long desription temporary', 538000, 00, 23),
-('Thùng Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ. ', 'long desription temporary', 336000, 00, 23),
-('Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ.', 'long desription temporary', 28000, 00, 20),
-('Combo 3 lon sữa GrowPLUS+ Đỏ 900g (từ 1 tuổi)', 12, 5, 'Sữa Grow Plus đỏ là sản phẩm đặc trị dành trẻ từ 1 tuổi trở lên và có thể trạng suy dinh dưỡng thấp còi. Được phát triển dựa trên nền tảng công thức FDA độc quyền của Viện nghiên cứu Dinh dưỡng Nutifood Thụy Điển và trải qua quá trình kiểm định chất lượng nghiêm ngặt, sữa Grow Plus đỏ sẽ là sản phẩm phù hợp mà ba mẹ nên dành cho bé từ 1 tuổi trở lên và đang bị thiếu cân nặng, thấp còi.', 'long desription temporary', 1125000, 00, 13),
-('Combo 2 Sữa GrowPLUS+ Sữa non Vàng 800g (trên 1 tuổi)', 12, 5, '﻿﻿﻿﻿Nutifood GrowPLUS+ Sữa non là sản phẩm dinh dưỡng công thức dành cho bé trên 1 tuổi. Sữa được xây dựng trên nền tảng FDI cho bé đề kháng khỏe, tiêu hóa tốt.', 'long desription temporary', 970000, 00, 32),
-('Combo 4 Sữa GrowPLUS+ Xanh 1.5kg (từ 1 tuổi)', 10, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿GrowPLUS+ Dinh dưỡng giúp trẻ biếng ăn tăng cân khỏe mạnh với công thức độc quyền FDI (1). Công thức này là sự kết hợp giữa thành tựu khoa học tiên tiến của Viện nghiên cứu dinh dưỡng Nutifood Thụy Điển cùng sự thấu hiểu thể trạng đặc thù của trẻ em Việt Nam của các Chuyên gia dinh dưỡng Nutifood trong 20 năm qua.', 'long desription temporary', 1580000, 00, 34);
+('Sữa Nutifood Varna Complete 850g', 12, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿Sữa Nutifood Varna Complete là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh. ', 'long desription temporary', 531000, 10, 40, 0),
+('Sữa Nutifood Varna Colostrum 850g', 12, 5, 'Sản phẩm dinh dưỡng Värna Colostrum bổ sung sữa non cho người lớn, giúp tăng đề kháng nhanh.', 'long desription temporary', 750000, 00, 14, 0),
+('Combo 4 lốc Sữa Nutifood Varna Complete 237ml (lốc 6 chai)', 12, 5, '﻿﻿Varna Complete là sản phẩm dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 'long desription temporary', 780000, 00, 44, 0),
+('Combo 2 Sữa Nutifood Varna Complete 400g', 12, 5, 'Sữa Nutifood Varna Complete 400g là một sản phẩm của Nutifood, dành cho người lớn giúp phòng ngừa và phục hồi sức khỏe nhanh.', 'long desription temporary', 538000, 00, 23, 0),
+('Thùng Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ. ', 'long desription temporary', 336000, 00, 23, 0),
+('Sữa dinh dưỡng pha sẵn Nuvi Grow 110ml (Lốc 4 hộp)', 12, 5, '﻿﻿Nuvi Grow với công thức Nuvi Power chứa bộ ba dưỡng chất Canxi, Vitamin K2, Vitamin D3 giúp xương chắc khỏe hơn nhắm tối ưu tiềm năng chiều cao của trẻ.', 'long desription temporary', 28000, 00, 20, 0),
+('Combo 3 lon sữa GrowPLUS+ Đỏ 900g (từ 1 tuổi)', 12, 5, 'Sữa Grow Plus đỏ là sản phẩm đặc trị dành trẻ từ 1 tuổi trở lên và có thể trạng suy dinh dưỡng thấp còi. Được phát triển dựa trên nền tảng công thức FDA độc quyền của Viện nghiên cứu Dinh dưỡng Nutifood Thụy Điển và trải qua quá trình kiểm định chất lượng nghiêm ngặt, sữa Grow Plus đỏ sẽ là sản phẩm phù hợp mà ba mẹ nên dành cho bé từ 1 tuổi trở lên và đang bị thiếu cân nặng, thấp còi.', 'long desription temporary', 1125000, 00, 13, 0),
+('Combo 2 Sữa GrowPLUS+ Sữa non Vàng 800g (trên 1 tuổi)', 12, 5, '﻿﻿﻿﻿Nutifood GrowPLUS+ Sữa non là sản phẩm dinh dưỡng công thức dành cho bé trên 1 tuổi. Sữa được xây dựng trên nền tảng FDI cho bé đề kháng khỏe, tiêu hóa tốt.', 'long desription temporary', 970000, 00, 32, 0),
+('Combo 4 Sữa GrowPLUS+ Xanh 1.5kg (từ 1 tuổi)', 10, 5, '﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿GrowPLUS+ Dinh dưỡng giúp trẻ biếng ăn tăng cân khỏe mạnh với công thức độc quyền FDI (1). Công thức này là sự kết hợp giữa thành tựu khoa học tiên tiến của Viện nghiên cứu dinh dưỡng Nutifood Thụy Điển cùng sự thấu hiểu thể trạng đặc thù của trẻ em Việt Nam của các Chuyên gia dinh dưỡng Nutifood trong 20 năm qua.', 'long desription temporary', 1580000, 00, 34, 0);
 
 -- Product Review table
 INSERT INTO ProductReview (User_id, Product_id, Rate, Comment, Review_date) VALUES
@@ -920,54 +921,54 @@ INSERT INTO Voucher (Point, User_id, Discount, Expiration_date, Available) VALUE
 
 -- Order table
 INSERT INTO `Order` (User_id, Full_name, Email, Phone, Address, Note, Voucher_id, Shipping_fee, Total_price, Status, Order_date) VALUES
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 'Send me in 7-10 days', 7, 15000, 1368000, 1, '2024-01-03'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 'Deliver to my office', NULL, 0, 1118000, 1, '2024-01-06'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'Please call before delivery', NULL, 0, 4819000, 1, '2024-01-07'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 'Leave at the front door', NULL, 0, 2576000, 1, '2024-01-08'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1596000, 1, '2024-01-13'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 'Call me before delivery', NULL, 0, 3363000, 1, '2024-01-23'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'It would be great if you can call me 1 day before delivery', 3, 30000, 4110000, 1,'2024-02-05'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1816000, 1, '2024-02-13'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1415000, 1, '2024-02-23'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 5731000, 1, '2024-02-28'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'I want to receive my order in the afternoon', NULL, 10000, 3539000, 1,'2024-03-03'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 74000, 1, '2024-03-04'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1215000, 1, '2024-03-04'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1573000, 1, '2024-03-08'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 1126000, 1, '2024-03-13'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 3238000, 1, '2024-03-14'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1445000, 1, '2024-03-15'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 8470000, 1, '2024-03-22'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 2810000, 1, '2024-03-23'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 2550000, 1, '2024-03-28'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1677000, 1,'2024-04-12'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 3923000, 1,'2024-04-20'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 1569000, 1,'2024-04-22'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1694000, 1,'2024-04-27'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 'You can give my package to the security guard at the door', 5, 20000, 475000, 1, '2024-05-02'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1416000 , 1,'2024-05-07'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 4865000 , 1,'2024-05-10'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 3409000 , 1,'2024-05-12'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 2226000 , 1,'2024-05-19'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1144000 , 1,'2024-05-27'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 3723000 , 1,'2024-06-01'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1477000 , 1,'2024-06-10'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 867000 , 1,'2024-06-12'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1485000 , 1,'2024-06-19'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 2278000 , 1,'2024-06-20'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1456000 , 1,'2024-06-21'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 2063000 , 1,'2024-06-21'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 756000 , 0,'2024-06-22'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 5485000 , 1,'2024-06-23'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1217000 , 0,'2024-06-28'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 4175000 , 0,'2024-07-01'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1741000 , 1,'2024-07-02'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 1385000 , 1,'2024-07-04'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1416000 , 0,'2024-07-06'),
-(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 2925000 , 0,'2024-07-06'),
-(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 4799000 , 0,'2024-07-07'),
-(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 2076150 , 0,'2024-07-07'),
-(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 4602950 , 0,'2024-07-08');
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 'Send me in 7-10 days', 7, 15000, 1368000, 'DELIVERED', '2024-01-03'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 'Deliver to my office', NULL, 0, 1118000, 'DELIVERED', '2024-01-06'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'Please call before delivery', NULL, 0, 4819000, 'DELIVERED', '2024-01-07'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', 'Leave at the front door', NULL, 0, 2576000, 'DELIVERED', '2024-01-08'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1596000, 'DELIVERED', '2024-01-13'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', 'Call me before delivery', NULL, 0, 3363000, 'DELIVERED', '2024-01-23'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'It would be great if you can call me 1 day before delivery', 3, 30000, 4110000, 'DELIVERED', '2024-02-05'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1816000, 'DELIVERED', '2024-02-13'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1415000, 'DELIVERED', '2024-02-23'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 5731000, 'DELIVERED', '2024-02-28'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', 'I want to receive my order in the afternoon', NULL, 10000, 3539000, 'DELIVERED', '2024-03-03'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 74000, 'DELIVERED', '2024-03-04'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1215000, 'DELIVERED', '2024-03-04'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1573000, 'DELIVERED', '2024-03-08'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 1126000, 'DELIVERED', '2024-03-13'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 3238000, 'DELIVERED', '2024-03-14'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1445000, 'DELIVERED', '2024-03-15'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 8470000, 'DELIVERED', '2024-03-22'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 2810000, 'DELIVERED', '2024-03-23'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 2550000, 'DELIVERED', '2024-03-28'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 1677000, 'DELIVERED','2024-04-12'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 3923000, 'DELIVERED', '2024-04-20'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 1569000, 'DELIVERED', '2024-04-22'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1694000, 'DELIVERED', '2024-04-27'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', 'You can give my package to the security guard at the door', 5, 20000, 475000, 'DELIVERED', '2024-05-02'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1416000 , 'DELIVERED', '2024-05-07'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 4865000 , 'DELIVERED', '2024-05-10'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 3409000 , 'DELIVERED', '2024-05-12'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 2226000 , 'DELIVERED', '2024-05-19'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1144000 , 'DELIVERED', '2024-05-27'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 3723000 , 'DELIVERED', '2024-06-01'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1477000 , 'DELIVERED', '2024-06-10'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 867000 , 'DELIVERED', '2024-06-12'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1485000 , 'DELIVERED', '2024-06-19'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 2278000 , 'DELIVERED', '2024-06-20'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1456000 , 'DELIVERED', '2024-06-21'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 2063000 , 'DELIVERED', '2024-06-21'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 756000 , 'DELIVERED', '2024-06-22'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 5485000 , 'DELIVERED', '2024-06-23'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1217000 , 'DELIVERED', '2024-06-28'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 4175000 , 'DELIVERED', '2024-07-01'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 1741000 , 'DELIVERED', '2024-07-02'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 1385000 , 'DELIVERED', '2024-07-04'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 1416000 , 'PENDING', '2024-07-06'),
+(1, 'John Doe', 'john.doe@example.com', '1234567890', '123 Main St', '', NULL, 0, 2925000 , 'PENDING', '2024-07-06'),
+(4, 'Emily Davis', 'emily.davis@example.com', '9879879876', '101 Oak St', '', NULL, 0, 4799000 , 'PENDING', '2024-07-07'),
+(7, 'Joshua Moore', 'joshua.moore@example.com', '5555555555', '104 Cedar St', '', NULL, 0, 2076150 , 'PENDING', '2024-07-07'),
+(10, 'Laura Harris', 'laura.harris@example.com', '2222222222', '107 Ash St', '', NULL, 0, 4602950 , 'PENDING', '2024-07-08');
 
 -- OrderDetail table with 10 entries
 INSERT INTO OrderDetail (Order_id, Product_id, Quantity, Total_price, Pre_order) VALUES

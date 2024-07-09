@@ -40,9 +40,12 @@ public class OrderDetailService implements IOrderDetailService {
                 new ResourceNotFoundException("Order", "Id", orderId));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
+        orderDetail.setPreOrder(product.isPreOrder());
         product.setStock(product.getStock() - orderDetail.getQuantity());
-        if(product.getStock() < 0)
+        if (product.getStock() <= 0){
             product.setStock(0);
+            orderDetail.setPreOrder(true);
+        }
         Product boughtProduct = productRepository.save(product);
         orderDetail.setOrder(existingOrder);
         orderDetail.setProduct(boughtProduct);
