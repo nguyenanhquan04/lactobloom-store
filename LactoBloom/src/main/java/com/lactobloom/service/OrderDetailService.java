@@ -36,22 +36,28 @@ public class OrderDetailService implements IOrderDetailService {
     @Override
     public OrderDetailDto saveOrderDetail(OrderDetailDto orderDetailDto, int orderId, int productId) {
         OrderDetail orderDetail = mapToEntity(orderDetailDto);
-        Order order = orderRepository.findById(orderId).orElseThrow(() ->
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
-        product.setStock(product.getStock() - orderDetail.getQuantity());
-        if(product.getStock() < 0)
-            product.setStock(0);
-        Product boughtProduct = productRepository.save(product);
-        orderDetail.setOrder(order);
-        orderDetail.setProduct(boughtProduct);
-        OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
-        return mapToDto(newOrderDetail);
+        if(existingOrder.getUser() == user) {
+            product.setStock(product.getStock() - orderDetail.getQuantity());
+            if(product.getStock() < 0)
+                product.setStock(0);
+            Product boughtProduct = productRepository.save(product);
+            orderDetail.setOrder(existingOrder);
+            orderDetail.setProduct(boughtProduct);
+            OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
+            return mapToDto(newOrderDetail);
+        }
+        return null;
     }
 
     @Override
-    public List<OrderDetailDto> getOrderDetailsByOrder(int orderId) {
+    public List<OrderDetailDto> getOrderDetailsByOrderForMember(int orderId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
@@ -62,6 +68,12 @@ public class OrderDetailService implements IOrderDetailService {
             return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
         }
         return null;
+    }
+
+    @Override
+    public List<OrderDetailDto> getOrderDetailsByOrder(int orderId) {
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
+        return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override

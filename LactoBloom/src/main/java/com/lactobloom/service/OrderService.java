@@ -88,6 +88,7 @@ public class OrderService implements IOrderService {
         existingOrder.setEmail(orderDto.getEmail());
         existingOrder.setPhone(orderDto.getPhone());
         existingOrder.setAddress(orderDto.getAddress());
+        existingOrder.setNote(orderDto.getNote());
         existingOrder.setShippingFee(orderDto.getShippingFee());
         existingOrder.setTotalPrice(orderDto.getTotalPrice());
         existingOrder.setStatus(orderDto.isStatus());
