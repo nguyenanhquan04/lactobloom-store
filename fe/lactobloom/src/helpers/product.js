@@ -33,6 +33,8 @@ export const getDiscountPrice = (price, discount) => {
   return discount && discount > 0 ? price - price * (discount / 100) : null;
 };
 
+
+
 // get product cart quantity
 export const getProductCartQuantity = (cartItems, product, color, size) => {
   let productInCart = cartItems.find(
