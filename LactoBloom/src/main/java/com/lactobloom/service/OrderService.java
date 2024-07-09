@@ -89,7 +89,7 @@ public class OrderService implements IOrderService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        if (existingOrder.getUser() == user) {
+        if (existingOrder.getUser().equals(user) && existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
             existingOrder.setOrderStatus(OrderStatus.CANCELLED);
             return mapToDto(orderRepository.save(existingOrder));
         }
