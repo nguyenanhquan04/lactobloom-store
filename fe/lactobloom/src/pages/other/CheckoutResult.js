@@ -16,7 +16,7 @@ const CheckoutResult = () => {
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(10);
+  const [countdown, setCountdown] = useState(1000);
   const [orderInfo, setOrderInfo] = useState(null);
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -95,7 +95,7 @@ const CheckoutResult = () => {
                       `http://localhost:8080/order-detail/save/order/${orderId}/product/${item.productId}`,
                       { 
                         quantity: item.quantity,
-                        totalPrice: getDiscountedPrice(item.price, item.discount) * item.quantity,
+                        totalPrice: (item.price*(1-item.discount/100)*item.quantity),
                       },
                       {
                         headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -219,7 +219,7 @@ const CheckoutResult = () => {
                         <th className="short-column">Product Name</th>
                         <th>Quantity</th>
                         <th className="long-column">Price (VND)</th>
-                        <th className="long-column">Discount (VND)</th>
+                        <th className="long-column">Discount (%)</th>
                         <th className="long-column">Total (VND)</th>
                       </tr>
                     </thead>
@@ -230,7 +230,7 @@ const CheckoutResult = () => {
                           <td>{item.quantity}</td>
                           <td>{item.price.toLocaleString("vi-VN")} VND</td>
                           <td>
-                            {item.discount ? (
+                            {/* {item.discount ? (
                               <span className="discounted-price">
                                 {(
                                   (item.price - getDiscountedPrice(item.price, item.discount)) *
@@ -240,13 +240,15 @@ const CheckoutResult = () => {
                               </span>
                             ) : (
                               "0 VND"
-                            )}
+                            )} */}
+                            {item.discount}
                           </td>
                           <td>
-                            {(item.discount
+                            {/* {(item.discount
                               ? getDiscountedPrice(item.price, item.discount) * item.quantity
                               : item.price * item.quantity
-                            ).toLocaleString("vi-VN")}{" "}
+                            ).toLocaleString("vi-VN")}{" "} */}
+                            {(item.price*(1-item.discount/100)*item.quantity).toLocaleString("vi-VN")}{" "}
                             VND
                           </td>
                         </tr>
