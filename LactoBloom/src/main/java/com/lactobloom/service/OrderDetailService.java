@@ -36,24 +36,18 @@ public class OrderDetailService implements IOrderDetailService {
     @Override
     public OrderDetailDto saveOrderDetail(OrderDetailDto orderDetailDto, int orderId, int productId) {
         OrderDetail orderDetail = mapToEntity(orderDetailDto);
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException("User", "email", email));
         Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
-        if(existingOrder.getUser() == user) {
-            product.setStock(product.getStock() - orderDetail.getQuantity());
-            if(product.getStock() < 0)
-                product.setStock(0);
-            Product boughtProduct = productRepository.save(product);
-            orderDetail.setOrder(existingOrder);
-            orderDetail.setProduct(boughtProduct);
-            OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
-            return mapToDto(newOrderDetail);
-        }
-        return null;
+        product.setStock(product.getStock() - orderDetail.getQuantity());
+        if(product.getStock() < 0)
+            product.setStock(0);
+        Product boughtProduct = productRepository.save(product);
+        orderDetail.setOrder(existingOrder);
+        orderDetail.setProduct(boughtProduct);
+        OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
+        return mapToDto(newOrderDetail);
     }
 
     @Override
