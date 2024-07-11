@@ -45,7 +45,7 @@ const Product = () => {
         {/* product description tab */}
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
-          productFullDesc={product.description}
+          productFullDesc={product.longDescription}
           productId={product.productId}
         />
 

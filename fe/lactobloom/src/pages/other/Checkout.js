@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link, useLocation} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
@@ -75,12 +75,12 @@ const Checkout = () => {
   const placeOrder = async (amount) => {
     let finalAmount = amount;
     let discountAmount = 0;
-  
+
     if (selectedVoucher) {
       discountAmount = (amount * selectedVoucher.discount) / 100;
       finalAmount = amount - discountAmount;
     }
-  
+
     const orderInfo = {
       cartItems,
       fullName,
@@ -93,10 +93,10 @@ const Checkout = () => {
       orderNotes,
       selectedVoucher,
     };
-  
+
     // Save order information to localStorage
-    localStorage.setItem('orderInfo', JSON.stringify(orderInfo));
-  
+    localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+
     try {
       const response = await createPayment(finalAmount);
       const { status, message, url } = response.data;
@@ -109,8 +109,7 @@ const Checkout = () => {
       console.error("Error creating payment:", error);
     }
   };
-  
-  
+
   return (
     <Fragment>
       <SEO titleTemplate="Checkout" description="Lactobloom Checkout Page." />
@@ -242,7 +241,19 @@ const Checkout = () => {
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
-                                    {cartItem.productName} X {cartItem.quantity}
+                                    {cartItem.preOrder &&
+                                    cartItem.stock <= 0 &&
+                                    authToken ? (
+                                      <>
+                                        {cartItem.productName}{" "}{"(Pre Order)"} X{" "}
+                                        {cartItem.quantity} 
+                                      </>
+                                    ) : (
+                                      <>
+                                        {cartItem.productName} X{" "}
+                                        {cartItem.quantity}
+                                      </>
+                                    )}
                                   </span>{" "}
                                   <span className="order-price">
                                     {discountedPrice !== null

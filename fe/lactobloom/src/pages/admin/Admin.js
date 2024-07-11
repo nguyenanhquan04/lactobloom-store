@@ -12,6 +12,7 @@ import BrandManagement from "./BrandManagement";
 import CategoryManagement from "./CategoryManagement";
 import OrderManagement from "./OrderManagement";
 import Dashboard from "./Dashboard";
+import VoucherManagement from "./VoucherManagement";
 
 const Sidebar = ({ onSelect, role }) => {
   return (
@@ -46,6 +47,11 @@ const Sidebar = ({ onSelect, role }) => {
           <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("order")}>
               Orders Management
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="sidebar-link" onClick={() => onSelect("voucher")}>
+              Voucher Management
             </Link>
           </li>
           {role === "ADMIN" && (
@@ -94,6 +100,8 @@ const Admin = () => {
         return <OrderManagement />;
       case "user":
         return <UserManagement />;
+        case "voucher":
+        return <VoucherManagement />;
       default:
         return <Dashboard />;
     }

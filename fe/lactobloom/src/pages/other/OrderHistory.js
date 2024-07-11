@@ -43,6 +43,7 @@ const OrderHistory = () => {
       }
     })
       .then(response => {
+        console.log(response.data);
         setOrderDetails(prevState => ({
           ...prevState,
           [orderId]: response.data
@@ -184,7 +185,11 @@ const OrderHistory = () => {
                                         <tbody>
                                           {orderDetails[order.orderId].map((item) => (
                                             <tr key={item.orderDetailId}>
+                                              {item.preOrder ?
+                                              <td>{item.productName} (Pre Order)</td>
+                                              :
                                               <td>{item.productName}</td>
+}
                                               <td>{item.quantity}</td>
                                               <td>{item.totalPrice.toLocaleString("vi-VN")} VND</td>
                                             </tr>

@@ -121,8 +121,8 @@ const BlogStandard = () => {
         {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Blog", path: process.env.PUBLIC_URL + pathname }
+            {label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            {label: "Bài viết", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="blog-area pt-100 pb-100">
@@ -159,7 +159,7 @@ const BlogStandard = () => {
                               </Link>
                             </h4>
                             <h5>
-                              Category:{" "}
+                              Danh mục:{" "}
                               <Link>
                                 {blog.blogCategoryName}
                               </Link>
@@ -168,11 +168,11 @@ const BlogStandard = () => {
                             <div className="blog-share-comment">
                               <div className="blog-btn-2">
                                 <Link to={`${process.env.PUBLIC_URL}/blog-details/${blog.blogId}`}>
-                                  read more
+                                  Đọc thêm
                                 </Link>
                               </div>
                               <div className="blog-share">
-                                <span>share :</span>
+                                <span>chia sẻ :</span>
                                 <div className="share-social">
                                   <ul>
                                     <li>
@@ -209,12 +209,12 @@ const BlogStandard = () => {
               <div className="col-lg-3">
                 <div className="sidebar-style">
                   <div className="sidebar-widget">
-                    <h4 className="pro-sidebar-title">Search </h4>
+                    <h4 className="pro-sidebar-title">Tìm kiếm </h4>
                     <div className="pro-sidebar-search mb-55 mt-25">
                       <form className="pro-sidebar-search-form" onSubmit={handleSearch}>
                         <input 
                           type="text" 
-                          placeholder="Search here..." 
+                          placeholder="Tìm kiếm..." 
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -225,7 +225,7 @@ const BlogStandard = () => {
                     </div>
                   </div>
                   <div className="sidebar-widget">
-                    <h4 className="pro-sidebar-title">Recent Blogs </h4>
+                    <h4 className="pro-sidebar-title">Bài viết gần đây </h4>
                     <div className="sidebar-project-wrap mt-30">
                       {latestBlogs.map(blog => (
                         <div className="single-sidebar-blog" key={blog.blogId}>
@@ -250,7 +250,7 @@ const BlogStandard = () => {
                     </div>
                   </div>
                   <div className="sidebar-widget mt-35">
-                    <h4 className="pro-sidebar-title">Categories</h4>
+                    <h4 className="pro-sidebar-title">Danh mục</h4>
                     <div className="sidebar-widget-list sidebar-widget-list--blog mt-20">
                       <ul>
                         {categories.map(category => (

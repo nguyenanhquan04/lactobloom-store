@@ -1,0 +1,210 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button,
+  TextField, IconButton, TablePagination, MenuItem, Select, FormControl, InputLabel, Grid, Dialog, DialogTitle, DialogContent, DialogActions
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Cookies from 'js-cookie';
+import VoucherForm from './form/VoucherForm'; // Import the VoucherForm component
+
+const VoucherManagement = () => {
+  const [vouchers, setVouchers] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [selectedAvailability, setSelectedAvailability] = useState('all');
+  const [editVoucher, setEditVoucher] = useState(null);
+  const [open, setOpen] = useState(false); // State to handle dialog open/close
+
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      const token = Cookies.get('authToken');
+      try {
+        const response = await axios.get('http://localhost:8080/voucher/all', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setVouchers(response.data);
+      } catch (error) {
+        console.error('Error fetching vouchers:', error);
+      }
+    };
+
+    fetchVouchers();
+  }, []);
+
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const handleDelete = async (voucherId) => {
+    const token = Cookies.get('authToken');
+    if (window.confirm('Are you sure you want to delete this voucher?')) {
+      try {
+        await axios.delete(`http://localhost:8080/voucher/delete/${voucherId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setVouchers(vouchers.filter(voucher => voucher.voucherId !== voucherId));
+      } catch (error) {
+        console.error('Error deleting voucher:', error);
+      }
+    }
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleAvailabilityChange = (event) => {
+    setSelectedAvailability(event.target.value);
+    setPage(0);
+  };
+
+  const handleEditVoucher = (voucher) => {
+    setEditVoucher(voucher);
+    setOpen(true);
+  };
+
+  const handleAddVoucher = () => {
+    setEditVoucher(null);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setEditVoucher(null);
+  };
+
+  const handleSave = () => {
+    // Fetch updated vouchers after saving
+    const fetchVouchers = async () => {
+      const token = Cookies.get('authToken');
+      try {
+        const response = await axios.get('http://localhost:8080/voucher/all', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setVouchers(response.data);
+      } catch (error) {
+        console.error('Error fetching vouchers:', error);
+      }
+    };
+
+    fetchVouchers();
+    handleClose();
+  };
+
+  const filteredVouchers = vouchers.filter(voucher =>
+    voucher.point.toString().includes(searchValue)
+  );
+
+  const displayedVouchers = selectedAvailability === 'all'
+    ? filteredVouchers
+    : filteredVouchers.filter(voucher => voucher.available.toString() === selectedAvailability);
+
+  const paginatedVouchers = displayedVouchers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+  return (
+    <div className="voucher-management-container">
+      <h1>Voucher Management</h1>
+      <Grid container spacing={0} alignItems="center" className="voucher-management-controls">
+        <Grid item xs={12} md={9}>
+          <TextField
+            label="Search Vouchers"
+            variant="outlined"
+            value={searchValue}
+            onChange={handleSearchChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            className="voucher-management-add-button"
+            onClick={handleAddVoucher}
+          >
+            Add New Voucher
+          </Button>
+        </Grid>
+      </Grid>
+      <FormControl variant="outlined" fullWidth className="voucher-management-availability-select">
+        <InputLabel>Availability</InputLabel>
+        <Select
+          value={selectedAvailability}
+          onChange={handleAvailabilityChange}
+          label="Availability"
+        >
+          <MenuItem value="all">All Vouchers</MenuItem>
+          <MenuItem value="true">Available</MenuItem>
+          <MenuItem value="false">Not Available</MenuItem>
+        </Select>
+      </FormControl>
+      <TableContainer component={Paper} className="voucher-management-table-container">
+        <Table className="voucher-management-table">
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Points</TableCell>
+              <TableCell>Discount (%)</TableCell>
+              <TableCell>Expiration Date</TableCell>
+              <TableCell>Available</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedVouchers.map((voucher) => (
+              <TableRow key={voucher.voucherId}>
+                <TableCell>{voucher.voucherId}</TableCell>
+                <TableCell>{voucher.point}</TableCell>
+                <TableCell>{voucher.discount}</TableCell>
+                <TableCell>{voucher.expirationDate}</TableCell>
+                <TableCell>{voucher.available ? 'Yes' : 'No'}</TableCell>
+                <TableCell className="voucher-management-actions">
+                  <IconButton onClick={() => handleEditVoucher(voucher)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(voucher.voucherId)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <TablePagination
+          component="div"
+          count={displayedVouchers.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[15, 30, 50]}
+          className="voucher-management-pagination"
+        />
+      </TableContainer>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <DialogTitle>{editVoucher ? 'Edit Voucher' : 'Add New Voucher'}</DialogTitle>
+        <DialogContent>
+          <VoucherForm onSave={handleSave} initialVoucher={editVoucher} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">Cancel</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};
+
+export default VoucherManagement;

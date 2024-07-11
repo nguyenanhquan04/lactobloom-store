@@ -3,7 +3,10 @@ import axios from 'axios';
 import {
   Button, TextField, Grid, Select, MenuItem, InputLabel, FormControl
 } from '@mui/material';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Cookies from 'js-cookie';
+
 
 const ProductForm = ({ onSave, initialProduct }) => {
   const [product, setProduct] = useState({
@@ -13,7 +16,9 @@ const ProductForm = ({ onSave, initialProduct }) => {
     price: '',
     stock: '',
     discount: '',
-    description: ''
+    description: '',
+    longDescription: '',
+    preOrder: false,
   });
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -52,10 +57,18 @@ const ProductForm = ({ onSave, initialProduct }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setProduct({
-      ...product,
-      [name]: value
-    });
+    setProduct(prevProduct => ({
+      ...prevProduct,
+      [name]: name === 'preOrder' ? JSON.parse(value) : value || ''
+    }));
+  };
+
+  const handleLongDescriptionChange = (event, editor) => {
+    const data = editor.getData();
+    setProduct(prevProduct => ({
+      ...prevProduct,
+      longDescription: data
+    }));
   };
 
   const handleSubmit = async (event) => {
@@ -142,10 +155,16 @@ const ProductForm = ({ onSave, initialProduct }) => {
             label="Description"
             variant="outlined"
             fullWidth
-            multiline
             rows={4}
             value={product.description}
             onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <CKEditor
+            editor={ClassicEditor}
+            data={product.longDescription || ''}
+            onChange={handleLongDescriptionChange}
           />
         </Grid>
         <Grid item xs={12} sm={4}>
@@ -160,7 +179,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={2}>
           <TextField
             name="stock"
             label="Stock"
@@ -172,7 +191,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={2}>
           <TextField
             name="discount"
             label="Discount (%)"
@@ -184,6 +203,21 @@ const ProductForm = ({ onSave, initialProduct }) => {
             onChange={handleChange}
             required
           />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel>Pre Order</InputLabel>
+            <Select
+              name="preOrder"
+              value={product.preOrder}
+              onChange={handleChange}
+              label="Pre Order"
+              required
+            >
+              <MenuItem value={true}>Cho phép đặt trước</MenuItem>
+              <MenuItem value={false}>Không cho phép đặt trước</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">

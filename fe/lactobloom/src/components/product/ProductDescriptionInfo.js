@@ -10,6 +10,7 @@ import { addToCompare } from "../../store/slices/compare-slice";
 import { getProductReviewByProductId } from "../../utils/ProductReviewService";
 import { getCategoryByProductId } from "../../utils/CategoryService";
 import { getBrandByProductId } from "../../utils/BrandService";
+import Cookies from "js-cookie";
 
 const ProductDescriptionInfo = ({
   product,
@@ -27,6 +28,7 @@ const ProductDescriptionInfo = ({
   const [brand, setBrand] = useState(null);
 
   const productCartQty = getProductCartQuantity(cartItems, product);
+  const authToken = Cookies.get("authToken");
 
   useEffect(() => {
     // Fetch the reviews from the API
@@ -62,7 +64,9 @@ const ProductDescriptionInfo = ({
 
   return (
     <div className="product-details-content ml-70">
-      <h2>{product.productName}</h2>
+      {(product.stock <= 0 && product.preOrder && authToken) ?
+      <h2>{product.productName} (Pre Order)</h2> 
+      : <h2>{product.productName}</h2>}
       <div className="product-details-price">
         {discountedPrice !== null ? (
           <Fragment>
@@ -125,7 +129,9 @@ const ProductDescriptionInfo = ({
             />
             <button
               onClick={() =>
-                setQuantityCount(
+                product.stock > 0 || (product.stock <= 0 && product.preOrder && authToken)
+                  ? setQuantityCount(quantityCount + 1)
+                  : setQuantityCount(
                   quantityCount < product.stock - productCartQty
                     ? quantityCount + 1
                     : quantityCount
@@ -143,14 +149,26 @@ const ProductDescriptionInfo = ({
                   dispatch(
                     addToCart({
                       ...product,
-                      quantity: quantityCount
+                      quantity: quantityCount,
                     })
                   )
                 }
                 disabled={productCartQty >= product.stock}
               >
-                {" "}
-                Add To Cart{" "}
+                Add To Cart
+              </button>
+            ) : product.stock <= 0 && product.preOrder && authToken ? (
+              <button
+                onClick={() =>
+                  dispatch(
+                    addToCart({
+                      ...product,
+                      quantity: quantityCount,
+                    })
+                  )
+                }
+              >
+                Pre Order
               </button>
             ) : (
               <button disabled>Out of Stock</button>

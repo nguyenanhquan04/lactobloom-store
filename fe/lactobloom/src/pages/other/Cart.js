@@ -51,27 +51,27 @@ const Cart = () => {
         {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Cart", path: process.env.PUBLIC_URL + pathname }
+            {label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            {label: "Giỏ Hàng", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
             {cartItems && cartItems.length >= 1 ? (
               <Fragment>
-                <h3 className="cart-page-title">Your cart items</h3>
+                <h3 className="cart-page-title">Sản phẩm trong giỏ</h3>
                 <div className="row">
                   <div className="col-12">
                     <div className="table-content table-responsive cart-table-content">
                       <table>
                         <thead>
                           <tr>
-                            <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Unit Price</th>
-                            <th>Qty</th>
-                            <th>Subtotal</th>
-                            <th>action</th>
+                            <th>Hình Ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>SL</th>
+                            <th>Thành Tiền</th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -214,12 +214,12 @@ const Cart = () => {
                         <Link
                           to={process.env.PUBLIC_URL + "/shop"}
                         >
-                          Continue Shopping
+                          Tiếp tục mua hàng
                         </Link>
                       </div>
                       <div className="cart-clear">
                         <button onClick={() => dispatch(deleteAllFromCart())}>
-                          Clear Shopping Cart
+                          Xóa đơn hàng
                         </button>
                       </div>
                     </div>

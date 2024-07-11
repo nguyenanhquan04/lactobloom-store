@@ -143,7 +143,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
             type="number"
             value={order.shippingFee}
             onChange={handleChange}
-            required
+            disabled
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -155,7 +155,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
             type="number"
             value={order.totalPrice}
             onChange={handleChange}
-            required
+            disabled
           />
         </Grid>
         <Grid item xs={12}>

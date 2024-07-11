@@ -82,7 +82,7 @@ const IconGroup = ({ iconWhiteClass }) => {
           <form onSubmit={handleSubmit}>
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Tìm kiếm"
               value={searchTerm}
               onChange={handleSearchChange}
             />

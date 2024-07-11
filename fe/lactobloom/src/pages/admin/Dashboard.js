@@ -139,7 +139,7 @@ const Dashboard = () => {
       });
       const salesData = response.data.map(item => ({
         month: item.month,
-        revenue: parseFloat(item.revenue) / 1000000, // Adjust revenue scale here
+        doanhThu: parseFloat(item.revenue) / 1000000, // Adjust revenue scale here
         orderCounts: item.orderCounts
       }));
       setSalesByMonth(salesData);
@@ -247,15 +247,15 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Sales By Month Of Year
+                  Doanh Thu Năm Nay
                 </Typography>
                 <BarChart width={600} height={300} data={salesByMonth}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
-                  <YAxis label={{ value: 'Revenue (millions)', angle: -90, position: 'insideLeft' }} />
+                  <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
                   <Tooltip formatter={(value, name) => name === 'revenue' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
                   <Legend />
-                  <Bar dataKey="revenue" fill="#8884d8" />
+                  <Bar dataKey="doanhThu" fill="#8884d8" />
                   <Bar dataKey="orderCounts" fill="#82ca9d" />
                 </BarChart>
               </CardContent>
@@ -266,7 +266,7 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Sales By Date Of Month
+                  Doanh Thu Tháng Này
                 </Typography>
                 <LineChart width={600} height={300} data={salesByDate}>
                   <CartesianGrid strokeDasharray="3 3" />
