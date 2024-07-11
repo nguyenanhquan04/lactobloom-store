@@ -64,7 +64,7 @@ const cartSlice = createSlice({
                 }
             }
 
-            cogoToast.success("Added To Cart", {position: "bottom-left"});
+            cogoToast.success("Đã thêm sản phẩm vào giỏ hàng", {position: "bottom-left"});
         },
         deleteFromCart(state, action) {
             state.cartItems = state.cartItems.filter(item => item.cartItemId !== action.payload);

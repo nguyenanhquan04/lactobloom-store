@@ -116,8 +116,8 @@ const Checkout = () => {
       <LayoutOne headerTop="visible">
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Checkout", path: process.env.PUBLIC_URL + pathname },
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Thanh toán", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
         <div className="checkout-area pt-95 pb-100">
@@ -126,11 +126,11 @@ const Checkout = () => {
               <div className="row">
                 <div className="col-lg-7">
                   <div className="billing-info-wrap">
-                    <h3>Order Details</h3>
+                    <h3>Thông tin đật hàng</h3>
                     <div className="row">
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>Full Name</label>
+                          <label>Họ tên</label>
                           <input
                             type="text"
                             value={fullName}
@@ -141,7 +141,7 @@ const Checkout = () => {
                       </div>
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>Address</label>
+                          <label>Địa chỉ</label>
                           <input
                             className="billing-address"
                             placeholder="House number and street name"
@@ -167,7 +167,7 @@ const Checkout = () => {
                       </div>
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
-                          <label>Phone</label>
+                          <label>Số điện thoại</label>
                           <input
                             type="text"
                             value={phone}
@@ -180,13 +180,13 @@ const Checkout = () => {
                         <div className="billing-info mb-20">
                           <label>Voucher</label>
                           <select onChange={handleVoucherChange}>
-                            <option value="">Select a voucher</option>
+                            <option value="">Chọn voucher</option>
                             {vouchers.map((voucher) => (
                               <option
                                 key={voucher.voucherId}
                                 value={voucher.voucherId}
                               >
-                                Discount {voucher.discount}%, Expire Date:{" "}
+                                Giảm {voucher.discount}%, Ngày hết hạn:{" "}
                                 {voucher.expirationDate}
                               </option>
                             ))}
@@ -195,11 +195,10 @@ const Checkout = () => {
                       </div>
                     </div>
                     <div className="additional-info-wrap">
-                      <h4>Additional information</h4>
+                      <h4>Thông tin thêm</h4>
                       <div className="additional-info">
-                        <label>Order notes</label>
+                        <label>Ghi chú</label>
                         <textarea
-                          placeholder="Notes about your order, e.g. special notes for delivery. "
                           name="message"
                           value={orderNotes}
                           onChange={(e) => setOrderNotes(e.target.value)} // Handle order notes change
@@ -211,13 +210,13 @@ const Checkout = () => {
 
                 <div className="col-lg-5">
                   <div className="your-order-area">
-                    <h3>Your order</h3>
+                    <h3>Đơn hàng của bạn</h3>
                     <div className="your-order-wrap gray-bg-4">
                       <div className="your-order-product-info">
                         <div className="your-order-top">
                           <ul>
-                            <li>Product</li>
-                            <li>Total</li>
+                            <li>Sản phẩm</li>
+                            <li>Thành tiền</li>
                           </ul>
                         </div>
                         <div className="your-order-middle">
@@ -272,13 +271,13 @@ const Checkout = () => {
                         </div>
                         <div className="your-order-bottom">
                           <ul>
-                            <li className="your-order-shipping">Shipping</li>
-                            <li>Free shipping</li>
+                            <li className="your-order-shipping">Vận chuyển</li>
+                            <li>Miễn phí</li>
                           </ul>
                           {selectedVoucher && (
                             <div className="your-order-discount">
                               <ul>
-                                <li className="order-discount">Discount</li>
+                                <li className="order-discount">Giảm giá</li>
                                 <li>
                                   {(
                                     cartTotalPrice -
@@ -294,7 +293,7 @@ const Checkout = () => {
                         </div>
                         <div className="your-order-total">
                           <ul>
-                            <li className="order-total">Total</li>
+                            <li className="order-total">Tổng</li>
                             <li>
                               {selectedVoucher
                                 ? getDiscountPrice(
@@ -314,7 +313,7 @@ const Checkout = () => {
                         className="btn-hover"
                         onClick={() => placeOrder(cartTotalPrice)}
                       >
-                        Place Order
+                        Hoàn tất đơn hàng
                       </button>
                     </div>
                   </div>

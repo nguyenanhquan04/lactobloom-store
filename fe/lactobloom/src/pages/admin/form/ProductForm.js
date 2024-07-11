@@ -105,7 +105,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         <Grid item xs={12}>
           <TextField
             name="productName"
-            label="Product Name"
+            label="Tên sản phẩm"
             variant="outlined"
             fullWidth
             value={product.productName}
@@ -115,7 +115,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl variant="outlined" fullWidth>
-            <InputLabel>Brand</InputLabel>
+            <InputLabel>Thương hiệu</InputLabel>
             <Select
               name="brandId"
               value={product.brandId}
@@ -133,7 +133,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl variant="outlined" fullWidth>
-            <InputLabel>Category</InputLabel>
+            <InputLabel>Danh mục</InputLabel>
             <Select
               name="categoryId"
               value={product.categoryId}
@@ -152,7 +152,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         <Grid item xs={12}>
           <TextField
             name="description"
-            label="Description"
+            label="Mô tả"
             variant="outlined"
             fullWidth
             rows={4}
@@ -170,7 +170,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         <Grid item xs={12} sm={4}>
           <TextField
             name="price"
-            label="Price"
+            label="Giá"
             variant="outlined"
             fullWidth
             type="number"
@@ -182,7 +182,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         <Grid item xs={12} sm={2}>
           <TextField
             name="stock"
-            label="Stock"
+            label="Kho"
             variant="outlined"
             fullWidth
             type="number"
@@ -194,7 +194,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         <Grid item xs={12} sm={2}>
           <TextField
             name="discount"
-            label="Discount (%)"
+            label="Giảm (%)"
             variant="outlined"
             fullWidth
             type="number"
@@ -221,7 +221,7 @@ const ProductForm = ({ onSave, initialProduct }) => {
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">
-            {initialProduct ? 'Update Product' : 'Add Product'}
+            {initialProduct ? 'Cập nhật' : 'Thêm'}
           </Button>
         </Grid>
       </Grid>

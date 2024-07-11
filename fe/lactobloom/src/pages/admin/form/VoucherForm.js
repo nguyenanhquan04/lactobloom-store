@@ -71,7 +71,7 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
         <Grid item xs={12}>
           <TextField
             name="point"
-            label="Point"
+            label="Điểm"
             variant="outlined"
             fullWidth
             value={voucher.point || ''}
@@ -82,7 +82,7 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
         <Grid item xs={12}>
           <TextField
             name="discount"
-            label="Discount (%)"
+            label="Giảm giá (%)"
             variant="outlined"
             fullWidth
             value={voucher.discount || ''}
@@ -93,7 +93,7 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
         <Grid item xs={12}>
           <TextField
             name="expirationDate"
-            label="Expiration Date"
+            label="Ngày hết hạn"
             variant="outlined"
             fullWidth
             type="datetime-local"
@@ -104,7 +104,7 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
         </Grid>
         <Grid item xs={12}>
           <FormControl variant="outlined" fullWidth>
-            <InputLabel>Available</InputLabel>
+            <InputLabel>Trạng thái</InputLabel>
             <Select
               name="available"
               value={voucher.available}
@@ -119,7 +119,7 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">
-            {initialVoucher ? 'Update Voucher' : 'Add Voucher'}
+            {initialVoucher ? 'Cập nhật' : 'Thêm'}
           </Button>
         </Grid>
       </Grid>

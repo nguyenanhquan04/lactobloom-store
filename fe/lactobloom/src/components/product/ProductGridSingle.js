@@ -105,14 +105,14 @@ const ProductGridSingle = ({
                   }
                   disabled={cartItem !== undefined && cartItem.quantity > 0}
                   title={
-                    cartItem !== undefined ? "Added to cart" : "Add to cart"
+                    cartItem !== undefined ? "Đã thêm" : "Thêm vào giỏ"
                   }
                 >
                   {" "}
                   <i className="pe-7s-cart"></i>{" "}
                   {cartItem !== undefined && cartItem.quantity > 0
-                    ? "Added"
-                    : "Add to cart"}
+                    ? "Đã thêm"
+                    : "Thêm vào giỏ"}
                 </button>
               ) : (
                 <button disabled className="active">

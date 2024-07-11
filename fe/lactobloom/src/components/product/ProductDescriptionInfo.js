@@ -84,14 +84,14 @@ const ProductDescriptionInfo = ({
           <div className="pro-details-rating">
             <Rating ratingValue={averageRating} />
           </div>
-          <span>({averageRating.toFixed(1)} out of 5)</span>
+          <span>({averageRating.toFixed(1)} / 5)</span>
         </div>
       ) : (
         <div className="pro-details-rating-wrap">
           <div className="pro-details-rating">
             <Rating ratingValue={0} />
           </div>
-          <span>(0 out of 5)</span>
+          <span>(0 / 5)</span>
         </div>
       )}
       <div className="pro-details-list">
@@ -106,7 +106,7 @@ const ProductDescriptionInfo = ({
               rel="noopener noreferrer"
               target="_blank"
             >
-              Buy Now
+              Mua ngay
             </a>
           </div>
         </div>
@@ -155,7 +155,7 @@ const ProductDescriptionInfo = ({
                 }
                 disabled={productCartQty >= product.stock}
               >
-                Add To Cart
+                Thêm vào giỏ
               </button>
             ) : product.stock <= 0 && product.preOrder && authToken ? (
               <button
@@ -171,7 +171,7 @@ const ProductDescriptionInfo = ({
                 Pre Order
               </button>
             ) : (
-              <button disabled>Out of Stock</button>
+              <button disabled>Hết hàng</button>
             )}
           </div>
           <div className="pro-details-wishlist">
@@ -206,7 +206,7 @@ const ProductDescriptionInfo = ({
       )}
       {category && (
         <div className="pro-details-meta">
-          <span>Category:</span>
+          <span>Danh mục:</span>
           <ul>
             <li>
               <Link>{category.categoryName}</Link>
@@ -216,7 +216,7 @@ const ProductDescriptionInfo = ({
       )}
       {brand && (
         <div className="pro-details-meta">
-          <span>Brand:</span>
+          <span>Thương hiệu:</span>
           <ul>
             <li>
               <Link>{brand.brandName}</Link>

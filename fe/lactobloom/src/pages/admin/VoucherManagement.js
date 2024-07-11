@@ -117,11 +117,11 @@ const VoucherManagement = () => {
 
   return (
     <div className="voucher-management-container">
-      <h1>Voucher Management</h1>
+      <h1>Quản lý Voucher</h1>
       <Grid container spacing={0} alignItems="center" className="voucher-management-controls">
         <Grid item xs={12} md={9}>
           <TextField
-            label="Search Vouchers"
+            label="Tìm Voucher"
             variant="outlined"
             value={searchValue}
             onChange={handleSearchChange}
@@ -135,20 +135,20 @@ const VoucherManagement = () => {
             className="voucher-management-add-button"
             onClick={handleAddVoucher}
           >
-            Add New Voucher
+            Thêm Voucher
           </Button>
         </Grid>
       </Grid>
       <FormControl variant="outlined" fullWidth className="voucher-management-availability-select">
-        <InputLabel>Availability</InputLabel>
+        <InputLabel>Khả dụng</InputLabel>
         <Select
           value={selectedAvailability}
           onChange={handleAvailabilityChange}
-          label="Availability"
+          label="Khả dụng"
         >
-          <MenuItem value="all">All Vouchers</MenuItem>
-          <MenuItem value="true">Available</MenuItem>
-          <MenuItem value="false">Not Available</MenuItem>
+          <MenuItem value="all">Tất cả Voucher</MenuItem>
+          <MenuItem value="true">Khả dụng</MenuItem>
+          <MenuItem value="false">Không khả dụng</MenuItem>
         </Select>
       </FormControl>
       <TableContainer component={Paper} className="voucher-management-table-container">
@@ -156,11 +156,11 @@ const VoucherManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Points</TableCell>
-              <TableCell>Discount (%)</TableCell>
-              <TableCell>Expiration Date</TableCell>
-              <TableCell>Available</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Điểm</TableCell>
+              <TableCell>Giảm giá (%)</TableCell>
+              <TableCell>Ngày hết hạn</TableCell>
+              <TableCell>Trạng thái</TableCell>
+              <TableCell>Thao tác</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -195,12 +195,12 @@ const VoucherManagement = () => {
         />
       </TableContainer>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>{editVoucher ? 'Edit Voucher' : 'Add New Voucher'}</DialogTitle>
+        <DialogTitle>{editVoucher ? 'Cập nhật Voucher' : 'Thêm Voucher'}</DialogTitle>
         <DialogContent>
           <VoucherForm onSave={handleSave} initialVoucher={editVoucher} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
+          <Button onClick={handleClose} color="secondary">Hủy</Button>
         </DialogActions>
       </Dialog>
     </div>

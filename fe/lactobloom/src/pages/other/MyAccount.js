@@ -114,8 +114,8 @@ const MyAccount = () => {
       <LayoutOne headerTop="visible">
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "My Account", path: process.env.PUBLIC_URL + pathname },
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Tài khoản", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
 
@@ -130,19 +130,19 @@ const MyAccount = () => {
                       className="single-my-account mb-20"
                     >
                       <Accordion.Header className="panel-heading">
-                        <span>1 .</span> Edit your account information{" "}
+                        <span>1 .</span> Chỉnh sửa thông tin tài khoản{" "}
                       </Accordion.Header>
                       <Accordion.Body>
                         <div className="myaccount-info-wrapper">
                           <div className="account-info-wrapper">
-                            <h4>My Account Information</h4>
-                            <h5>Your Personal Details</h5>
+                            <h4>Thông tin tài khoản</h4>
+                            <h5>Thông tin cá nhân</h5>
                           </div>
                           <form onSubmit={handleUpdate}>
                             <div className="row">
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>Full Name</label>
+                                  <label>Họ tên</label>
                                   <input
                                     type="text"
                                     value={fullName}
@@ -160,7 +160,7 @@ const MyAccount = () => {
                               </div>
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>Address</label>
+                                  <label>Địa chỉ</label>
                                   <input
                                     type="text"
                                     value={address}
@@ -170,7 +170,7 @@ const MyAccount = () => {
                               </div>
                               <div className="col-lg-6 col-md-6">
                                 <div className="billing-info">
-                                  <label>Phone</label>
+                                  <label>Số điện thoại</label>
                                   <input
                                     type="text"
                                     value={phone}
@@ -180,7 +180,7 @@ const MyAccount = () => {
                               </div>
                               <div className="col-lg-6 col-md-6">
                                 <div className="billing-info">
-                                  <label>Point</label>
+                                  <label>Điểm</label>
                                   <input
                                     type="text"
                                     value={user?.point || 0}
@@ -191,7 +191,7 @@ const MyAccount = () => {
                             </div>
                             <div className="billing-back-btn">
                               <div className="billing-btn">
-                                <button type="submit">Update</button>
+                                <button type="submit">Cập Nhật</button>
                               </div>
                             </div>
                           </form>
@@ -204,19 +204,19 @@ const MyAccount = () => {
                       className="single-my-account mb-20"
                     >
                       <Accordion.Header className="panel-heading">
-                        <span>2 .</span> Change your password
+                        <span>2 .</span> Thay đổi mật khẩu
                       </Accordion.Header>
                       <Accordion.Body>
                         <div className="myaccount-info-wrapper">
                           <div className="account-info-wrapper">
-                            <h4>Change Password</h4>
-                            <h5>Your Password</h5>
+                            <h4>Thay đổi mật khẩu</h4>
+                            <h5>Mật khẩu</h5>
                           </div>
                           <form onSubmit={handleChangePassword}>
                             <div className="row">
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>Old Password</label>
+                                  <label>Mật khẩu cũ</label>
                                   <input
                                     type="password"
                                     value={oldPassword}
@@ -228,7 +228,7 @@ const MyAccount = () => {
                               </div>
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>New Password</label>
+                                  <label>Mật khẩu mới</label>
                                   <input
                                     type="password"
                                     value={newPassword}
@@ -240,7 +240,7 @@ const MyAccount = () => {
                               </div>
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>Confirm New Password</label>
+                                  <label>Xác nhận mật khẩu mới</label>
                                   <input
                                     type="password"
                                     value={confirmNewPassword}
@@ -256,7 +256,7 @@ const MyAccount = () => {
                             )}
                             <div className="billing-back-btn">
                               <div className="billing-btn">
-                                <button type="submit">Confirm</button>
+                                <button type="submit">Xác nhận</button>
                               </div>
                             </div>
                           </form>

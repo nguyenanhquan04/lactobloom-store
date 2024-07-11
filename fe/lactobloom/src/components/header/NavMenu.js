@@ -94,12 +94,12 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/order-history"}>
-                  Order History
+                Lịch sử mua hàng
                 </Link>
               </li>
               <li>
                 <Link to={process.env.PUBLIC_URL + "/checkout-result"}>
-                  Checkout Result
+                  Kết quả thanh toán
                 </Link>
               </li>
               <li>
