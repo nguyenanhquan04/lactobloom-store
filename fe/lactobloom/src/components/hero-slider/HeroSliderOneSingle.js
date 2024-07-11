@@ -16,7 +16,7 @@ const HeroSliderOneSingle = ({ data }) => {
                   className="animated"
                   to={process.env.PUBLIC_URL + data.url}
                 >
-                  SHOP NOW
+                  KHÁM PHÁ NGAY
                 </Link>
               </div>
             </div>

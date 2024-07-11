@@ -16,7 +16,7 @@ const TabProduct = ({
       className={clsx("product-area", spaceTopClass, spaceBottomClass, bgColorClass)}
     >
       <div className="container">
-        <SectionTitle titleText="PRODUCT RECOMMENDATION" positionClass="text-center" />
+        <SectionTitle titleText="SẢN PHẨM BÁN CHẠY" positionClass="text-center" />
         <Tab.Container defaultActiveKey="saleItems">
           <Nav
             variant="pills"

@@ -16,12 +16,12 @@ const ShopSearch = () => {
 
   return (
     <div className="sidebar-widget">
-      <h4 className="pro-sidebar-title">Search</h4>
+      <h4 className="pro-sidebar-title">Tìm Kiếm</h4>
       <div className="pro-sidebar-search mb-50 mt-25">
         <form className="pro-sidebar-search-form" onSubmit={handleSubmit}>
           <input 
             type="text" 
-            placeholder="Search here..."
+            placeholder="Tìm kiếm..."
             value={searchTerm}
             onChange={handleSearchChange}  
           />

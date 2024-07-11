@@ -13,6 +13,9 @@ import { getProductReviewByProductId } from "../../utils/ProductReviewService";
 import { getCategoryByProductId } from "../../utils/CategoryService";
 import { getBrandByProductId } from "../../utils/BrandService";
 import Cookies from "js-cookie";
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 const ProductDescriptionInfo = ({
@@ -212,9 +215,12 @@ const ProductDescriptionInfo = ({
             <button
               onClick={() =>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 setQuantityCount(
                   quantityCount < productStock - productCartQty
 =======
+=======
+>>>>>>> Stashed changes
                 product.stock > 0 || (product.stock <= 0 && product.preOrder && authToken)
                   ? setQuantityCount(quantityCount + 1)
                   : setQuantityCount(
@@ -264,6 +270,22 @@ const ProductDescriptionInfo = ({
                   )
                 }
               >
+<<<<<<< Updated upstream
+=======
+                Add To Cart
+              </button>
+            ) : product.stock <= 0 && product.preOrder && authToken ? (
+              <button
+                onClick={() =>
+                  dispatch(
+                    addToCart({
+                      ...product,
+                      quantity: quantityCount,
+                    })
+                  )
+                }
+              >
+>>>>>>> Stashed changes
                 Pre Order
               </button>
             ) : (

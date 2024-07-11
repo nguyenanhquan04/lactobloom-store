@@ -26,6 +26,9 @@ const ProductGridListSingle = ({
   const [averageRating, setAverageRating] = useState(0);
   const [wishlistData, setWishlistData] = useState([]);
   const [authToken, setAuthToken] = useState(null);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
@@ -225,9 +228,12 @@ const ProductGridListSingle = ({
               {product.productName}
             </Link>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
           </h3>
           {product.rating && product.rating > 0 ? (
 =======
+=======
+>>>>>>> Stashed changes
           </h3>}
           {averageRating && averageRating > 0 ? (
 >>>>>>> Stashed changes
@@ -402,7 +408,10 @@ const ProductGridListSingle = ({
                   )}
                 </div>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 <div className="shop-list-wishlist ml-10">
@@ -421,6 +430,7 @@ const ProductGridListSingle = ({
                 </div>
                 <div className="shop-list-compare ml-10">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                   <button
                     className={compareItem !== undefined ? "active" : ""}
                     disabled={compareItem !== undefined}
@@ -433,6 +443,8 @@ const ProductGridListSingle = ({
                   >
                     <i className="pe-7s-shuffle" />
 =======
+=======
+>>>>>>> Stashed changes
                   <button
                     className={compareItem !== undefined ? "active" : ""}
                     disabled={compareItem !== undefined}
@@ -452,6 +464,9 @@ const ProductGridListSingle = ({
                     title="Quick View"
                   >
                     <i className="pe-7s-look" />
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                   </button>
                 </div>
@@ -467,11 +482,17 @@ const ProductGridListSingle = ({
         product={product}
         currency={currency}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         discountedPrice={discountedPrice}
         finalProductPrice={finalProductPrice}
         finalDiscountedPrice={finalDiscountedPrice}
         wishlistItem={wishlistItem}
         compareItem={compareItem}
+=======
+        discountedprice={finalDiscountedPrice}
+        finalproductprice={finalProductPrice}
+        finaldiscountedprice={finalDiscountedPrice}
+>>>>>>> Stashed changes
 =======
         discountedprice={finalDiscountedPrice}
         finalproductprice={finalProductPrice}

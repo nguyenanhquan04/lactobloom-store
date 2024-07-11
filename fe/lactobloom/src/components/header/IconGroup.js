@@ -26,9 +26,20 @@ const IconGroup = ({ iconWhiteClass }) => {
           <i className="pe-7s-search" />
         </button>
         <div className="search-content">
+<<<<<<< Updated upstream
           <form action="#">
             <input type="text" placeholder="Search" />
             <button className="button-search">
+=======
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Tìm kiếm"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            <button className="button-search" disabled={!searchTerm}>
+>>>>>>> Stashed changes
               <i className="pe-7s-search" />
             </button>
           </form>

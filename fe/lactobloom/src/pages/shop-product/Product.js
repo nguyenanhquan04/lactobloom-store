@@ -46,8 +46,11 @@ const Product = () => {
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
           productFullDesc={product.description}
 =======
+=======
+>>>>>>> Stashed changes
           productFullDesc={product.longDescription}
           productId={product.productId}
 >>>>>>> Stashed changes

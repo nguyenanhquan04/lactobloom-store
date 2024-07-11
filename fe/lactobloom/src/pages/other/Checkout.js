@@ -2,6 +2,9 @@
 import { Fragment } from "react";
 =======
 import React, { Fragment, useState, useEffect } from "react";
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -109,6 +112,9 @@ const Checkout = () => {
     }
   };
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   return (
     <Fragment>

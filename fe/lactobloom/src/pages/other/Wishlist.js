@@ -57,18 +57,26 @@ const Wishlist = () => {
           <div className="container">
             {wishlistItems && wishlistItems.length >= 1 ? (
               <Fragment>
-                <h3 className="cart-page-title">Your wishlist items</h3>
+                <h3 className="cart-page-title">Sản phẩm yêu thích</h3>
                 <div className="row">
                   <div className="col-12">
                     <div className="table-content table-responsive cart-table-content">
                       <table>
                         <thead>
                           <tr>
+<<<<<<< Updated upstream
                             <th>Image</th>
                             <th>Product Name</th>
                             <th>Unit Price</th>
                             <th>Add To Cart</th>
                             <th>action</th>
+=======
+                            <th>Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Thêm vào giỏ</th>
+                            <th>Xóa</th>
+>>>>>>> Stashed changes
                           </tr>
                         </thead>
                         <tbody>
@@ -191,7 +199,7 @@ const Wishlist = () => {
                                     </button>
                                   ) : (
                                     <button disabled className="active">
-                                      Out of stock
+                                      Hết hàng
                                     </button>
                                   )}
                                 </td>
@@ -221,7 +229,7 @@ const Wishlist = () => {
                         <Link
                           to={process.env.PUBLIC_URL + "/shop"}
                         >
-                          Continue Shopping
+                          Tiếp tục mua hàng
                         </Link>
                       </div>
                       <div className="cart-clear">
@@ -241,9 +249,9 @@ const Wishlist = () => {
                       <i className="pe-7s-like"></i>
                     </div>
                     <div className="item-empty-area__text">
-                      No items found in wishlist <br />{" "}
+                      Không có sản phẩm yêu thích <br />{" "}
                       <Link to={process.env.PUBLIC_URL + "/shop"}>
-                        Add Items
+                        Thêm sản phẩm
                       </Link>
                     </div>
                   </div>
