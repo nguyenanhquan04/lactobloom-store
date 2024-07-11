@@ -16,7 +16,6 @@ const Cart = () => {
   const dispatch = useDispatch();
   let { pathname } = useLocation();
   
-  const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
 
   const [cartImages, setCartImages] = useState({});
@@ -132,6 +131,7 @@ const Cart = () => {
                                       <span className="amount old">
                                         {finalProductPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
+                                      <br/>
                                       <span className="amount">
                                         {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
                                       </span>
@@ -172,9 +172,7 @@ const Cart = () => {
                                         cartItem.quantity &&
                                         cartItem.quantity >=
                                           cartItemStock(
-                                            cartItem,
-                                            cartItem.selectedProductColor,
-                                            cartItem.selectedProductSize
+                                            cartItem
                                           )
                                       }
                                     >
@@ -233,22 +231,6 @@ const Cart = () => {
                   </div>
 
                   <div className="col-lg-4 col-md-6">
-                    <div className="discount-code-wrapper">
-                      <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">
-                          Use Coupon Code
-                        </h4>
-                      </div>
-                      <div className="discount-code">
-                        <p>Enter your coupon code if you have one.</p>
-                        <form>
-                          <input type="text" required name="name" />
-                          <button className="cart-btn-2" type="submit">
-                            Apply Coupon
-                          </button>
-                        </form>
-                      </div>
-                    </div>
                   </div>
 
                   <div className="col-lg-4 col-md-12">

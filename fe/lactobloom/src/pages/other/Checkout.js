@@ -1,27 +1,25 @@
-<<<<<<< Updated upstream
-import { Fragment } from "react";
-=======
 import React, { Fragment, useState, useEffect } from "react";
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import Cookies from "js-cookie";
+import { myVoucher } from "../../utils/VoucherService";
+import { userInfo } from "../../utils/UserService";
+import { createPayment } from "../../utils/PaymentService";
 
 const Checkout = () => {
   let cartTotalPrice = 0;
 
   let { pathname } = useLocation();
-  const currency = useSelector((state) => state.currency);
-  const { cartItems } = useSelector((state) => state.cart);
 
-<<<<<<< Updated upstream
-=======
+  const { cartItems } = useSelector((state) => state.cart);
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const authToken = Cookies.get("authToken");
+
   const [user, setUser] = useState(null);
   const [fullName, setFullName] = useState("");
   const [address, setAddress] = useState("");
@@ -112,23 +110,15 @@ const Checkout = () => {
     }
   };
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   return (
     <Fragment>
-      <SEO
-        titleTemplate="Checkout"
-        description="Lactobloom Checkout Page."
-      />
+      <SEO titleTemplate="Checkout" description="Lactobloom Checkout Page." />
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Checkout", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Checkout", path: process.env.PUBLIC_URL + pathname },
+          ]}
         />
         <div className="checkout-area pt-95 pb-100">
           <div className="container">
@@ -136,85 +126,74 @@ const Checkout = () => {
               <div className="row">
                 <div className="col-lg-7">
                   <div className="billing-info-wrap">
-                    <h3>Billing Details</h3>
+                    <h3>Order Details</h3>
                     <div className="row">
-                      <div className="col-lg-6 col-md-6">
+                      <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>First Name</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Last Name</label>
-                          <input type="text" />
+                          <label>Full Name</label>
+                          <input
+                            type="text"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            required
+                          />
                         </div>
                       </div>
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>Company Name</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-select mb-20">
-                          <label>Country</label>
-                          <select>
-                            <option>Select a country</option>
-                            <option>Azerbaijan</option>
-                            <option>Bahamas</option>
-                            <option>Bahrain</option>
-                            <option>Bangladesh</option>
-                            <option>Barbados</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-info mb-20">
-                          <label>Street Address</label>
+                          <label>Address</label>
                           <input
                             className="billing-address"
                             placeholder="House number and street name"
                             type="text"
-                          />
-                          <input
-                            placeholder="Apartment, suite, unit etc."
-                            type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            required
                           />
                         </div>
                       </div>
                       <div className="col-lg-12">
                         <div className="billing-info mb-20">
-                          <label>Town / City</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>State / County</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Postcode / ZIP</label>
-                          <input type="text" />
+                          <label>Email</label>
+                          <input
+                            className="billing-address"
+                            placeholder="abc@example.com"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                          />
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
                           <label>Phone</label>
-                          <input type="text" />
+                          <input
+                            type="text"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            required
+                          />
                         </div>
                       </div>
                       <div className="col-lg-6 col-md-6">
                         <div className="billing-info mb-20">
-                          <label>Email Address</label>
-                          <input type="text" />
+                          <label>Voucher</label>
+                          <select onChange={handleVoucherChange}>
+                            <option value="">Select a voucher</option>
+                            {vouchers.map((voucher) => (
+                              <option
+                                key={voucher.voucherId}
+                                value={voucher.voucherId}
+                              >
+                                Discount {voucher.discount}%, Expire Date:{" "}
+                                {voucher.expirationDate}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                     </div>
-
                     <div className="additional-info-wrap">
                       <h4>Additional information</h4>
                       <div className="additional-info">
@@ -222,7 +201,8 @@ const Checkout = () => {
                         <textarea
                           placeholder="Notes about your order, e.g. special notes for delivery. "
                           name="message"
-                          defaultValue={""}
+                          value={orderNotes}
+                          onChange={(e) => setOrderNotes(e.target.value)} // Handle order notes change
                         />
                       </div>
                     </div>
@@ -243,22 +223,21 @@ const Checkout = () => {
                         <div className="your-order-middle">
                           <ul>
                             {cartItems.map((cartItem, key) => {
+                              console.log(cartItems);
                               const discountedPrice = getDiscountPrice(
                                 cartItem.price,
                                 cartItem.discount
                               );
-                              const finalProductPrice = (
-                                cartItem.price * 1
-                              );
-                              const finalDiscountedPrice = (
-                                discountedPrice * 1
-                              );
+                              const finalProductPrice = cartItem.price;
+                              const finalDiscountedPrice = discountedPrice * 1;
 
                               discountedPrice != null
                                 ? (cartTotalPrice +=
-                                    finalDiscountedPrice * cartItem.quantity)
+                                    finalDiscountedPrice *
+                                    cartItem.quantity).toLocaleString("vi-VN")
                                 : (cartTotalPrice +=
-                                    finalProductPrice * cartItem.quantity);
+                                    finalProductPrice *
+                                    cartItem.quantity).toLocaleString("vi-VN");
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
@@ -296,12 +275,34 @@ const Checkout = () => {
                             <li className="your-order-shipping">Shipping</li>
                             <li>Free shipping</li>
                           </ul>
+                          {selectedVoucher && (
+                            <div className="your-order-discount">
+                              <ul>
+                                <li className="order-discount">Discount</li>
+                                <li>
+                                  {(
+                                    cartTotalPrice -
+                                    getDiscountPrice(
+                                      cartTotalPrice,
+                                      selectedVoucher.discount
+                                    )
+                                  ).toLocaleString("vi-VN") + " VND"}
+                                </li>
+                              </ul>
+                            </div>
+                          )}
                         </div>
                         <div className="your-order-total">
                           <ul>
                             <li className="order-total">Total</li>
                             <li>
-                              {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
+                              {selectedVoucher
+                                ? getDiscountPrice(
+                                    cartTotalPrice,
+                                    selectedVoucher.discount
+                                  ).toLocaleString("vi-VN") + " VND"
+                                : cartTotalPrice.toLocaleString("vi-VN") +
+                                  " VND"}
                             </li>
                           </ul>
                         </div>
@@ -309,7 +310,12 @@ const Checkout = () => {
                       <div className="payment-method"></div>
                     </div>
                     <div className="place-order mt-25">
-                      <button className="btn-hover">Place Order</button>
+                      <button
+                        className="btn-hover"
+                        onClick={() => placeOrder(cartTotalPrice)}
+                      >
+                        Place Order
+                      </button>
                     </div>
                   </div>
                 </div>

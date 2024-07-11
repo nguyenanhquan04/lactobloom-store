@@ -6,18 +6,56 @@ import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart } from "../../store/slices/cart-slice";
-import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
+import { addToWishlistFormAPI, deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
+import axios from "axios";
 import { getImagesByProductId } from "../../utils/ImageService";
+import Cookies from "js-cookie";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
   let { pathname } = useLocation();
-  
-  const currency = useSelector((state) => state.currency);
-  const { wishlistItems } = useSelector((state) => state.wishlist);
+
+  const { wishlistItems: reduxWishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems } = useSelector((state) => state.cart);
-  
+
+  const [wishlistItems, setWishlistItems] = useState([]);
   const [wishlistImages, setWishlistImages] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const authToken = Cookies.get("authToken");
+
+  useEffect(() => {
+    const fetchWishlistItems = async () => {
+      if (authToken) {
+        try {
+          const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
+            headers: {
+              Authorization: `Bearer ${authToken}`
+            }
+          });
+          const wishlistData = response.data;
+
+          const productPromises = wishlistData.map(async item => {
+            const productResponse = await axios.get(`http://localhost:8080/product/get/${item.productId}`);
+            return {
+              ...productResponse.data,
+              wishlistId: item.wishlistId // Adding the wishlistId from the wishlist API response
+            };
+          });
+
+          const productsWithWishlistId = await Promise.all(productPromises);
+          setWishlistItems(productsWithWishlistId);
+        } catch (error) {
+          console.error("Error fetching wishlist items:", error);
+        }
+      } else {
+        setWishlistItems(reduxWishlistItems);
+      }
+      setLoading(false);
+    };
+
+    fetchWishlistItems();
+  }, [authToken, reduxWishlistItems]);
 
   useEffect(() => {
     const fetchWishlistImages = async () => {
@@ -39,6 +77,28 @@ const Wishlist = () => {
     }
   }, [wishlistItems]);
 
+  const handleRemoveFromWishlist = async (wishlistId, productId) => {
+    if (authToken) {
+      try {
+        await axios.delete(`http://localhost:8080/wishlist/delete/${wishlistId}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          }
+        });
+        setWishlistItems(wishlistItems.filter(item => item.productId !== productId));
+        dispatch(deleteFromWishlist(productId));
+      } catch (error) {
+        console.error("Error removing from wishlist:", error);
+      }
+    } else {
+      dispatch(deleteFromWishlist(productId));
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Fragment>
       <SEO
@@ -46,11 +106,10 @@ const Wishlist = () => {
         description="Lactobloom Wishlist Page."
       />
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="cart-main-area pt-90 pb-100">
@@ -64,19 +123,11 @@ const Wishlist = () => {
                       <table>
                         <thead>
                           <tr>
-<<<<<<< Updated upstream
-                            <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Unit Price</th>
-                            <th>Add To Cart</th>
-                            <th>action</th>
-=======
                             <th>Hình ảnh</th>
                             <th>Tên sản phẩm</th>
                             <th>Đơn giá</th>
                             <th>Thêm vào giỏ</th>
                             <th>Xóa</th>
->>>>>>> Stashed changes
                           </tr>
                         </thead>
                         <tbody>
@@ -206,9 +257,7 @@ const Wishlist = () => {
 
                                 <td className="product-remove">
                                   <button
-                                    onClick={() =>
-                                      dispatch(deleteFromWishlist(wishlistItem.productId))
-                                    }
+                                    onClick={() => handleRemoveFromWishlist(wishlistItem.wishlistId, wishlistItem.productId)}
                                   >
                                     <i className="fa fa-times"></i>
                                   </button>
@@ -232,11 +281,11 @@ const Wishlist = () => {
                           Tiếp tục mua hàng
                         </Link>
                       </div>
-                      <div className="cart-clear">
+                      {/* <div className="cart-clear">
                         <button onClick={() => dispatch(deleteAllFromWishlist())}>
                           Clear Wishlist
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

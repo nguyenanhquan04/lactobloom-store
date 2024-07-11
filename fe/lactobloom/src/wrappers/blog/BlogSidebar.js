@@ -1,7 +1,33 @@
-
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { getAllBlogs } from "../../utils/BlogService";
+import { getAllBlogCategories } from "../../utils/BlogCategoryService";
 
 const BlogSidebar = () => {
+  const [latestBlogs, setLatestBlogs] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch latest blogs
+    getAllBlogs()
+      .then(response => {
+        const data = response.data; // Accessing data directly from Axios response
+        // Sort blogs by publishDate in descending order to get the latest posts
+        const sortedBlogs = data.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+        // Get the top 4 latest posts
+        setLatestBlogs(sortedBlogs.slice(0, 4));
+      })
+      .catch(error => console.error('Error fetching latest blogs:', error));
+
+    // Fetch blog categories
+    getAllBlogCategories()
+      .then(response => {
+        const data = response.data; // Accessing data directly from Axios response
+        setCategories(data);
+      })
+      .catch(error => console.error('Error fetching categories:', error));
+  }, []);
+
   return (
     <div className="sidebar-style">
       <div className="sidebar-widget">
@@ -16,160 +42,45 @@ const BlogSidebar = () => {
         </div>
       </div>
       <div className="sidebar-widget">
-        <h4 className="pro-sidebar-title">Recent Projects </h4>
+        <h4 className="pro-sidebar-title">Recent Blogs </h4>
         <div className="sidebar-project-wrap mt-30">
-          <div className="single-sidebar-blog">
-            <div className="sidebar-blog-img">
-              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                <img
-                  src={
-                    process.env.PUBLIC_URL + "/assets/img/blog/sidebar-1.jpg"
-                  }
-                  alt=""
-                />
-              </Link>
-            </div>
-            <div className="sidebar-blog-content">
-              <span>Photography</span>
-              <h4>
-                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                  T- Shart And Jeans
+          {latestBlogs.map(blog => (
+            <div className="single-sidebar-blog" key={blog.blogId}>
+              <div className="sidebar-blog-img">
+                <Link to={`${process.env.PUBLIC_URL}/blog-details/${blog.blogId}`}>
+                  <img
+                    src={blog.imageUrl}
+                    alt={blog.title}
+                  />
                 </Link>
-              </h4>
+              </div>
+              <div className="sidebar-blog-content">
+                <span>{blog.category}</span>
+                <h4>
+                  <Link to={`${process.env.PUBLIC_URL}/blog-details/${blog.blogId}`}>
+                    {blog.title}
+                  </Link>
+                </h4>
+              </div>
             </div>
-          </div>
-          <div className="single-sidebar-blog">
-            <div className="sidebar-blog-img">
-              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                <img
-                  src={
-                    process.env.PUBLIC_URL + "/assets/img/blog/sidebar-2.jpg"
-                  }
-                  alt=""
-                />
-              </Link>
-            </div>
-            <div className="sidebar-blog-content">
-              <span>Branding</span>
-              <h4>
-                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                  T- Shart And Jeans
-                </Link>
-              </h4>
-            </div>
-          </div>
-          <div className="single-sidebar-blog">
-            <div className="sidebar-blog-img">
-              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                <img
-                  src={
-                    process.env.PUBLIC_URL + "/assets/img/blog/sidebar-3.jpg"
-                  }
-                  alt=""
-                />
-              </Link>
-            </div>
-            <div className="sidebar-blog-content">
-              <span>Design</span>
-              <h4>
-                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                  T- Shart And Jeans
-                </Link>
-              </h4>
-            </div>
-          </div>
-          <div className="single-sidebar-blog">
-            <div className="sidebar-blog-img">
-              <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                <img
-                  src={
-                    process.env.PUBLIC_URL + "/assets/img/blog/sidebar-2.jpg"
-                  }
-                  alt=""
-                />
-              </Link>
-            </div>
-            <div className="sidebar-blog-content">
-              <span>Photography</span>
-              <h4>
-                <Link to={process.env.PUBLIC_URL + "/blog-details"}>
-                  T- Shart And Jeans
-                </Link>
-              </h4>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
       <div className="sidebar-widget mt-35">
         <h4 className="pro-sidebar-title">Categories</h4>
         <div className="sidebar-widget-list sidebar-widget-list--blog mt-20">
           <ul>
-            <li>
-              <div className="sidebar-widget-list-left">
-                <input type="checkbox" defaultValue />{" "}
-                <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                  Women <span>4</span>{" "}
-                </Link>
-                <span className="checkmark" />
-              </div>
-            </li>
-            <li>
-              <div className="sidebar-widget-list-left">
-                <input type="checkbox" defaultValue />{" "}
-                <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                  Men <span>4</span>{" "}
-                </Link>
-                <span className="checkmark" />
-              </div>
-            </li>
-            <li>
-              <div className="sidebar-widget-list-left">
-                <input type="checkbox" defaultValue />{" "}
-                <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                  Bags <span>4</span>{" "}
-                </Link>
-                <span className="checkmark" />
-              </div>
-            </li>
-            <li>
-              <div className="sidebar-widget-list-left">
-                <input type="checkbox" defaultValue />{" "}
-                <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                  Accessories <span>4</span>{" "}
-                </Link>
-                <span className="checkmark" />
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className="sidebar-widget mt-50">
-        <h4 className="pro-sidebar-title">Tag </h4>
-        <div className="sidebar-widget-tag mt-25">
-          <ul>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                Clothing
-              </Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                Accessories
-              </Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                For Men
-              </Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>Women</Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
-                Fashion
-              </Link>
-            </li>
+            {categories.map(category => (
+              <li key={category.blogCategoryId}>
+                <div className="sidebar-widget-list-left">
+                  <input type="checkbox" defaultValue />{" "}
+                  <Link>
+                    {category.blogCategoryName}{" "}
+                  </Link>
+                  <span className="checkmark" />
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

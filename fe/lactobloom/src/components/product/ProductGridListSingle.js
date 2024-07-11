@@ -3,13 +3,16 @@ import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
+import axios from "axios";
 import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
-import { addToWishlist } from "../../store/slices/wishlist-slice";
+import { addToWishlist, addToWishlistFormAPI } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import { getImagesByProductId } from "../../utils/ImageService";
+import { getProductReviewByProductId } from "../../utils/ProductReviewService";
+import Cookies from "js-cookie";
 
 const ProductGridListSingle = ({
   product,
@@ -21,21 +24,13 @@ const ProductGridListSingle = ({
 }) => {
   const [modalShow, setModalShow] = useState(false);
   const [productImages, setProductImages] = useState("/assets/img/no-image.png");
-<<<<<<< Updated upstream
-=======
   const [averageRating, setAverageRating] = useState(0);
   const [wishlistData, setWishlistData] = useState([]);
   const [authToken, setAuthToken] = useState(null);
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * 1);
-  const finalDiscountedPrice = +(
-    discountedPrice * 1
-  );
+  const finalDiscountedPrice = +(discountedPrice * 1);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -48,10 +43,6 @@ const ProductGridListSingle = ({
       }
     };
 
-<<<<<<< Updated upstream
-    fetchProductImages();
-  }, [product.productId]);
-=======
     const fetchProductReviews = async () => {
       try {
         const response = await getProductReviewByProductId(product.productId);
@@ -109,7 +100,6 @@ const ProductGridListSingle = ({
       dispatch(addToWishlist(product));
     }
   };
->>>>>>> Stashed changes
 
   return (
     <Fragment>
@@ -138,14 +128,14 @@ const ProductGridListSingle = ({
           <div className="product-action">
             <div className="pro-same-action pro-wishlist">
               <button
-                className={wishlistItem !== undefined ? "active" : ""}
-                disabled={wishlistItem !== undefined}
+                className={isProductInWishlist ? "active" : ""}
+                disabled={isProductInWishlist}
                 title={
-                  wishlistItem !== undefined
+                  isProductInWishlist
                     ? "Added to wishlist"
                     : "Add to wishlist"
                 }
-                onClick={() => dispatch(addToWishlist(product))}
+                onClick={() => handleWishlistClick(product)}
               >
                 <i className="pe-7s-like" />
               </button>
@@ -227,21 +217,17 @@ const ProductGridListSingle = ({
             <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
               {product.productName}
             </Link>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-          </h3>
-          {product.rating && product.rating > 0 ? (
-=======
-=======
->>>>>>> Stashed changes
           </h3>}
           {averageRating && averageRating > 0 ? (
->>>>>>> Stashed changes
             <div className="product-rating">
-              <Rating ratingValue={product.rating} />
+              <Rating ratingValue={averageRating} />
+              <span>({averageRating.toFixed(1)} out of 5)</span>
             </div>
           ) : (
-            ""
+            <div className="product-rating">
+              <Rating ratingValue={0} />
+              <span>(0 out of 5)</span>
+            </div>
           )}
           <div className="product-price">
             {discountedPrice !== null ? (
@@ -291,33 +277,6 @@ const ProductGridListSingle = ({
                   {product.productName}
                 </Link>
               </h3>
-<<<<<<< Updated upstream
-              <div className="product-list-price">
-                {discountedPrice !== null ? (
-                  <Fragment>
-                    <span>
-                      {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
-                    </span>{" "}
-                    <span className="old">
-                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
-                    </span>
-                  </Fragment>
-                ) : (
-                  <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
-                )}
-              </div>
-              {product.rating && product.rating > 0 ? (
-                <div className="rating-review">
-                  <div className="product-list-rating">
-                    <Rating ratingValue={product.rating} />
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-              {product.description ? (
-                <p>{product.description}</p>
-=======
               {averageRating && averageRating > 0 ? (
                 <div className="product-list-rating">
                   <Rating ratingValue={averageRating} />
@@ -347,7 +306,6 @@ const ProductGridListSingle = ({
               )}
               {product.shortDescription ? (
                 <p>{product.shortDescription}</p>
->>>>>>> Stashed changes
               ) : (
                 ""
               )}
@@ -364,9 +322,7 @@ const ProductGridListSingle = ({
                       Buy now{" "}
                     </a>
                   ) : product.variation && product.variation.length >= 1 ? (
-                    <Link
-                      to={`${process.env.PUBLIC_URL}/product/${product.productId}`}
-                    >
+                    <Link to={`${process.env.PUBLIC_URL}/product/${product.productId}`}>
                       Select Option
                     </Link>
                   ) : product.stock && product.stock > 0 ? (
@@ -377,13 +333,9 @@ const ProductGridListSingle = ({
                           ? "active"
                           : ""
                       }
-                      disabled={
-                        cartItem !== undefined && cartItem.quantity > 0
-                      }
+                      disabled={cartItem !== undefined && cartItem.quantity > 0}
                       title={
-                        cartItem !== undefined
-                          ? "Added to cart"
-                          : "Add to cart"
+                        cartItem !== undefined ? "Added to cart" : "Add to cart"
                       }
                     >
                       {" "}
@@ -407,44 +359,21 @@ const ProductGridListSingle = ({
                     </button>
                   )}
                 </div>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                 <div className="shop-list-wishlist ml-10">
                   <button
-                    className={wishlistItem !== undefined ? "active" : ""}
-                    disabled={wishlistItem !== undefined}
+                    className={isProductInWishlist ? "active" : ""}
+                    disabled={isProductInWishlist}
                     title={
-                      wishlistItem !== undefined
+                      isProductInWishlist
                         ? "Added to wishlist"
                         : "Add to wishlist"
                     }
-                    onClick={() => dispatch(addToWishlist(product))}
+                    onClick={() => handleWishlistClick(product)}
                   >
                     <i className="pe-7s-like" />
                   </button>
                 </div>
                 <div className="shop-list-compare ml-10">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                  <button
-                    className={compareItem !== undefined ? "active" : ""}
-                    disabled={compareItem !== undefined}
-                    title={
-                      compareItem !== undefined
-                        ? "Added to compare"
-                        : "Add to compare"
-                    }
-                    onClick={() => dispatch(addToCompare(product))}
-                  >
-                    <i className="pe-7s-shuffle" />
-=======
-=======
->>>>>>> Stashed changes
                   <button
                     className={compareItem !== undefined ? "active" : ""}
                     disabled={compareItem !== undefined}
@@ -464,10 +393,6 @@ const ProductGridListSingle = ({
                     title="Quick View"
                   >
                     <i className="pe-7s-look" />
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                   </button>
                 </div>
               </div>
@@ -481,35 +406,21 @@ const ProductGridListSingle = ({
         onHide={() => setModalShow(false)}
         product={product}
         currency={currency}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        discountedPrice={discountedPrice}
-        finalProductPrice={finalProductPrice}
-        finalDiscountedPrice={finalDiscountedPrice}
-        wishlistItem={wishlistItem}
-        compareItem={compareItem}
-=======
         discountedprice={finalDiscountedPrice}
         finalproductprice={finalProductPrice}
         finaldiscountedprice={finalDiscountedPrice}
->>>>>>> Stashed changes
-=======
-        discountedprice={finalDiscountedPrice}
-        finalproductprice={finalProductPrice}
-        finaldiscountedprice={finalDiscountedPrice}
->>>>>>> Stashed changes
       />
     </Fragment>
   );
 };
 
 ProductGridListSingle.propTypes = {
-  cartItem: PropTypes.shape({}),
-  compareItem: PropTypes.shape({}),
-  currency: PropTypes.shape({}),
-  product: PropTypes.shape({}),
-  spaceBottomClass: PropTypes.string,
-  wishlistItem: PropTypes.shape({})
+  product: PropTypes.object,
+  currency: PropTypes.object,
+  cartItem: PropTypes.object,
+  wishlistItem: PropTypes.object,
+  compareItem: PropTypes.object,
+  spaceBottomClass: PropTypes.string
 };
 
 export default ProductGridListSingle;

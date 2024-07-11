@@ -1,11 +1,20 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import MenuCart from "./sub-components/MenuCart";
+import Cookies from 'js-cookie'; // Import js-cookie
+import {jwtDecode} from 'jwt-decode'; // Import jwt-decode
+import { logOut } from "../../utils/UserService";
+import { deleteAllFromCart } from "../../store/slices/cart-slice";
+import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
 
 const IconGroup = ({ iconWhiteClass }) => {
-  const handleClick = e => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
     e.currentTarget.nextSibling.classList.toggle("active");
   };
 
@@ -15,22 +24,61 @@ const IconGroup = ({ iconWhiteClass }) => {
     );
     offcanvasMobileMenu.classList.add("active");
   };
+
   const { compareItems } = useSelector((state) => state.compare);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems } = useSelector((state) => state.cart);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [authToken, setAuthToken] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const token = Cookies.get('authToken');
+    setAuthToken(token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        // Assuming the role is stored in decodedToken.role
+        setIsAdmin(decodedToken.role !== 'MEMBER');
+      } catch (error) {
+        console.error('Token decoding failed:', error);
+        setIsAdmin(false);
+      }
+    }
+  }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm) {
+      navigate(`/shop?search=${searchTerm}`);
+    }
+  };
+
+  const handleLogout = () => {
+    // Display confirmation dialog
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      // Clear token from cookies
+      logOut(Cookies.get('authToken'));
+      Cookies.remove('authToken'); 
+      dispatch(deleteAllFromCart());
+      dispatch(deleteAllFromWishlist());
+    }
+    // If user cancels, do nothing
+  };
+
   return (
-    <div className={clsx("header-right-wrap", iconWhiteClass)} >
+    <div className={clsx("header-right-wrap", iconWhiteClass)}>
       <div className="same-style header-search d-none d-lg-block">
-        <button className="search-active" onClick={e => handleClick(e)}>
+        <button className="search-active" onClick={(e) => handleClick(e)}>
           <i className="pe-7s-search" />
         </button>
         <div className="search-content">
-<<<<<<< Updated upstream
-          <form action="#">
-            <input type="text" placeholder="Search" />
-            <button className="button-search">
-=======
           <form onSubmit={handleSubmit}>
             <input
               type="text"
@@ -39,7 +87,6 @@ const IconGroup = ({ iconWhiteClass }) => {
               onChange={handleSearchChange}
             />
             <button className="button-search" disabled={!searchTerm}>
->>>>>>> Stashed changes
               <i className="pe-7s-search" />
             </button>
           </form>
@@ -48,25 +95,49 @@ const IconGroup = ({ iconWhiteClass }) => {
       <div className="same-style account-setting d-none d-lg-block">
         <button
           className="account-setting-active"
-          onClick={e => handleClick(e)}
+          onClick={(e) => handleClick(e)}
         >
           <i className="pe-7s-user-female" />
         </button>
         <div className="account-dropdown">
           <ul>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>Login</Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                Register
-              </Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                my account
-              </Link>
-            </li>
+            {!authToken ? (
+              <>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/login"}>Login</Link>
+                </li>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/register"}>
+                    Register
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+              {isAdmin && (
+                  <li>
+                    <Link to={process.env.PUBLIC_URL + "/admin"}>
+                      Admin Page
+                    </Link>
+                  </li>
+                )}
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/my-account"}>
+                    My Account
+                  </Link>
+                </li>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/order-history"}>
+                    Order History
+                  </Link>
+                </li>
+                <li>
+                  <Link onClick={handleLogout} to="/login">
+                    Log Out
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
@@ -87,7 +158,7 @@ const IconGroup = ({ iconWhiteClass }) => {
         </Link>
       </div>
       <div className="same-style cart-wrap d-none d-lg-block">
-        <button className="icon-cart" onClick={e => handleClick(e)}>
+        <button className="icon-cart" onClick={(e) => handleClick(e)}>
           <i className="pe-7s-shopbag" />
           <span className="count-style">
             {cartItems && cartItems.length ? cartItems.length : 0}
@@ -119,7 +190,5 @@ const IconGroup = ({ iconWhiteClass }) => {
 IconGroup.propTypes = {
   iconWhiteClass: PropTypes.string,
 };
-
-
 
 export default IconGroup;

@@ -16,7 +16,7 @@ const Product = () => {
   
 
   return (
-    console.log(product),
+    // console.log(product.productId),
 
     <Fragment>
       <SEO
@@ -45,15 +45,8 @@ const Product = () => {
         {/* product description tab */}
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-          productFullDesc={product.description}
-=======
-=======
->>>>>>> Stashed changes
           productFullDesc={product.longDescription}
           productId={product.productId}
->>>>>>> Stashed changes
         />
 
         {/* related product slider */}

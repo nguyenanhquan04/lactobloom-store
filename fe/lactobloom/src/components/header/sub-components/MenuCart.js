@@ -7,7 +7,6 @@ import { getImagesByProductId } from "../../../utils/ImageService";
 
 const MenuCart = () => {
   const dispatch = useDispatch();
-  const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
   const [cartItemsWithImages, setCartItemsWithImages] = useState([]);
   const defaultImage = "/assets/img/no-image.png"; // Default image URL
