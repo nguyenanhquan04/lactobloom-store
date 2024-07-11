@@ -7,6 +7,13 @@ import Rating from "./sub-components/ProductRating";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
+<<<<<<< Updated upstream
+=======
+import { getProductReviewByProductId } from "../../utils/ProductReviewService";
+import { getCategoryByProductId } from "../../utils/CategoryService";
+import { getBrandByProductId } from "../../utils/BrandService";
+import Cookies from "js-cookie";
+>>>>>>> Stashed changes
 
 const ProductDescriptionInfo = ({
   product,
@@ -30,16 +37,55 @@ const ProductDescriptionInfo = ({
   );
   const [quantityCount, setQuantityCount] = useState(1);
 
+<<<<<<< Updated upstream
   const productCartQty = getProductCartQuantity(
     cartItems,
     product,
     selectedProductColor,
     selectedProductSize
   );
+=======
+  const productCartQty = getProductCartQuantity(cartItems, product);
+  const authToken = Cookies.get("authToken");
+
+  useEffect(() => {
+    // Fetch the reviews from the API
+    getProductReviewByProductId(product.productId)
+      .then((response) => {
+        const reviews = response.data;
+        const totalRating = reviews.reduce((acc, review) => acc + review.rate, 0);
+        const avgRating = reviews.length ? totalRating / reviews.length : 0;
+        setAverageRating(avgRating);
+      })
+      .catch((error) => {
+        console.error("Error fetching the reviews:", error);
+      });
+
+    // Fetch the category from the API
+    getCategoryByProductId(product.productId)
+      .then((response) => {
+        setCategory(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching the category:", error);
+      });
+
+    // Fetch the brand from the API
+    getBrandByProductId(product.productId)
+      .then((response) => {
+        setBrand(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching the brand:", error);
+      });
+  }, [product.productId]);
+>>>>>>> Stashed changes
 
   return (
     <div className="product-details-content ml-70">
-      <h2>{product.productName}</h2>
+      {(product.stock <= 0 && product.preOrder && authToken) ?
+      <h2>{product.productName} (Pre Order)</h2> 
+      : <h2>{product.productName}</h2>}
       <div className="product-details-price">
         {discountedPrice !== null ? (
           <Fragment>
@@ -165,8 +211,15 @@ const ProductDescriptionInfo = ({
             />
             <button
               onClick={() =>
+<<<<<<< Updated upstream
                 setQuantityCount(
                   quantityCount < productStock - productCartQty
+=======
+                product.stock > 0 || (product.stock <= 0 && product.preOrder && authToken)
+                  ? setQuantityCount(quantityCount + 1)
+                  : setQuantityCount(
+                  quantityCount < product.stock - productCartQty
+>>>>>>> Stashed changes
                     ? quantityCount + 1
                     : quantityCount
                 )
@@ -180,17 +233,38 @@ const ProductDescriptionInfo = ({
             {productStock && productStock > 0 ? (
               <button
                 onClick={() =>
+<<<<<<< Updated upstream
                   dispatch(addToCart({
                     ...product,
                     quantity: quantityCount,
                     selectedProductColor: selectedProductColor ? selectedProductColor : product.selectedProductColor ? product.selectedProductColor : null,
                     selectedProductSize: selectedProductSize ? selectedProductSize : product.selectedProductSize ? product.selectedProductSize : null
                   }))
+=======
+                  dispatch(
+                    addToCart({
+                      ...product,
+                      quantity: quantityCount,
+                    })
+                  )
+>>>>>>> Stashed changes
                 }
                 disabled={productCartQty >= productStock}
               >
-                {" "}
-                Add To Cart{" "}
+                Add To Cart
+              </button>
+            ) : product.stock <= 0 && product.preOrder && authToken ? (
+              <button
+                onClick={() =>
+                  dispatch(
+                    addToCart({
+                      ...product,
+                      quantity: quantityCount,
+                    })
+                  )
+                }
+              >
+                Pre Order
               </button>
             ) : (
               <button disabled>Out of Stock</button>

@@ -137,24 +137,7 @@ const Wishlist = () => {
                                 </td>
 
                                 <td className="product-wishlist-cart">
-                                  {wishlistItem.affiliateLink ? (
-                                    <a
-                                      href={wishlistItem.affiliateLink}
-                                      rel="noopener noreferrer"
-                                      target="_blank"
-                                    >
-                                      {" "}
-                                      Buy now{" "}
-                                    </a>
-                                  ) : wishlistItem.variation &&
-                                    wishlistItem.variation.length >= 1 ? (
-                                    <Link
-                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.productId}`}
-                                    >
-                                      Select option
-                                    </Link>
-                                  ) : wishlistItem.stock &&
-                                    wishlistItem.stock > 0 ? (
+                                  {wishlistItem.stock && wishlistItem.stock > 0 ? (
                                     <button
                                       onClick={() =>
                                         dispatch(addToCart(wishlistItem))
@@ -179,6 +162,32 @@ const Wishlist = () => {
                                       cartItem.quantity > 0
                                         ? "Added"
                                         : "Add to cart"}
+                                    </button>
+                                  ) : wishlistItem.stock && wishlistItem.stock <= 0 && wishlistItem.preOrder && authToken  ? (
+                                    <button
+                                      onClick={() =>
+                                        dispatch(addToCart(wishlistItem))
+                                      }
+                                      className={
+                                        cartItem !== undefined &&
+                                        cartItem.quantity > 0
+                                          ? "active"
+                                          : ""
+                                      }
+                                      disabled={
+                                        cartItem !== undefined &&
+                                        cartItem.quantity > 0
+                                      }
+                                      title={
+                                        wishlistItem !== undefined
+                                          ? "Added to cart"
+                                          : "Pre Order"
+                                      }
+                                    >
+                                      {cartItem !== undefined &&
+                                      cartItem.quantity > 0
+                                        ? "Added"
+                                        : "Pre Order"}
                                     </button>
                                   ) : (
                                     <button disabled className="active">

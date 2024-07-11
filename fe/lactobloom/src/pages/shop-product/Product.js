@@ -45,7 +45,12 @@ const Product = () => {
         {/* product description tab */}
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
+<<<<<<< Updated upstream
           productFullDesc={product.description}
+=======
+          productFullDesc={product.longDescription}
+          productId={product.productId}
+>>>>>>> Stashed changes
         />
 
         {/* related product slider */}

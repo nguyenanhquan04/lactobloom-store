@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import { Fragment } from "react";
+=======
+import React, { Fragment, useState, useEffect } from "react";
+>>>>>>> Stashed changes
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
@@ -13,6 +17,99 @@ const Checkout = () => {
   const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
 
+<<<<<<< Updated upstream
+=======
+  const [user, setUser] = useState(null);
+  const [fullName, setFullName] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [orderNotes, setOrderNotes] = useState(""); // Added state for order notes
+
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      try {
+        const response = await myVoucher({
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        setVouchers(response.data);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+      }
+    };
+
+    fetchVouchers();
+  }, [authToken]);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await userInfo();
+        setUser(response.data);
+        setFullName(response.data.fullName);
+        setAddress(response.data.address);
+        setEmail(response.data.email);
+        setPhone(response.data.phone);
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const handleVoucherChange = (event) => {
+    const selectedVoucherId = event.target.value;
+    const selectedVoucher = vouchers.find(
+      (voucher) => voucher.voucherId === parseInt(selectedVoucherId)
+    );
+    setSelectedVoucher(selectedVoucher);
+  };
+
+  if (selectedVoucher) {
+    const discountAmount = (cartTotalPrice * selectedVoucher.discount) / 100;
+    cartTotalPrice -= discountAmount;
+  }
+
+  const placeOrder = async (amount) => {
+    let finalAmount = amount;
+    let discountAmount = 0;
+
+    if (selectedVoucher) {
+      discountAmount = (amount * selectedVoucher.discount) / 100;
+      finalAmount = amount - discountAmount;
+    }
+
+    const orderInfo = {
+      cartItems,
+      fullName,
+      address,
+      email,
+      phone,
+      totalAmount: finalAmount,
+      discountAmount, // Include discount amount
+      transactionTime: new Date().toLocaleString(),
+      orderNotes,
+      selectedVoucher,
+    };
+
+    // Save order information to localStorage
+    localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+
+    try {
+      const response = await createPayment(finalAmount);
+      const { status, message, url } = response.data;
+      if (status === "OK") {
+        window.location.href = url; // Redirect to the payment URL
+      } else {
+        console.error("Failed to create payment:", message);
+      }
+    } catch (error) {
+      console.error("Error creating payment:", error);
+    }
+  };
+
+>>>>>>> Stashed changes
   return (
     <Fragment>
       <SEO
@@ -159,7 +256,19 @@ const Checkout = () => {
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
-                                    {cartItem.productName} X {cartItem.quantity}
+                                    {cartItem.preOrder &&
+                                    cartItem.stock <= 0 &&
+                                    authToken ? (
+                                      <>
+                                        {cartItem.productName}{" "}{"(Pre Order)"} X{" "}
+                                        {cartItem.quantity} 
+                                      </>
+                                    ) : (
+                                      <>
+                                        {cartItem.productName} X{" "}
+                                        {cartItem.quantity}
+                                      </>
+                                    )}
                                   </span>{" "}
                                   <span className="order-price">
                                     {discountedPrice !== null
