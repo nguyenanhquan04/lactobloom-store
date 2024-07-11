@@ -164,14 +164,14 @@ const ProductGridListSingle = ({
                   }
                   disabled={cartItem !== undefined && cartItem.quantity > 0}
                   title={
-                    cartItem !== undefined ? "Added to cart" : "Add to cart"
+                    cartItem !== undefined ? "Đã thêm" : "Thêm vào giỏ"
                   }
                 >
                   {" "}
                   <i className="pe-7s-cart"></i>{" "}
                   {cartItem !== undefined && cartItem.quantity > 0
-                    ? "Added"
-                    : "Add to cart"}
+                    ? "Đã thêm"
+                    : "Thêm vào giỏ"}
                 </button>
               ) : product.stock <= 0 && product.preOrder && authToken ? (
                 <button
@@ -335,14 +335,14 @@ const ProductGridListSingle = ({
                       }
                       disabled={cartItem !== undefined && cartItem.quantity > 0}
                       title={
-                        cartItem !== undefined ? "Added to cart" : "Add to cart"
+                        cartItem !== undefined ? "Đã thêm" : "Thêm vào giỏ"
                       }
                     >
                       {" "}
                       <i className="pe-7s-cart"></i>{" "}
                       {cartItem !== undefined && cartItem.quantity > 0
-                        ? "Added"
-                        : "Add to cart"}
+                        ? "Đã thêm"
+                        : "Thêm vào giỏ"}
                     </button>
                   ) : product.stock <= 0 && product.preOrder && authToken ? (
                     <button

@@ -339,11 +339,11 @@ const ProductManagement = () => {
 
   return (
     <div className="product-management-container">
-      <h1>Products Management</h1>
+      <h1>Quản lý sản phẩm</h1>
       <Grid container spacing={0} alignItems="center" className="product-management-controls">
         <Grid item xs={12} md={9}>
           <TextField
-            label="Search Products"
+            label="Tìm sản phẩm.."
             variant="outlined"
             value={searchValue}
             onChange={handleSearchChange}
@@ -357,18 +357,18 @@ const ProductManagement = () => {
             className="product-management-add-button"
             onClick={handleAddProduct}
           >
-            Add New Product
+            Thêm sản phẩm
           </Button>
         </Grid>
       </Grid>
       <FormControl variant="outlined" fullWidth className="product-management-brand-select">
-        <InputLabel>Brand</InputLabel>
+        <InputLabel>Thương hiệu</InputLabel>
         <Select
           value={selectedBrand}
           onChange={handleBrandChange}
           label="Brand"
         >
-          <MenuItem value="all">All Products</MenuItem>
+          <MenuItem value="all">Tất cả</MenuItem>
           {brands.map((brand) => (
             <MenuItem key={brand.brandId} value={brand.brandName}>
               {brand.brandName}
@@ -381,12 +381,12 @@ const ProductManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Brand</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Stock</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Tên</TableCell>
+              <TableCell>Thương hiệu</TableCell>
+              <TableCell>Danh mục</TableCell>
+              <TableCell>Giá</TableCell>
+              <TableCell>Kho</TableCell>
+              <TableCell>Thao tác</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -425,7 +425,7 @@ const ProductManagement = () => {
         />
       </TableContainer>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle>{initialProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+        <DialogTitle>{initialProduct ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}</DialogTitle>
         <DialogContent>
           <ProductForm onSave={handleSave} initialProduct={initialProduct} />
         </DialogContent>

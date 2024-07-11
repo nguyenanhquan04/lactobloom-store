@@ -108,8 +108,8 @@ const Wishlist = () => {
       <LayoutOne headerTop="visible">
         <Breadcrumb 
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
+            { label: "Trang chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Yêu thích", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="cart-main-area pt-90 pb-100">
@@ -213,14 +213,14 @@ const Wishlist = () => {
                                       }
                                       title={
                                         wishlistItem !== undefined
-                                          ? "Added to cart"
-                                          : "Add to cart"
+                                          ? "Đã thêm"
+                                          : "Thêm vào giỏ"
                                       }
                                     >
                                       {cartItem !== undefined &&
                                       cartItem.quantity > 0
-                                        ? "Added"
-                                        : "Add to cart"}
+                                        ? "Đã thêm"
+                                        : "Thêm vào giỏ"}
                                     </button>
                                   ) : wishlistItem.stock && wishlistItem.stock <= 0 && wishlistItem.preOrder && authToken  ? (
                                     <button

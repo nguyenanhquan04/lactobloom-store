@@ -94,11 +94,11 @@ const CategoryManagement = () => {
 
   return (
     <div className="category-management-container">
-      <h1>Categories Management</h1>
+      <h1>Quản lý danh mục</h1>
       <Grid container spacing={0} alignItems="center" className="category-management-controls">
         <Grid item xs={12} md={9}>
           <TextField
-            label="Search Categories"
+            label="Tìm danh mục"
             variant="outlined"
             value={searchValue}
             onChange={handleSearchChange}
@@ -112,7 +112,7 @@ const CategoryManagement = () => {
             className="category-management-add-button"
             onClick={() => handleOpenForm('add')}
           >
-            Add New Category
+            Thêm danh mục
           </Button>
         </Grid>
       </Grid>
@@ -121,8 +121,8 @@ const CategoryManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell className="category-management-id-cell">ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell className="actions-cell">Actions</TableCell>
+              <TableCell>Tên</TableCell>
+              <TableCell className="actions-cell">Thao tác</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -156,7 +156,7 @@ const CategoryManagement = () => {
 
       {/* Category Form Dialog */}
       <Dialog open={openForm} onClose={handleCloseForm} fullWidth>
-        <DialogTitle>{formMode === 'add' ? 'Add Category' : 'Edit Category'}</DialogTitle>
+        <DialogTitle>{formMode === 'add' ? 'Thêm danh mục' : 'Cập nhật danh mục'}</DialogTitle>
         <DialogContent>
           <CategoryForm
             onSave={handleFormSave}
@@ -165,7 +165,7 @@ const CategoryManagement = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseForm} color="primary">
-            Cancel
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>

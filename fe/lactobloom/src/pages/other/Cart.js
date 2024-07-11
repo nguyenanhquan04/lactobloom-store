@@ -237,24 +237,24 @@ const Cart = () => {
                     <div className="grand-totall">
                       <div className="title-wrap">
                         <h4 className="cart-bottom-title section-bg-gary-cart">
-                          Cart Total
+                          Tổng đơn hàng
                         </h4>
                       </div>
                       <h5>
-                        Total products{" "}
+                        Tổng tiền sản phẩm{" "}
                         <span>
                           {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h5>
 
                       <h4 className="grand-totall-title">
-                        Grand Total{" "}
+                        Tổng tiền{" "}
                         <span>
                           {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h4>
                       <Link to={process.env.PUBLIC_URL + "/checkout"}>
-                        Proceed to Checkout
+                        Thanh toán
                       </Link>
                     </div>
                   </div>
@@ -268,9 +268,9 @@ const Cart = () => {
                       <i className="pe-7s-cart"></i>
                     </div>
                     <div className="item-empty-area__text">
-                      No items found in cart <br />{" "}
+                      Không có sản phẩm trong giỏ hàng <br />{" "}
                       <Link to={process.env.PUBLIC_URL + "/shop"}>
-                        Shop Now
+                        Mua ngay
                       </Link>
                     </div>
                   </div>

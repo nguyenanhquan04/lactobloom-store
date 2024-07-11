@@ -106,7 +106,7 @@ const BlogForm = ({ onSave, initialBlog }) => {
         <Grid item xs={12}>
           <TextField
             name="title"
-            label="Title"
+            label="Tiêu đề"
             variant="outlined"
             fullWidth
             value={blog.title || ''} // Ensure default empty string
@@ -127,12 +127,12 @@ const BlogForm = ({ onSave, initialBlog }) => {
         </Grid>
         <Grid item xs={12}>
           <FormControl variant="outlined" fullWidth>
-            <InputLabel>Category</InputLabel>
+            <InputLabel>Danh mục</InputLabel>
             <Select
               name="blogCategoryId"
               value={blog.blogCategoryId || ''} // Ensure default empty string
               onChange={handleChange}
-              label="Category"
+              label="Danh mục"
               required
             >
               {blogCategories.map((blogCategory) => (
@@ -146,7 +146,7 @@ const BlogForm = ({ onSave, initialBlog }) => {
         <Grid item xs={12}>
           <TextField
             name="shortDescription"
-            label="Short Description"
+            label="Miêu tả sơ lược"
             variant="outlined"
             fullWidth
             multiline
@@ -166,7 +166,7 @@ const BlogForm = ({ onSave, initialBlog }) => {
         <Grid item xs={12}>
           <TextField
             name="publishDate"
-            label="Publish Date"
+            label="Ngày đăng"
             variant="outlined"
             fullWidth
             type="datetime-local"
@@ -177,7 +177,7 @@ const BlogForm = ({ onSave, initialBlog }) => {
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">
-            {initialBlog ? 'Update Blog' : 'Add Blog'}
+            {initialBlog ? 'Cập Nhật' : 'Thêm'}
           </Button>
         </Grid>
       </Grid>

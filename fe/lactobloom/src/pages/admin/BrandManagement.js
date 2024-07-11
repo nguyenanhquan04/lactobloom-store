@@ -86,11 +86,11 @@ const BrandManagement = () => {
 
   return (
     <div className="brand-management-container">
-      <h1>Brands Management</h1>
+      <h1>Quản lý thương hiệu sản phẩm</h1>
       <Grid container spacing={0} alignItems="center" className="brand-management-controls">
         <Grid item xs={12} md={9}>
           <TextField
-            label="Search Brands"
+            label="Tìm thương hiệu"
             variant="outlined"
             value={searchValue}
             onChange={handleSearchChange}
@@ -104,7 +104,7 @@ const BrandManagement = () => {
             className="brand-management-add-button"
             onClick={() => handleOpenForm('add')}
           >
-            Add New Brand
+            Thêm thương hiệu
           </Button>
         </Grid>
       </Grid>
@@ -113,8 +113,8 @@ const BrandManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell className="brand-management-id-cell">ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell className="actions-cell">Actions</TableCell>
+              <TableCell>Tên</TableCell>
+              <TableCell className="actions-cell">Thao tác</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -148,7 +148,7 @@ const BrandManagement = () => {
 
       {/* Brand Form Dialog */}
       <Dialog open={openForm} onClose={handleCloseForm} fullWidth>
-        <DialogTitle>{formMode === 'add' ? 'Add Brand' : 'Edit Brand'}</DialogTitle>
+        <DialogTitle>{formMode === 'add' ? 'Thêm thương hiệu' : 'Cập nhật thương hiệu'}</DialogTitle>
         <DialogContent>
           <BrandForm
             onSave={handleFormSave}
@@ -157,7 +157,7 @@ const BrandManagement = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseForm} color="primary">
-            Cancel
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>

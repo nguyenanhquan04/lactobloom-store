@@ -91,7 +91,7 @@ const MenuCart = () => {
           </ul>
           <div className="shopping-cart-total">
             <h4>
-              Total :{" "}
+              Tổng tiền :{" "}
               <span className="shop-total">
                 {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
               </span>
@@ -99,15 +99,15 @@ const MenuCart = () => {
           </div>
           <div className="shopping-cart-btn btn-hover text-center">
             <Link className="default-btn" to={process.env.PUBLIC_URL + "/cart"}>
-              View Cart
+              Xem giỏ hàng
             </Link>
             <Link className="default-btn" to={process.env.PUBLIC_URL + "/checkout"}>
-              Checkout
+              Thanh toán
             </Link>
           </div>
         </Fragment>
       ) : (
-        <p className="text-center">No items added to cart</p>
+        <p className="text-center">Không có sản phẩm trong giỏ hàng</p>
       )}
     </div>
   );

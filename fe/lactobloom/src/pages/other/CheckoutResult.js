@@ -36,7 +36,7 @@ const CheckoutResult = () => {
     if (savedOrderInfo) {
       setOrderInfo(JSON.parse(savedOrderInfo));
     } else {
-      setError("Order information not found.");
+      setError("Không tìm thấy thông tin đơn hàng.");
       setLoading(false);
       return;
     }
@@ -162,28 +162,28 @@ const CheckoutResult = () => {
         return (
           <div className="status-message success">
             <FontAwesomeIcon className="status-icon" icon={faCheckCircle} size="3x" color="green" />
-            <p>The transaction has been successfully completed.</p>
+            <p>Đơn hàng đã được thanh toán thành công.</p>
           </div>
         );
       case false:
         return (
           <div className="status-message failure">
             <FontAwesomeIcon className="status-icon" icon={faTimesCircle} size="3x" color="red" />
-            <p>The transaction has not been completed yet.</p>
+            <p>Đơn hàng chưa được thanh toán.</p>
           </div>
         );
       case "not found":
         return (
           <div className="status-message failure">
             <FontAwesomeIcon className="status-icon" icon={faTimesCircle} size="3x" color="red" />
-            <p>The transaction is invalid.</p>
+            <p>Đơn hàng không hợp lệ.</p>
           </div>
         );
       default:
         return (
           <div className="status-message failure">
             <FontAwesomeIcon className="status-icon" icon={faTimesCircle} size="3x" color="red" />
-            <p>Unknown transaction status.</p>
+            <p>Trạng thái đơn hàng không xác định.</p>
           </div>
         );
     }
@@ -195,8 +195,8 @@ const CheckoutResult = () => {
       <LayoutOne headerTop="visible">
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Checkout", path: process.env.PUBLIC_URL + pathname },
+            { label: "Trang chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Thanh toán", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
         <div className="checkout-result-container">
@@ -205,22 +205,22 @@ const CheckoutResult = () => {
             {orderInfo && (
               <>
                 <div className="transaction-info">
-                  <p>Transaction ID: {transactionId}</p>
-                  <p>Time: {orderInfo.transactionTime}</p>
-                  <p>Name: {orderInfo.fullName}</p>
-                  <p>Address: {orderInfo.address}</p>
-                  <p>Phone: {orderInfo.phone}</p>
+                  <p>Mã thanh toán: {transactionId}</p>
+                  <p>Thời gian: {orderInfo.transactionTime}</p>
+                  <p>Tên: {orderInfo.fullName}</p>
+                  <p>Địa chỉ: {orderInfo.address}</p>
+                  <p>Số điện thoại: {orderInfo.phone}</p>
                 </div>
                 <div className="order-summary">
-                  <h3>Order Summary</h3>
+                  <h3>Đơn hàng </h3>
                   <table>
                     <thead>
                       <tr>
-                        <th className="short-column">Product Name</th>
-                        <th>Quantity</th>
-                        <th className="long-column">Price (VND)</th>
-                        <th className="long-column">Discount (%)</th>
-                        <th className="long-column">Total (VND)</th>
+                        <th className="short-column">Tên sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th className="long-column">Tiền (VND)</th>
+                        <th className="long-column">Giảm giá (%)</th>
+                        <th className="long-column">Tổng (VND)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -263,7 +263,7 @@ const CheckoutResult = () => {
                       </tr>
                       <tr>
                         <td colSpan="3"></td>
-                        <th className="long-column">Total Price:</th>
+                        <th className="long-column">Tổng tiền:</th>
                         <td>{orderInfo.totalAmount.toLocaleString("vi-VN")} VND</td>
                       </tr>
                     </tbody>
@@ -272,7 +272,7 @@ const CheckoutResult = () => {
               </>
             )}
             <div className="countdown">
-              <p>Returning to homepage in {countdown} seconds...</p>
+              <p>Trở về trang chủ sau {countdown} giây...</p>
             </div>
           </div>
         </div>

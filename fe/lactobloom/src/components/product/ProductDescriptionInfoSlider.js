@@ -58,7 +58,7 @@ const ProductDescriptionInfoSlider = ({
               rel="noopener noreferrer"
               target="_blank"
             >
-              Buy Now
+              Mua ngay
             </a>
           </div>
         </div>
@@ -104,10 +104,10 @@ const ProductDescriptionInfoSlider = ({
                 disabled={productCartQty >= product.stock}
               >
                 {" "}
-                Add To Cart{" "}
+                Thêm vào giỏ{" "}
               </button>
             ) : (
-              <button disabled>Out of Stock</button>
+              <button disabled>Hết hàng</button>
             )}
           </div>
           <div className="pro-details-wishlist">
@@ -142,7 +142,7 @@ const ProductDescriptionInfoSlider = ({
       )}
       {product.category ? (
         <div className="pro-details-meta justify-content-center">
-          <span>Categories :</span>
+          <span>Danh mục :</span>
           <ul>
             {product.category.map((single, key) => {
               return (

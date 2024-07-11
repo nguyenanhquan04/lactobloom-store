@@ -59,7 +59,7 @@ const CategoryForm = ({ onSave, initialCategory }) => {
         <Grid item xs={12}>
           <TextField
             name="categoryName"
-            label="Category Name"
+            label="Tên danh mục"
             variant="outlined"
             fullWidth
             value={category.categoryName}
@@ -69,7 +69,7 @@ const CategoryForm = ({ onSave, initialCategory }) => {
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">
-            {initialCategory ? 'Update Category' : 'Add Category'}
+            {initialCategory ? 'Cập nhật' : 'Thêm'}
           </Button>
         </Grid>
       </Grid>

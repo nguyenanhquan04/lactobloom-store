@@ -59,7 +59,7 @@ const BrandForm = ({ onSave, initialBrand }) => {
         <Grid item xs={12}>
           <TextField
             name="brandName"
-            label="Brand Name"
+            label="Tên thương hiệu"
             variant="outlined"
             fullWidth
             value={brand.brandName}
@@ -69,7 +69,7 @@ const BrandForm = ({ onSave, initialBrand }) => {
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">
-            {initialBrand ? 'Update Brand' : 'Add Brand'}
+            {initialBrand ? 'Cập nhật' : 'Thêm'}
           </Button>
         </Grid>
       </Grid>

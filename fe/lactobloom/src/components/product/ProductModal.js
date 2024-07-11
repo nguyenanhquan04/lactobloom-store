@@ -396,7 +396,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                         disabled={productCartQty >= product.stock}
                       >
                         {" "}
-                        Add To Cart{" "}
+                        Thêm vào giỏ{" "}
                       </button>
                     ) : (
                       product.stock && product.stock <= 0 && product.preOrder && authToken ? (

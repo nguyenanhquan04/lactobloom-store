@@ -163,11 +163,11 @@ const ProductDescriptionTab = ({
           <Tab.Container defaultActiveKey="productDescription">
             <Nav variant="pills" className="description-review-topbar">
               <Nav.Item>
-                <Nav.Link eventKey="productDescription">Description</Nav.Link>
+                <Nav.Link eventKey="productDescription">Mô tả</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="productReviews">
-                  Reviews({reviews.length})
+                  Bình luận({reviews.length})
                 </Nav.Link>
               </Nav.Item>
             </Nav>
