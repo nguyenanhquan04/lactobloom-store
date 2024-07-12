@@ -128,6 +128,7 @@ const ProductDescriptionInfo = ({
               readOnly
             />
             <button
+
               onClick={() => {
                 if ((product.stock <= 0 && product.preOrder && authToken)) {
                   setQuantityCount(quantityCount + 1);
