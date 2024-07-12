@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/voucher")
-@CrossOrigin(origins = "*")
 public class VoucherController {
 
     @Autowired
@@ -45,8 +44,10 @@ public class VoucherController {
     }
 
     @PutMapping("/exchange/{id}")
-    public ResponseEntity<VoucherDto> exchangeVoucher(@PathVariable int id) {
-        return new ResponseEntity<>(voucherService.exchangeVoucher(id), HttpStatus.OK);
+    public ResponseEntity<String> exchangeVoucher(@PathVariable int id) {
+        if(voucherService.exchangeVoucher(id))
+            return new ResponseEntity<>("Exchanged voucher successfully!", HttpStatus.OK);
+        return new ResponseEntity<>("Failed to exchange voucher!", HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")

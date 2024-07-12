@@ -10,6 +10,8 @@ public interface IOrderService {
     List<OrderDto> getAllOrders();
     List<OrderDto> getOrdersByUser();
     OrderDto getOrderById(int id);
+    OrderDto deliverOrder(int id);
+    OrderDto cancelOrder(int id);
     OrderDto updateOrder(OrderDto orderDto, int id);
     void deleteOrder(int id);
 }

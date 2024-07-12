@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderDetailDto {
     private int orderDetailId;
+    private String productName;
     private int quantity;
     private double totalPrice;
+    private boolean preOrder;
 }

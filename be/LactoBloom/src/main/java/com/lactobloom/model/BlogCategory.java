@@ -1,6 +1,5 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -20,7 +19,6 @@ public class BlogCategory {
     @NotNull(message = "Blog category name must not be null")
     private String blogCategoryName;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "blogCategory")
-    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "blogCategory")
     private List<Blog> blogs;
 }

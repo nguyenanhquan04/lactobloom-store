@@ -56,6 +56,12 @@ public class BlogService implements IBlogService {
     }
 
     @Override
+    public List<BlogDto> getBlogsByCategory(int blogCategoryId) {
+        List<Blog> blogList = blogRepository.findByBlogCategory_BlogCategoryId(blogCategoryId);
+        return blogList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId) {
         Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
@@ -66,7 +72,9 @@ public class BlogService implements IBlogService {
                 new ResourceNotFoundException("User", "email", email));
         existingBlog.setBlogCategory(blogCategory);
         existingBlog.setUser(user);
+        existingBlog.setImageUrl(blogDto.getImageUrl());
         existingBlog.setTitle(blogDto.getTitle());
+        existingBlog.setShortDescription(blogDto.getShortDescription());
         existingBlog.setContent(blogDto.getContent());
         return mapToDto(blogRepository.save(existingBlog));
     }
@@ -87,7 +95,10 @@ public class BlogService implements IBlogService {
     private BlogDto mapToDto (Blog blog){
         BlogDto blogResponse = new BlogDto();
         blogResponse.setBlogId(blog.getBlogId());
+        blogResponse.setImageUrl(blog.getImageUrl());
+        blogResponse.setBlogCategoryName(blog.getBlogCategory().getBlogCategoryName());
         blogResponse.setTitle(blog.getTitle());
+        blogResponse.setShortDescription(blog.getShortDescription());
         blogResponse.setContent(blog.getContent());
         blogResponse.setPublishDate(blog.getPublishDate());
         return blogResponse;
@@ -95,6 +106,8 @@ public class BlogService implements IBlogService {
 
     private Blog mapToEntity(BlogDto blogDto){
         Blog blog = new Blog();
+        blog.setImageUrl(blogDto.getImageUrl());
+        blog.setShortDescription(blogDto.getShortDescription());
         blog.setTitle(blogDto.getTitle());
         blog.setContent(blogDto.getContent());
         blog.setPublishDate(blogDto.getPublishDate());

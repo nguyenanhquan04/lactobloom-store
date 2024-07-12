@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/blog-category")
-@CrossOrigin(origins = "*")
 public class BlogCategoryController {
 
     @Autowired
@@ -33,6 +32,11 @@ public class BlogCategoryController {
     @GetMapping("/get/{id}")
     public ResponseEntity<BlogCategoryDto> getBlogCategoryById(@PathVariable int id) {
         return new ResponseEntity<>(blogCategoryService.getBlogCategoryById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/getByBlogId/{id}")
+    public ResponseEntity<BlogCategoryDto> getBlogCategoryByBlogId(@PathVariable int id) {
+        return new ResponseEntity<>(blogCategoryService.getBlogCategoryByBlogId(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")

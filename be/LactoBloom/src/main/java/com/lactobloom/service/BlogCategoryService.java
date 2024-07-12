@@ -30,6 +30,12 @@ public class BlogCategoryService implements IBlogCategoryService {
     }
 
     @Override
+    public BlogCategoryDto getBlogCategoryByBlogId(int id) {
+        BlogCategory blogCategory = blogCategoryRepository.findByBlogsBlogId(id);
+        return mapToDto(blogCategory);
+    }
+
+    @Override
     public BlogCategoryDto getBlogCategoryById(int id) {
         BlogCategory blogCategory = blogCategoryRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog Category", "Id", id));

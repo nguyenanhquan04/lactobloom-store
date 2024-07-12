@@ -1,7 +1,5 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -23,19 +21,21 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "Brand_id")
-    @JsonBackReference
     @NotNull(message = "Brand must not be null")
     private Brand brand;
 
     @ManyToOne
     @JoinColumn(name = "Category_id")
-    @JsonBackReference
     @NotNull(message = "Category must not be null")
     private Category category;
 
     @Column(name = "Description", columnDefinition = "TEXT")
-//    @NotNull(message = "Description must not be null")
+    @NotNull(message = "Description must not be null")
     private String description;
+
+    @Column(name = "Long_description", columnDefinition = "TEXT")
+    @NotNull(message = "Long description must not be null")
+    private String longDescription;
 
     @Column(name = "Price", columnDefinition = "DECIMAL(15, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Price must not be null")
@@ -49,19 +49,19 @@ public class Product {
     @NotNull(message = "Stock must not be null")
     private int stock;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    @JsonManagedReference
+    @Column(name = "Pre_order", nullable = false)
+    @NotNull(message = "Pre-order must not be null")
+    private boolean preOrder;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<ProductReview> productReviews;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<Image> images;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<Wishlist> wishlists;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<OrderDetail> orderDetails;
 }

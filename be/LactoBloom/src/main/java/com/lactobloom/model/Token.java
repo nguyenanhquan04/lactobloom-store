@@ -1,6 +1,5 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -39,6 +38,5 @@ public class Token {
 
     @ManyToOne
     @JoinColumn(name = "User_id")
-    @JsonBackReference
     private User user;
 }

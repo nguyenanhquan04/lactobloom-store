@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/order")
-@CrossOrigin(origins = "*")
 public class OrderController {
 
     @Autowired
@@ -33,6 +32,17 @@ public class OrderController {
     @GetMapping("/get/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable int id) {
         return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
+    @PutMapping("/deliver/{id}")
+    public ResponseEntity<OrderDto> deliverOrder(@PathVariable int id) {
+        return new ResponseEntity<>(orderService.deliverOrder(id), HttpStatus.OK);
+    }
+
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<OrderDto> cancelOrder(@PathVariable int id) {
+        return new ResponseEntity<>(orderService.cancelOrder(id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")

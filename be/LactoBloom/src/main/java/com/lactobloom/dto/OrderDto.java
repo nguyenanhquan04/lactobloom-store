@@ -18,6 +18,6 @@ public class OrderDto {
     private String note;
     private double shippingFee;
     private double totalPrice;
-    private boolean status;
+    private String status;
     private LocalDateTime orderDate;
 }

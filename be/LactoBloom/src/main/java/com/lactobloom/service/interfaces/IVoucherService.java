@@ -11,6 +11,6 @@ public interface IVoucherService {
     List<VoucherDto> getAllVouchers();
     VoucherDto getVoucherById(int id);
     VoucherDto updateVoucher(VoucherDto voucherDto, int id);
-    VoucherDto exchangeVoucher(int id);
+    boolean exchangeVoucher(int id);
     void deleteVoucher(int id);
 }

@@ -1,7 +1,5 @@
 package com.lactobloom.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +20,6 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "User_id")
-    @JsonBackReference
     private User user;
 
     @Column(name = "Full_name", nullable = false)
@@ -48,7 +45,6 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "Voucher_id")
-    @JsonBackReference
     private Voucher voucher;
 
     @Column(name = "Shipping_fee", columnDefinition = "DECIMAL(10, 2) DEFAULT 0", nullable = false)
@@ -60,13 +56,13 @@ public class Order {
     private double totalPrice;
 
     @Column(name = "Status", nullable = false)
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "Status must not be null")
-    private boolean status;
+    private OrderStatus orderStatus;
 
     @Column(name = "Order_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime orderDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
     private List<OrderDetail> orderDetails;
 }

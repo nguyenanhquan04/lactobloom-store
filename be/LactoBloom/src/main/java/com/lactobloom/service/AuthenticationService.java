@@ -1,9 +1,7 @@
 package com.lactobloom.service;
 
 import com.lactobloom.config.JwtService;
-import com.lactobloom.dto.AuthenticationRequest;
-import com.lactobloom.dto.AuthenticationResponse;
-import com.lactobloom.dto.RegisterRequest;
+import com.lactobloom.dto.AuthenticationDto;
 import com.lactobloom.model.Role;
 import com.lactobloom.model.Token;
 import com.lactobloom.model.TokenType;
@@ -25,8 +23,8 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
+    public AuthenticationDto.AuthenticationResponse register(AuthenticationDto.RegisterRequest request) {
+        var newUser = User.builder()
                 .fullName(request.getFullName())
                 .role(Role.MEMBER)
                 .email(request.getEmail())
@@ -35,16 +33,15 @@ public class AuthenticationService {
                 .address("")
                 .point(0)
                 .build();
-        var savedUser = repository.save(user);
-        var jwtToken = jwtService.generateToken(user, savedUser.getUserId());
+        var savedUser = repository.save(newUser);
+        var jwtToken = jwtService.generateToken(newUser, savedUser.getUserId());
         saveUserToken(savedUser, jwtToken);
-        return AuthenticationResponse.builder()
+        return AuthenticationDto.AuthenticationResponse.builder()
                 .token(jwtToken)
-//                .refreshToken(refreshToken)
                 .build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public AuthenticationDto.AuthenticationResponse login(AuthenticationDto.AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -56,10 +53,8 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user, user.getUserId());
         revokeAllUserTokens(user);
         saveUserToken(user,jwtToken);
-//        var refreshToken = jwtService.generateRefreshToken(user);
-        return AuthenticationResponse.builder()
+        return AuthenticationDto.AuthenticationResponse.builder()
                 .token(jwtToken)
-//                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -84,32 +79,4 @@ public class AuthenticationService {
         });
         tokenRepository.saveAll(validUserTokens);
     }
-
-//    public void refreshToken(
-//            HttpServletRequest request,
-//            HttpServletResponse response
-//    ) throws IOException {
-//        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-//        final String refreshToken;
-//        final String userEmail;
-//        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-//            return;
-//        }
-//        refreshToken = authHeader.substring(7);
-//        userEmail = jwtService.extractUsername(refreshToken);
-//        if (userEmail != null) {
-//            var user = this.repository.findByEmail(userEmail)
-//                    .orElseThrow();
-//            if (jwtService.isTokenValid(refreshToken, user)) {
-//                var accessToken = jwtService.generateToken(user);
-//                revokeAllUserTokens(user);
-//                saveUserToken(user, accessToken);
-//                var authResponse = AuthenticationResponse.builder()
-//                        .accessToken(accessToken)
-//                        .refreshToken(refreshToken)
-//                        .build();
-//                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-//            }
-//        }
-//    }
 }

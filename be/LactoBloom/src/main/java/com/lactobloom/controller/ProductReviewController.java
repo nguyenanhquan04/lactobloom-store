@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product-review")
-@CrossOrigin(origins = "*")
 public class ProductReviewController {
 
     @Autowired
@@ -23,7 +22,7 @@ public class ProductReviewController {
         return new ResponseEntity<>(reviewService.saveReview(productReviewDto, productId), HttpStatus.CREATED);
     }
 
-
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/all")
     public List<ProductReviewDto> getAllReviews() {
         return reviewService.getAllReviews();

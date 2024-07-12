@@ -17,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/blog")
-@CrossOrigin(origins = "*")
 public class BlogController {
 
     @Autowired
@@ -37,6 +36,11 @@ public class BlogController {
     @GetMapping("/get/{id}")
     public ResponseEntity<BlogDto> getBlogById(@PathVariable int id) {
         return new ResponseEntity<>(blogService.getBlogById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/blogCategory/{blogCategoryId}")
+    public List<BlogDto> getBlogByCategory(@PathVariable int blogCategoryId) {
+        return blogService.getBlogsByCategory(blogCategoryId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")

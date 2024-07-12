@@ -5,11 +5,14 @@ import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Order;
 import com.lactobloom.model.OrderDetail;
 import com.lactobloom.model.Product;
+import com.lactobloom.model.User;
 import com.lactobloom.repository.OrderDetailRepository;
 import com.lactobloom.repository.OrderRepository;
 import com.lactobloom.repository.ProductRepository;
+import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IOrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,19 +30,41 @@ public class OrderDetailService implements IOrderDetailService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public OrderDetailDto saveOrderDetail(OrderDetailDto orderDetailDto, int orderId, int productId) {
         OrderDetail orderDetail = mapToEntity(orderDetailDto);
-        Order order = orderRepository.findById(orderId).orElseThrow(() ->
+        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
-        Product product = productRepository.findById((int) productId).orElseThrow(() ->
+        Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
+        orderDetail.setPreOrder(product.isPreOrder());
         product.setStock(product.getStock() - orderDetail.getQuantity());
+        if (product.getStock() <= 0){
+            product.setStock(0);
+            orderDetail.setPreOrder(true);
+        }
         Product boughtProduct = productRepository.save(product);
-        orderDetail.setOrder(order);
+        orderDetail.setOrder(existingOrder);
         orderDetail.setProduct(boughtProduct);
         OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
         return mapToDto(newOrderDetail);
+    }
+
+    @Override
+    public List<OrderDetailDto> getOrderDetailsByOrderForMember(int orderId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
+                new ResourceNotFoundException("Order", "Id", orderId));
+        if(existingOrder.getUser() == user) {
+            List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
+            return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
@@ -67,12 +92,13 @@ public class OrderDetailService implements IOrderDetailService {
                 new ResourceNotFoundException("OrderDetail", "Id", id));
         Order order = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
-        Product product = productRepository.findById((int) productId).orElseThrow(() ->
+        Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         existingOrderDetail.setOrder(order);
         existingOrderDetail.setProduct(product);
         existingOrderDetail.setQuantity(orderDetailDto.getQuantity());
         existingOrderDetail.setTotalPrice(orderDetailDto.getTotalPrice());
+        existingOrderDetail.setPreOrder(orderDetailDto.isPreOrder());
         return mapToDto(orderDetailRepository.save(existingOrderDetail));
     }
 
@@ -86,8 +112,10 @@ public class OrderDetailService implements IOrderDetailService {
     private OrderDetailDto mapToDto (OrderDetail orderDetail){
         OrderDetailDto orderDetailResponse = new OrderDetailDto();
         orderDetailResponse.setOrderDetailId(orderDetail.getOrderDetailId());
+        orderDetailResponse.setProductName(orderDetail.getProduct().getProductName());
         orderDetailResponse.setQuantity(orderDetail.getQuantity());
         orderDetailResponse.setTotalPrice(orderDetail.getTotalPrice());
+        orderDetailResponse.setPreOrder(orderDetail.isPreOrder());
         return orderDetailResponse;
     }
 
@@ -95,6 +123,7 @@ public class OrderDetailService implements IOrderDetailService {
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setQuantity(orderDetailDto.getQuantity());
         orderDetail.setTotalPrice(orderDetailDto.getTotalPrice());
+        orderDetail.setPreOrder(orderDetailDto.isPreOrder());
         return orderDetail;
     }
 }

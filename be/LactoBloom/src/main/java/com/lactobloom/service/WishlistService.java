@@ -34,8 +34,11 @@ public class WishlistService implements IWishlistService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        Product product = productRepository.findById((int) productId).orElseThrow(() ->
+        Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
+        Wishlist existingWishlist = wishlistRepository.findByUser_UserIdAndProduct_ProductId(user.getUserId(), productId);
+        if(existingWishlist != null)
+            return null;
         wishlist.setUser(user);
         wishlist.setProduct(product);
         Wishlist newWishList = wishlistRepository.save(wishlist);
@@ -45,6 +48,14 @@ public class WishlistService implements IWishlistService {
     @Override
     public List<WishlistDto> getAllWishlists() {
         return wishlistRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WishlistDto> getMyWishlists() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        return wishlistRepository.findByUserUserId(user.getUserId()).stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -65,9 +76,17 @@ public class WishlistService implements IWishlistService {
             wishlistRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteUserWishlists() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        wishlistRepository.deleteByUser_UserId(user.getUserId());
+    }
     private WishlistDto mapToDto (Wishlist wishlist){
         WishlistDto wishListResponse = new WishlistDto();
         wishListResponse.setWishlistId(wishlist.getWishlistId());
+        wishListResponse.setProductId(wishlist.getProduct().getProductId());
         return wishListResponse;
     }
 }

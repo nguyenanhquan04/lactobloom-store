@@ -72,18 +72,22 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
-    public VoucherDto exchangeVoucher(int id) {
+    public boolean exchangeVoucher(int id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException("User", "email", email));
-        Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Voucher", "Id", id));
-        if(existingVoucher.getPoint() < user.getPoint()){
-            user.setPoint(user.getPoint() - existingVoucher.getPoint());
-            User newUser = userRepository.save(user);
-            existingVoucher.setUser(newUser);
+        if(email != null && !email.equals("anonymousUser")){
+            User user = userRepository.findByEmail(email).orElseThrow(() ->
+                    new ResourceNotFoundException("User", "email", email));
+            Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
+                    new ResourceNotFoundException("Voucher", "Id", id));
+            if(existingVoucher.getPoint() <= user.getPoint() && existingVoucher.getUser() == null){
+                user.setPoint(user.getPoint() - existingVoucher.getPoint());
+                User newUser = userRepository.save(user);
+                existingVoucher.setUser(newUser);
+                voucherRepository.save(existingVoucher);
+                return true;
+            }
         }
-        return mapToDto(voucherRepository.save(existingVoucher));
+        return false;
     }
 
     @Override
