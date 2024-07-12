@@ -3,13 +3,16 @@ import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
+import axios from "axios";
 import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
-import { addToWishlist } from "../../store/slices/wishlist-slice";
+import { addToWishlist, addToWishlistFormAPI } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import { getImagesByProductId } from "../../utils/ImageService";
+import { getProductReviewByProductId } from "../../utils/ProductReviewService";
+import Cookies from "js-cookie";
 
 const ProductGridListSingle = ({
   product,
@@ -21,12 +24,13 @@ const ProductGridListSingle = ({
 }) => {
   const [modalShow, setModalShow] = useState(false);
   const [productImages, setProductImages] = useState("/assets/img/no-image.png");
+  const [averageRating, setAverageRating] = useState(0);
+  const [wishlistData, setWishlistData] = useState([]);
+  const [authToken, setAuthToken] = useState(null);
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * 1);
-  const finalDiscountedPrice = +(
-    discountedPrice * 1
-  );
+  const finalDiscountedPrice = +(discountedPrice * 1);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,8 +43,63 @@ const ProductGridListSingle = ({
       }
     };
 
+    const fetchProductReviews = async () => {
+      try {
+        const response = await getProductReviewByProductId(product.productId);
+        const reviews = response.data;
+        const totalRating = reviews.reduce((acc, review) => acc + review.rate, 0);
+        const avgRating = reviews.length ? totalRating / reviews.length : 0;
+        setAverageRating(avgRating);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    const fetchWishlistData = async () => {
+      try {
+        const token = Cookies.get("authToken");
+        setAuthToken(token);
+        const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setWishlistData(response.data);
+        response.data.forEach((item) => {
+          if (item.productId === product.productId) {
+            dispatch(addToWishlistFormAPI(product));
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
+
     fetchProductImages();
-  }, [product.productId]);
+    fetchProductReviews();
+    fetchWishlistData();
+  }, [product.productId, dispatch, product]);
+
+  const isProductInWishlist = wishlistData.some(
+    (wishlistItem) => wishlistItem.productId === product.productId
+  );
+
+  const handleWishlistClick = async (product) => {
+    if (authToken) {
+      try {
+        await axios.post(`http://localhost:8080/wishlist/save/product/${product.productId}`, {}, {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          }
+        });
+        dispatch(addToWishlist(product));
+      } catch (error) {
+        console.error("Error saving to wishlist:", error);
+      }
+    } else {
+      dispatch(addToWishlist(product));
+    }
+  };
 
   return (
     <Fragment>
@@ -69,14 +128,14 @@ const ProductGridListSingle = ({
           <div className="product-action">
             <div className="pro-same-action pro-wishlist">
               <button
-                className={wishlistItem !== undefined ? "active" : ""}
-                disabled={wishlistItem !== undefined}
+                className={isProductInWishlist ? "active" : ""}
+                disabled={isProductInWishlist}
                 title={
-                  wishlistItem !== undefined
+                  isProductInWishlist
                     ? "Added to wishlist"
                     : "Add to wishlist"
                 }
-                onClick={() => dispatch(addToWishlist(product))}
+                onClick={() => handleWishlistClick(product)}
               >
                 <i className="pe-7s-like" />
               </button>
@@ -105,14 +164,33 @@ const ProductGridListSingle = ({
                   }
                   disabled={cartItem !== undefined && cartItem.quantity > 0}
                   title={
-                    cartItem !== undefined ? "Added to cart" : "Add to cart"
+                    cartItem !== undefined ? "Đã thêm" : "Thêm vào giỏ"
+                  }
+                >
+                  {" "}
+                  <i className="pe-7s-cart"></i>{" "}
+                  {cartItem !== undefined && cartItem.quantity > 0
+                    ? "Đã thêm"
+                    : "Thêm vào giỏ"}
+                </button>
+              ) : product.stock <= 0 && product.preOrder && authToken ? (
+                <button
+                  onClick={() => dispatch(addToCart(product))}
+                  className={
+                    cartItem !== undefined && cartItem.quantity > 0
+                      ? "active"
+                      : ""
+                  }
+                  disabled={cartItem !== undefined && cartItem.quantity > 0}
+                  title={
+                    cartItem !== undefined ? "Added to cart" : "Pre Order"
                   }
                 >
                   {" "}
                   <i className="pe-7s-cart"></i>{" "}
                   {cartItem !== undefined && cartItem.quantity > 0
                     ? "Added"
-                    : "Add to cart"}
+                    : "Pre Order"}
                 </button>
               ) : (
                 <button disabled className="active">
@@ -128,17 +206,28 @@ const ProductGridListSingle = ({
           </div>
         </div>
         <div className="product-content text-center">
+          {(product.stock <= 0 && product.preOrder && authToken) ?
+          <h3>
+            <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
+              {product.productName}{" "}(Pre Order)
+            </Link> 
+          </h3>
+          :
           <h3>
             <Link to={process.env.PUBLIC_URL + "/product/" + product.productId}>
               {product.productName}
             </Link>
-          </h3>
-          {product.rating && product.rating > 0 ? (
+          </h3>}
+          {averageRating && averageRating > 0 ? (
             <div className="product-rating">
-              <Rating ratingValue={product.rating} />
+              <Rating ratingValue={averageRating} />
+              <span>({averageRating.toFixed(1)} out of 5)</span>
             </div>
           ) : (
-            ""
+            <div className="product-rating">
+              <Rating ratingValue={0} />
+              <span>(0 out of 5)</span>
+            </div>
           )}
           <div className="product-price">
             {discountedPrice !== null ? (
@@ -188,31 +277,35 @@ const ProductGridListSingle = ({
                   {product.productName}
                 </Link>
               </h3>
-              <div className="product-list-price">
-                {discountedPrice !== null ? (
-                  <Fragment>
-                    <span>
-                      {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
-                    </span>{" "}
-                    <span className="old">
-                      {finalProductPrice.toLocaleString("vi-VN") + " VND"}
-                    </span>
-                  </Fragment>
-                ) : (
-                  <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
-                )}
-              </div>
-              {product.rating && product.rating > 0 ? (
-                <div className="rating-review">
-                  <div className="product-list-rating">
-                    <Rating ratingValue={product.rating} />
-                  </div>
+              {averageRating && averageRating > 0 ? (
+                <div className="product-list-rating">
+                  <Rating ratingValue={averageRating} />
+                  <span>({averageRating.toFixed(1)} out of 5)</span>
                 </div>
               ) : (
-                ""
+                <div className="product-list-rating">
+                  <Rating ratingValue={0} />
+                  <span>(0 out of 5)</span>
+                </div>
               )}
-              {product.description ? (
-                <p>{product.description}</p>
+              {discountedPrice !== null ? (
+                <div className="product-list-price">
+                  <span>
+                    {finalDiscountedPrice.toLocaleString("vi-VN") + " VND"}
+                  </span>{" "}
+                  <span className="old">
+                    {finalProductPrice.toLocaleString("vi-VN") + " VND"}
+                  </span>
+                </div>
+              ) : (
+                <div className="product-list-price">
+                  <span>
+                    {finalProductPrice.toLocaleString("vi-VN") + " VND"}
+                  </span>
+                </div>
+              )}
+              {product.shortDescription ? (
+                <p>{product.shortDescription}</p>
               ) : (
                 ""
               )}
@@ -229,9 +322,7 @@ const ProductGridListSingle = ({
                       Buy now{" "}
                     </a>
                   ) : product.variation && product.variation.length >= 1 ? (
-                    <Link
-                      to={`${process.env.PUBLIC_URL}/product/${product.productId}`}
-                    >
+                    <Link to={`${process.env.PUBLIC_URL}/product/${product.productId}`}>
                       Select Option
                     </Link>
                   ) : product.stock && product.stock > 0 ? (
@@ -242,20 +333,25 @@ const ProductGridListSingle = ({
                           ? "active"
                           : ""
                       }
-                      disabled={
-                        cartItem !== undefined && cartItem.quantity > 0
-                      }
+                      disabled={cartItem !== undefined && cartItem.quantity > 0}
                       title={
-                        cartItem !== undefined
-                          ? "Added to cart"
-                          : "Add to cart"
+                        cartItem !== undefined ? "Đã thêm" : "Thêm vào giỏ"
                       }
                     >
                       {" "}
                       <i className="pe-7s-cart"></i>{" "}
                       {cartItem !== undefined && cartItem.quantity > 0
-                        ? "Added"
-                        : "Add to cart"}
+                        ? "Đã thêm"
+                        : "Thêm vào giỏ"}
+                    </button>
+                  ) : product.stock <= 0 && product.preOrder && authToken ? (
+                    <button
+                      onClick={() => dispatch(addToCart(product))}
+                      className="active"
+                      title="Pre Order"
+                    >
+                      {" "}
+                      <i className="pe-7s-cart"></i> Pre Order
                     </button>
                   ) : (
                     <button disabled className="active">
@@ -263,17 +359,16 @@ const ProductGridListSingle = ({
                     </button>
                   )}
                 </div>
-
                 <div className="shop-list-wishlist ml-10">
                   <button
-                    className={wishlistItem !== undefined ? "active" : ""}
-                    disabled={wishlistItem !== undefined}
+                    className={isProductInWishlist ? "active" : ""}
+                    disabled={isProductInWishlist}
                     title={
-                      wishlistItem !== undefined
+                      isProductInWishlist
                         ? "Added to wishlist"
                         : "Add to wishlist"
                     }
-                    onClick={() => dispatch(addToWishlist(product))}
+                    onClick={() => handleWishlistClick(product)}
                   >
                     <i className="pe-7s-like" />
                   </button>
@@ -292,6 +387,14 @@ const ProductGridListSingle = ({
                     <i className="pe-7s-shuffle" />
                   </button>
                 </div>
+                <div className="shop-list-quickview ml-10">
+                  <button
+                    onClick={() => setModalShow(true)}
+                    title="Quick View"
+                  >
+                    <i className="pe-7s-look" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -303,23 +406,21 @@ const ProductGridListSingle = ({
         onHide={() => setModalShow(false)}
         product={product}
         currency={currency}
-        discountedPrice={discountedPrice}
-        finalProductPrice={finalProductPrice}
-        finalDiscountedPrice={finalDiscountedPrice}
-        wishlistItem={wishlistItem}
-        compareItem={compareItem}
+        discountedprice={finalDiscountedPrice}
+        finalproductprice={finalProductPrice}
+        finaldiscountedprice={finalDiscountedPrice}
       />
     </Fragment>
   );
 };
 
 ProductGridListSingle.propTypes = {
-  cartItem: PropTypes.shape({}),
-  compareItem: PropTypes.shape({}),
-  currency: PropTypes.shape({}),
-  product: PropTypes.shape({}),
-  spaceBottomClass: PropTypes.string,
-  wishlistItem: PropTypes.shape({})
+  product: PropTypes.object,
+  currency: PropTypes.object,
+  cartItem: PropTypes.object,
+  wishlistItem: PropTypes.object,
+  compareItem: PropTypes.object,
+  spaceBottomClass: PropTypes.string
 };
 
 export default ProductGridListSingle;

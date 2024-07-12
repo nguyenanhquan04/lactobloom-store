@@ -6,17 +6,56 @@ import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart } from "../../store/slices/cart-slice";
-import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
+import { addToWishlistFormAPI, deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
+import axios from "axios";
 import { getImagesByProductId } from "../../utils/ImageService";
+import Cookies from "js-cookie";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
   let { pathname } = useLocation();
-  
-  const { wishlistItems } = useSelector((state) => state.wishlist);
+
+  const { wishlistItems: reduxWishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems } = useSelector((state) => state.cart);
-  
+
+  const [wishlistItems, setWishlistItems] = useState([]);
   const [wishlistImages, setWishlistImages] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const authToken = Cookies.get("authToken");
+
+  useEffect(() => {
+    const fetchWishlistItems = async () => {
+      if (authToken) {
+        try {
+          const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
+            headers: {
+              Authorization: `Bearer ${authToken}`
+            }
+          });
+          const wishlistData = response.data;
+
+          const productPromises = wishlistData.map(async item => {
+            const productResponse = await axios.get(`http://localhost:8080/product/get/${item.productId}`);
+            return {
+              ...productResponse.data,
+              wishlistId: item.wishlistId // Adding the wishlistId from the wishlist API response
+            };
+          });
+
+          const productsWithWishlistId = await Promise.all(productPromises);
+          setWishlistItems(productsWithWishlistId);
+        } catch (error) {
+          console.error("Error fetching wishlist items:", error);
+        }
+      } else {
+        setWishlistItems(reduxWishlistItems);
+      }
+      setLoading(false);
+    };
+
+    fetchWishlistItems();
+  }, [authToken, reduxWishlistItems]);
 
   useEffect(() => {
     const fetchWishlistImages = async () => {
@@ -38,6 +77,28 @@ const Wishlist = () => {
     }
   }, [wishlistItems]);
 
+  const handleRemoveFromWishlist = async (wishlistId, productId) => {
+    if (authToken) {
+      try {
+        await axios.delete(`http://localhost:8080/wishlist/delete/${wishlistId}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          }
+        });
+        setWishlistItems(wishlistItems.filter(item => item.productId !== productId));
+        dispatch(deleteFromWishlist(productId));
+      } catch (error) {
+        console.error("Error removing from wishlist:", error);
+      }
+    } else {
+      dispatch(deleteFromWishlist(productId));
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Fragment>
       <SEO
@@ -45,29 +106,28 @@ const Wishlist = () => {
         description="Lactobloom Wishlist Page."
       />
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
+            { label: "Trang chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Yêu thích", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
             {wishlistItems && wishlistItems.length >= 1 ? (
               <Fragment>
-                <h3 className="cart-page-title">Your wishlist items</h3>
+                <h3 className="cart-page-title">Sản phẩm yêu thích</h3>
                 <div className="row">
                   <div className="col-12">
                     <div className="table-content table-responsive cart-table-content">
                       <table>
                         <thead>
                           <tr>
-                            <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Unit Price</th>
-                            <th>Add To Cart</th>
-                            <th>action</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Thêm vào giỏ</th>
+                            <th>Xóa</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -136,24 +196,33 @@ const Wishlist = () => {
                                 </td>
 
                                 <td className="product-wishlist-cart">
-                                  {wishlistItem.affiliateLink ? (
-                                    <a
-                                      href={wishlistItem.affiliateLink}
-                                      rel="noopener noreferrer"
-                                      target="_blank"
+                                  {wishlistItem.stock && wishlistItem.stock > 0 ? (
+                                    <button
+                                      onClick={() =>
+                                        dispatch(addToCart(wishlistItem))
+                                      }
+                                      className={
+                                        cartItem !== undefined &&
+                                        cartItem.quantity > 0
+                                          ? "active"
+                                          : ""
+                                      }
+                                      disabled={
+                                        cartItem !== undefined &&
+                                        cartItem.quantity > 0
+                                      }
+                                      title={
+                                        wishlistItem !== undefined
+                                          ? "Đã thêm"
+                                          : "Thêm vào giỏ"
+                                      }
                                     >
-                                      {" "}
-                                      Buy now{" "}
-                                    </a>
-                                  ) : wishlistItem.variation &&
-                                    wishlistItem.variation.length >= 1 ? (
-                                    <Link
-                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.productId}`}
-                                    >
-                                      Select option
-                                    </Link>
-                                  ) : wishlistItem.stock &&
-                                    wishlistItem.stock > 0 ? (
+                                      {cartItem !== undefined &&
+                                      cartItem.quantity > 0
+                                        ? "Đã thêm"
+                                        : "Thêm vào giỏ"}
+                                    </button>
+                                  ) : wishlistItem.stock && wishlistItem.stock <= 0 && wishlistItem.preOrder && authToken  ? (
                                     <button
                                       onClick={() =>
                                         dispatch(addToCart(wishlistItem))
@@ -171,26 +240,24 @@ const Wishlist = () => {
                                       title={
                                         wishlistItem !== undefined
                                           ? "Added to cart"
-                                          : "Add to cart"
+                                          : "Pre Order"
                                       }
                                     >
                                       {cartItem !== undefined &&
                                       cartItem.quantity > 0
                                         ? "Added"
-                                        : "Add to cart"}
+                                        : "Pre Order"}
                                     </button>
                                   ) : (
                                     <button disabled className="active">
-                                      Out of stock
+                                      Hết hàng
                                     </button>
                                   )}
                                 </td>
 
                                 <td className="product-remove">
                                   <button
-                                    onClick={() =>
-                                      dispatch(deleteFromWishlist(wishlistItem.productId))
-                                    }
+                                    onClick={() => handleRemoveFromWishlist(wishlistItem.wishlistId, wishlistItem.productId)}
                                   >
                                     <i className="fa fa-times"></i>
                                   </button>
@@ -211,14 +278,14 @@ const Wishlist = () => {
                         <Link
                           to={process.env.PUBLIC_URL + "/shop"}
                         >
-                          Continue Shopping
+                          Tiếp tục mua hàng
                         </Link>
                       </div>
-                      <div className="cart-clear">
+                      {/* <div className="cart-clear">
                         <button onClick={() => dispatch(deleteAllFromWishlist())}>
                           Clear Wishlist
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -231,9 +298,9 @@ const Wishlist = () => {
                       <i className="pe-7s-like"></i>
                     </div>
                     <div className="item-empty-area__text">
-                      No items found in wishlist <br />{" "}
+                      Không có sản phẩm yêu thích <br />{" "}
                       <Link to={process.env.PUBLIC_URL + "/shop"}>
-                        Add Items
+                        Thêm sản phẩm
                       </Link>
                     </div>
                   </div>

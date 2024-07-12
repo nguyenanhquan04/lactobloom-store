@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getProductCartQuantity } from "../../helpers/product";
@@ -7,6 +7,10 @@ import Rating from "./sub-components/ProductRating";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
+import { getProductReviewByProductId } from "../../utils/ProductReviewService";
+import { getCategoryByProductId } from "../../utils/CategoryService";
+import { getBrandByProductId } from "../../utils/BrandService";
+import Cookies from "js-cookie";
 
 const ProductDescriptionInfo = ({
   product,
@@ -19,12 +23,50 @@ const ProductDescriptionInfo = ({
 }) => {
   const dispatch = useDispatch();
   const [quantityCount, setQuantityCount] = useState(1);
+  const [averageRating, setAverageRating] = useState(0);
+  const [category, setCategory] = useState(null);
+  const [brand, setBrand] = useState(null);
 
   const productCartQty = getProductCartQuantity(cartItems, product);
+  const authToken = Cookies.get("authToken");
+
+  useEffect(() => {
+    // Fetch the reviews from the API
+    getProductReviewByProductId(product.productId)
+      .then((response) => {
+        const reviews = response.data;
+        const totalRating = reviews.reduce((acc, review) => acc + review.rate, 0);
+        const avgRating = reviews.length ? totalRating / reviews.length : 0;
+        setAverageRating(avgRating);
+      })
+      .catch((error) => {
+        console.error("Error fetching the reviews:", error);
+      });
+
+    // Fetch the category from the API
+    getCategoryByProductId(product.productId)
+      .then((response) => {
+        setCategory(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching the category:", error);
+      });
+
+    // Fetch the brand from the API
+    getBrandByProductId(product.productId)
+      .then((response) => {
+        setBrand(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching the brand:", error);
+      });
+  }, [product.productId]);
 
   return (
     <div className="product-details-content ml-70">
-      <h2>{product.productName}</h2>
+      {(product.stock <= 0 && product.preOrder && authToken) ?
+      <h2>{product.productName} (Pre Order)</h2> 
+      : <h2>{product.productName}</h2>}
       <div className="product-details-price">
         {discountedPrice !== null ? (
           <Fragment>
@@ -37,14 +79,20 @@ const ProductDescriptionInfo = ({
           <span>{finalProductPrice.toLocaleString("vi-VN") + " VND"} </span>
         )}
       </div>
-      {product.rating && product.rating > 0 ? (
+      {averageRating && averageRating > 0 ? (
         <div className="pro-details-rating-wrap">
           <div className="pro-details-rating">
-            <Rating ratingValue={product.rating} />
+            <Rating ratingValue={averageRating} />
           </div>
+          <span>({averageRating.toFixed(1)} / 5)</span>
         </div>
       ) : (
-        ""
+        <div className="pro-details-rating-wrap">
+          <div className="pro-details-rating">
+            <Rating ratingValue={0} />
+          </div>
+          <span>(0 / 5)</span>
+        </div>
       )}
       <div className="pro-details-list">
         <p>{product.description}</p>
@@ -58,7 +106,7 @@ const ProductDescriptionInfo = ({
               rel="noopener noreferrer"
               target="_blank"
             >
-              Buy Now
+              Mua ngay
             </a>
           </div>
         </div>
@@ -80,13 +128,18 @@ const ProductDescriptionInfo = ({
               readOnly
             />
             <button
-              onClick={() =>
-                setQuantityCount(
-                  quantityCount < product.stock - productCartQty
-                    ? quantityCount + 1
-                    : quantityCount
-                )
-              }
+
+              onClick={() => {
+                if ((product.stock <= 0 && product.preOrder && authToken)) {
+                  setQuantityCount(quantityCount + 1);
+                } else {
+                  setQuantityCount(
+                    quantityCount < product.stock - productCartQty
+                      ? quantityCount + 1
+                      : quantityCount
+                  );
+                }
+              }}
               className="inc qtybutton"
             >
               +
@@ -99,17 +152,29 @@ const ProductDescriptionInfo = ({
                   dispatch(
                     addToCart({
                       ...product,
-                      quantity: quantityCount
+                      quantity: quantityCount,
                     })
                   )
                 }
                 disabled={productCartQty >= product.stock}
               >
-                {" "}
-                Add To Cart{" "}
+                Thêm vào giỏ
+              </button>
+            ) : product.stock <= 0 && product.preOrder && authToken ? (
+              <button
+                onClick={() =>
+                  dispatch(
+                    addToCart({
+                      ...product,
+                      quantity: quantityCount,
+                    })
+                  )
+                }
+              >
+                Pre Order
               </button>
             ) : (
-              <button disabled>Out of Stock</button>
+              <button disabled>Hết hàng</button>
             )}
           </div>
           <div className="pro-details-wishlist">
@@ -142,37 +207,25 @@ const ProductDescriptionInfo = ({
           </div>
         </div>
       )}
-      {product.category ? (
+      {category && (
         <div className="pro-details-meta">
-          <span>Categories :</span>
+          <span>Danh mục:</span>
           <ul>
-            {product.category.map((single, key) => {
-              return (
-                <li key={key}>
-                  <Link to={process.env.PUBLIC_URL + "/shop"}>{single}</Link>
-                </li>
-              );
-            })}
+            <li>
+              <Link>{category.categoryName}</Link>
+            </li>
           </ul>
         </div>
-      ) : (
-        ""
       )}
-      {product.tag ? (
+      {brand && (
         <div className="pro-details-meta">
-          <span>Tags :</span>
+          <span>Thương hiệu:</span>
           <ul>
-            {product.tag.map((single, key) => {
-              return (
-                <li key={key}>
-                  <Link to={process.env.PUBLIC_URL + "/shop"}>{single}</Link>
-                </li>
-              );
-            })}
+            <li>
+              <Link>{brand.brandName}</Link>
+            </li>
           </ul>
         </div>
-      ) : (
-        ""
       )}
 
       <div className="pro-details-social">
@@ -220,4 +273,3 @@ ProductDescriptionInfo.propTypes = {
 };
 
 export default ProductDescriptionInfo;
-

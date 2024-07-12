@@ -153,6 +153,7 @@
               background-color: $theme-color;
             }
             & > .checkmark {
+              visibility: visible;
               border-color: $theme-color;
               background-color: $theme-color;
               &:after {

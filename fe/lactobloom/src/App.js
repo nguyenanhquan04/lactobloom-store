@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import ScrollToTop from "./helpers/scroll-top";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MessengerButton from "./components/messenger-button/MessengerButton";
 
 // home pages
 const Home = lazy(() => import("./pages/home/Home"));
@@ -19,12 +20,17 @@ const BlogDetails = lazy(() => import("./pages/blog/BlogDetails"));
 const About = lazy(() => import("./pages/other/About"));
 const Contact = lazy(() => import("./pages/other/Contact"));
 const MyAccount = lazy(() => import("./pages/other/MyAccount"));
-const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
-
+const Login = lazy(() => import("./pages/other/Login"));
+const Register = lazy(() => import("./pages/other/Register"));
+const Voucher = lazy(() => import("./pages/other/Voucher"));
 const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
 const Compare = lazy(() => import("./pages/other/Compare"));
 const Checkout = lazy(() => import("./pages/other/Checkout"));
+const OrderHistory = lazy(() => import("./pages/other/OrderHistory"));
+const CheckoutResult = lazy(() => import("./pages/other/CheckoutResult"));
+const ForgotPassword = lazy(() => import("./pages/other/ForgotPassword"));
+const Admin = lazy(() => import("./pages/admin/Admin"));
 
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 
@@ -66,7 +72,7 @@ const App = () => {
                 element={<Blog/>}
               />
               <Route
-                path={process.env.PUBLIC_URL + "/blog-details"}
+                path={process.env.PUBLIC_URL + "/blog-details/:blogId"}
                 element={<BlogDetails/>}
               /> 
 
@@ -84,8 +90,12 @@ const App = () => {
                 element={<MyAccount/>}
               />
               <Route
-                path={process.env.PUBLIC_URL + "/login-register"}
-                element={<LoginRegister/>}
+                path={process.env.PUBLIC_URL + "/login"}
+                element={<Login/>}
+              />
+              <Route
+                path={process.env.PUBLIC_URL + "/register"}
+                element={<Register/>}
               />
 
               <Route
@@ -103,10 +113,31 @@ const App = () => {
               <Route
                 path={process.env.PUBLIC_URL + "/checkout"}
                 element={<Checkout/>}
+              />
+              <Route
+                path={process.env.PUBLIC_URL + "/voucher"}
+                element={<Voucher/>}
+              /> 
+              <Route
+                path={process.env.PUBLIC_URL + "/order-history"}
+                element={<OrderHistory/>}
+              />
+               <Route
+                path={process.env.PUBLIC_URL + "/checkout-result"}
+                element={<CheckoutResult/>}
+              /> 
+              <Route
+                path={process.env.PUBLIC_URL + "/forgot-password"}
+                element={<ForgotPassword/>}
+              /> 
+              <Route
+                path={process.env.PUBLIC_URL + "/admin"}
+                element={<Admin/>}
               /> 
 
               <Route path="*" element={<NotFound/>} />
             </Routes>
+            <MessengerButton />
           </Suspense>
         </ScrollToTop>
       </Router>

@@ -1,12 +1,109 @@
-import { Fragment } from "react"; 
-import { useLocation } from "react-router-dom"; 
+import React, { Fragment, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Accordion from "react-bootstrap/Accordion";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode"; // Corrected import statement
+import {
+  userInfo,
+  updateUserInfo,
+  changePassword,
+} from "../../utils/UserService";
 
 const MyAccount = () => {
   let { pathname } = useLocation();
+  let navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [fullName, setFullName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  useEffect(() => {
+    const token = Cookies.get("authToken");
+    const decodedToken = jwtDecode(token);
+    if (!token) {
+      navigate("/login");
+    } else {
+      const decodedToken = jwtDecode(token);
+      setEmail(decodedToken.sub);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await userInfo();
+        setUser(response.data);
+        setFullName(response.data.fullName);
+        setAddress(response.data.address);
+        setPhone(response.data.phone);
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    const token = Cookies.get("authToken");
+
+    try {
+      await updateUserInfo(
+        {
+          fullName,
+          email,
+          address,
+          phone,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Optionally display a success message or update the state
+    } catch (error) {
+      console.error("Failed to update user info:", error);
+      // Optionally handle the error, e.g., display a message to the user
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError("New Password and Confirm New Password do not match");
+      return;
+    }
+    setPasswordError(""); // Clear any previous error
+
+    const token = Cookies.get("authToken");
+
+    try {
+      const response = await changePassword(
+        {
+          password: oldPassword,
+          newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert(response.data);
+    } catch (error) {
+      alert(error.response.data); // Alert the error response message
+    }
+  };
 
   return (
     <Fragment>
@@ -15,139 +112,155 @@ const MyAccount = () => {
         description="Lactobloom My Account Page."
       />
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "My Account", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Tài khoản", path: process.env.PUBLIC_URL + pathname },
+          ]}
         />
-        
+
         <div className="myaccount-area pb-80 pt-100">
           <div className="container">
             <div className="row">
               <div className="ms-auto me-auto col-lg-9">
                 <div className="myaccount-wrapper">
                   <Accordion defaultActiveKey="0">
-                    <Accordion.Item eventKey="0" className="single-my-account mb-20">
+                    <Accordion.Item
+                      eventKey="0"
+                      className="single-my-account mb-20"
+                    >
                       <Accordion.Header className="panel-heading">
-                        <span>1 .</span> Edit your account information{" "}
+                        <span>1 .</span> Chỉnh sửa thông tin tài khoản{" "}
                       </Accordion.Header>
                       <Accordion.Body>
-                          <div className="myaccount-info-wrapper">
-                            <div className="account-info-wrapper">
-                              <h4>My Account Information</h4>
-                              <h5>Your Personal Details</h5>
-                            </div>
-                            <div className="row">
-                              <div className="col-lg-6 col-md-6">
-                                <div className="billing-info">
-                                  <label>First Name</label>
-                                  <input type="text" />
-                                </div>
-                              </div>
-                              <div className="col-lg-6 col-md-6">
-                                <div className="billing-info">
-                                  <label>Last Name</label>
-                                  <input type="text" />
-                                </div>
-                              </div>
-                              <div className="col-lg-12 col-md-12">
-                                <div className="billing-info">
-                                  <label>Email Address</label>
-                                  <input type="email" />
-                                </div>
-                              </div>
-                              <div className="col-lg-6 col-md-6">
-                                <div className="billing-info">
-                                  <label>Telephone</label>
-                                  <input type="text" />
-                                </div>
-                              </div>
-                              <div className="col-lg-6 col-md-6">
-                                <div className="billing-info">
-                                  <label>Fax</label>
-                                  <input type="text" />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="billing-back-btn">
-                              <div className="billing-btn">
-                                <button type="submit">Continue</button>
-                              </div>
-                            </div>
+                        <div className="myaccount-info-wrapper">
+                          <div className="account-info-wrapper">
+                            <h4>Thông tin tài khoản</h4>
+                            <h5>Thông tin cá nhân</h5>
                           </div>
-                      </Accordion.Body>
-                    </Accordion.Item>
-
-
-                    <Accordion.Item eventKey="1" className="single-my-account mb-20">
-                      <Accordion.Header className="panel-heading">
-                          <span>2 .</span> Change your password
-                      </Accordion.Header>
-                      <Accordion.Body>
-                          <div className="myaccount-info-wrapper">
-                            <div className="account-info-wrapper">
-                              <h4>Change Password</h4>
-                              <h5>Your Password</h5>
-                            </div>
+                          <form onSubmit={handleUpdate}>
                             <div className="row">
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>Password</label>
-                                  <input type="password" />
+                                  <label>Họ tên</label>
+                                  <input
+                                    type="text"
+                                    value={fullName}
+                                    onChange={(e) =>
+                                      setFullName(e.target.value)
+                                    }
+                                  />
                                 </div>
                               </div>
                               <div className="col-lg-12 col-md-12">
                                 <div className="billing-info">
-                                  <label>Password Confirm</label>
-                                  <input type="password" />
+                                  <label>Email</label>
+                                  <input type="email" value={email} disabled />
+                                </div>
+                              </div>
+                              <div className="col-lg-12 col-md-12">
+                                <div className="billing-info">
+                                  <label>Địa chỉ</label>
+                                  <input
+                                    type="text"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-6 col-md-6">
+                                <div className="billing-info">
+                                  <label>Số điện thoại</label>
+                                  <input
+                                    type="text"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-6 col-md-6">
+                                <div className="billing-info">
+                                  <label>Điểm</label>
+                                  <input
+                                    type="text"
+                                    value={user?.point || 0}
+                                    disabled
+                                  />
                                 </div>
                               </div>
                             </div>
                             <div className="billing-back-btn">
                               <div className="billing-btn">
-                                <button type="submit">Continue</button>
+                                <button type="submit">Cập Nhật</button>
                               </div>
                             </div>
-                          </div>
+                          </form>
+                        </div>
                       </Accordion.Body>
                     </Accordion.Item>
 
-                    <Accordion.Item eventKey="2" className="single-my-account mb-20">
+                    <Accordion.Item
+                      eventKey="1"
+                      className="single-my-account mb-20"
+                    >
                       <Accordion.Header className="panel-heading">
-                          <span>3 .</span> Modify your address book entries
+                        <span>2 .</span> Thay đổi mật khẩu
                       </Accordion.Header>
                       <Accordion.Body>
-                          <div className="myaccount-info-wrapper">
-                            <div className="account-info-wrapper">
-                              <h4>Address Book Entries</h4>
-                            </div>
-                            <div className="entries-wrapper">
-                              <div className="row">
-                                <div className="col-lg-6 col-md-6 d-flex align-items-center justify-content-center">
-                                  <div className="entries-info text-center">
-                                    <p>John Doe</p>
-                                    <p>Paul Park </p>
-                                    <p>Lorem ipsum dolor set amet</p>
-                                    <p>NYC</p>
-                                    <p>New York</p>
-                                  </div>
+                        <div className="myaccount-info-wrapper">
+                          <div className="account-info-wrapper">
+                            <h4>Thay đổi mật khẩu</h4>
+                            <h5>Mật khẩu</h5>
+                          </div>
+                          <form onSubmit={handleChangePassword}>
+                            <div className="row">
+                              <div className="col-lg-12 col-md-12">
+                                <div className="billing-info">
+                                  <label>Mật khẩu cũ</label>
+                                  <input
+                                    type="password"
+                                    value={oldPassword}
+                                    onChange={(e) =>
+                                      setOldPassword(e.target.value)
+                                    }
+                                  />
                                 </div>
-                                <div className="col-lg-6 col-md-6 d-flex align-items-center justify-content-center">
-                                  <div className="entries-edit-delete text-center">
-                                    <button className="edit">Edit</button>
-                                    <button>Delete</button>
-                                  </div>
+                              </div>
+                              <div className="col-lg-12 col-md-12">
+                                <div className="billing-info">
+                                  <label>Mật khẩu mới</label>
+                                  <input
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={(e) =>
+                                      setNewPassword(e.target.value)
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-12 col-md-12">
+                                <div className="billing-info">
+                                  <label>Xác nhận mật khẩu mới</label>
+                                  <input
+                                    type="password"
+                                    value={confirmNewPassword}
+                                    onChange={(e) =>
+                                      setConfirmNewPassword(e.target.value)
+                                    }
+                                  />
                                 </div>
                               </div>
                             </div>
+                            {passwordError && (
+                              <p style={{ color: "red" }}>{passwordError}</p>
+                            )}
                             <div className="billing-back-btn">
                               <div className="billing-btn">
-                                <button type="submit">Continue</button>
+                                <button type="submit">Xác nhận</button>
                               </div>
                             </div>
-                          </div>
+                          </form>
+                        </div>
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>

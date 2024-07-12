@@ -33,6 +33,8 @@ export const getDiscountPrice = (price, discount) => {
   return discount && discount > 0 ? price - price * (discount / 100) : null;
 };
 
+
+
 // get product cart quantity
 export const getProductCartQuantity = (cartItems, product, color, size) => {
   let productInCart = cartItems.find(
@@ -59,15 +61,13 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
   }
 };
 
-export const cartItemStock = (item, color, size) => {
+export const cartItemStock = (item) => {
   if (item.stock) {
     return item.stock;
-  } else {
-    return item.variation
-      .filter(single => single.color === color)[0]
-      .size.filter(single => single.name === size)[0].stock;
   }
+  return 0; // Default to 0 if no stock information is found
 };
+
 
 //get products based on category
 export const getSortedProducts = (products, sortType, sortValue) => {
@@ -208,15 +208,34 @@ export const getIndividualSizes = product => {
   return individualSizes;
 };
 
-export const setActiveSort = e => {
-  const filterButtons = document.querySelectorAll(
-    ".sidebar-widget-list-left button, .sidebar-widget-tag button, .product-filter button"
-  );
+// export const setActiveSort = e => {
+//   const filterButtons = document.querySelectorAll(
+//     ".sidebar-widget-list-left button, .sidebar-widget-tag button, .product-filter button"
+//   );
+//   filterButtons.forEach(item => {
+//     item.classList.remove("active");
+//   });
+//   e.currentTarget.classList.add("active");
+// };
+
+export const setActiveSort = (e, filterType) => {
+  let filterButtons;
+  if (filterType === "category") {
+    filterButtons = document.querySelectorAll(".sidebar-widget-list-left.category button");
+  } else if (filterType === "brand") {
+    filterButtons = document.querySelectorAll(".sidebar-widget-list-left.brand button");
+  } else {
+    filterButtons = document.querySelectorAll(
+      ".sidebar-widget-list-left button, .sidebar-widget-tag button, .product-filter button"
+    );
+  }
+  
   filterButtons.forEach(item => {
     item.classList.remove("active");
   });
   e.currentTarget.classList.add("active");
 };
+
 
 export const setActiveLayout = e => {
   const gridSwitchBtn = document.querySelectorAll(".shop-tab button");

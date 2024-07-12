@@ -32,7 +32,7 @@ const ProductGridSingle = ({
     const fetchProductImages = async () => {
       try {
         const response = await getImagesByProductId(product.productId);
-        console.log(response.data[0].imageUrl);
+        // console.log(response.data[0].imageUrl);
         setProductImages(response.data[0].imageUrl);
       } catch (error) {
         console.error("Error fetching images:", error);
@@ -105,14 +105,14 @@ const ProductGridSingle = ({
                   }
                   disabled={cartItem !== undefined && cartItem.quantity > 0}
                   title={
-                    cartItem !== undefined ? "Added to cart" : "Add to cart"
+                    cartItem !== undefined ? "Đã thêm" : "Thêm vào giỏ"
                   }
                 >
                   {" "}
                   <i className="pe-7s-cart"></i>{" "}
                   {cartItem !== undefined && cartItem.quantity > 0
-                    ? "Added"
-                    : "Add to cart"}
+                    ? "Đã thêm"
+                    : "Thêm vào giỏ"}
                 </button>
               ) : (
                 <button disabled className="active">

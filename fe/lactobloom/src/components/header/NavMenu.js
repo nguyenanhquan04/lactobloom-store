@@ -68,8 +68,13 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                 </Link>
               </li>
               <li>
-                <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                  {t("login_register")}
+                <Link to={process.env.PUBLIC_URL + "/login"}>
+                  {t("login")}
+                </Link>
+              </li>
+              <li>
+                <Link to={process.env.PUBLIC_URL + "/register"}>
+                  {t("register")}
                 </Link>
               </li>
               <li>
@@ -80,6 +85,21 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
               <li>
                 <Link to={process.env.PUBLIC_URL + "/contact"}>
                   {t("contact_us")}
+                </Link>
+              </li>
+              <li>
+                <Link to={process.env.PUBLIC_URL + "/voucher"}>
+                  Voucher
+                </Link>
+              </li>
+              <li>
+                <Link to={process.env.PUBLIC_URL + "/order-history"}>
+                Lịch sử mua hàng
+                </Link>
+              </li>
+              <li>
+                <Link to={process.env.PUBLIC_URL + "/checkout-result"}>
+                  Kết quả thanh toán
                 </Link>
               </li>
               <li>

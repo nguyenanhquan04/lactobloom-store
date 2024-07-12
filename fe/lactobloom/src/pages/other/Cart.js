@@ -51,27 +51,27 @@ const Cart = () => {
         {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Cart", path: process.env.PUBLIC_URL + pathname }
+            {label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            {label: "Giỏ Hàng", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
             {cartItems && cartItems.length >= 1 ? (
               <Fragment>
-                <h3 className="cart-page-title">Your cart items</h3>
+                <h3 className="cart-page-title">Sản phẩm trong giỏ</h3>
                 <div className="row">
                   <div className="col-12">
                     <div className="table-content table-responsive cart-table-content">
                       <table>
                         <thead>
                           <tr>
-                            <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Unit Price</th>
-                            <th>Qty</th>
-                            <th>Subtotal</th>
-                            <th>action</th>
+                            <th>Hình Ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>SL</th>
+                            <th>Thành Tiền</th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -168,6 +168,7 @@ const Cart = () => {
                                         }))
                                       }
                                       disabled={
+                                        cartItem.preOrder === false &&
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=
@@ -214,12 +215,12 @@ const Cart = () => {
                         <Link
                           to={process.env.PUBLIC_URL + "/shop"}
                         >
-                          Continue Shopping
+                          Tiếp tục mua hàng
                         </Link>
                       </div>
                       <div className="cart-clear">
                         <button onClick={() => dispatch(deleteAllFromCart())}>
-                          Clear Shopping Cart
+                          Xóa đơn hàng
                         </button>
                       </div>
                     </div>
@@ -231,46 +232,30 @@ const Cart = () => {
                   </div>
 
                   <div className="col-lg-4 col-md-6">
-                    <div className="discount-code-wrapper">
-                      <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">
-                          Use Coupon Code
-                        </h4>
-                      </div>
-                      <div className="discount-code">
-                        <p>Enter your coupon code if you have one.</p>
-                        <form>
-                          <input type="text" required name="name" />
-                          <button className="cart-btn-2" type="submit">
-                            Apply Coupon
-                          </button>
-                        </form>
-                      </div>
-                    </div>
                   </div>
 
                   <div className="col-lg-4 col-md-12">
                     <div className="grand-totall">
                       <div className="title-wrap">
                         <h4 className="cart-bottom-title section-bg-gary-cart">
-                          Cart Total
+                          Tổng đơn hàng
                         </h4>
                       </div>
                       <h5>
-                        Total products{" "}
+                        Tổng tiền sản phẩm{" "}
                         <span>
                           {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h5>
 
                       <h4 className="grand-totall-title">
-                        Grand Total{" "}
+                        Tổng tiền{" "}
                         <span>
                           {cartTotalPrice.toLocaleString("vi-VN") + " VND"}
                         </span>
                       </h4>
                       <Link to={process.env.PUBLIC_URL + "/checkout"}>
-                        Proceed to Checkout
+                        Thanh toán
                       </Link>
                     </div>
                   </div>
@@ -284,9 +269,9 @@ const Cart = () => {
                       <i className="pe-7s-cart"></i>
                     </div>
                     <div className="item-empty-area__text">
-                      No items found in cart <br />{" "}
+                      Không có sản phẩm trong giỏ hàng <br />{" "}
                       <Link to={process.env.PUBLIC_URL + "/shop"}>
-                        Shop Now
+                        Mua ngay
                       </Link>
                     </div>
                   </div>
