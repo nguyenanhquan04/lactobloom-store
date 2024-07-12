@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,8 +92,11 @@ public class OrderService implements IOrderService {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if (existingOrder.getUser().equals(user) && existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
-            existingOrder.setOrderStatus(OrderStatus.CANCELLED);
-            return mapToDto(orderRepository.save(existingOrder));
+            long hoursBetween = ChronoUnit.HOURS.between(existingOrder.getOrderDate(), LocalDateTime.now());
+            if (hoursBetween <= 24) {
+                existingOrder.setOrderStatus(OrderStatus.CANCELLED);
+                return mapToDto(orderRepository.save(existingOrder));
+            }
         }
         return null;
     }
