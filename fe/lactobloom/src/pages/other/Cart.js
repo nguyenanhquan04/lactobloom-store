@@ -168,6 +168,7 @@ const Cart = () => {
                                         }))
                                       }
                                       disabled={
+                                        cartItem.preOrder === false &&
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=

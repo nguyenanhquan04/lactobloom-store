@@ -61,15 +61,13 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
   }
 };
 
-export const cartItemStock = (item, color, size) => {
+export const cartItemStock = (item) => {
   if (item.stock) {
     return item.stock;
-  } else {
-    return item.variation
-      .filter(single => single.color === color)[0]
-      .size.filter(single => single.name === size)[0].stock;
   }
+  return 0; // Default to 0 if no stock information is found
 };
+
 
 //get products based on category
 export const getSortedProducts = (products, sortType, sortValue) => {
