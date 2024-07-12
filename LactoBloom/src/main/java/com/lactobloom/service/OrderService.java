@@ -97,6 +97,7 @@ public class OrderService implements IOrderService {
                 existingOrder.setOrderStatus(OrderStatus.CANCELLED);
                 user.setPoint(user.getPoint() - (int) (existingOrder.getTotalPrice()/100000));
                 userRepository.save(user);
+
                 return mapToDto(orderRepository.save(existingOrder));
             }
         }

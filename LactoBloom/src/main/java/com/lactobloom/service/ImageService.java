@@ -25,7 +25,7 @@ public class ImageService implements IImageService {
     @Override
     public ImageDto saveImage(ImageDto imageDto, int productId) {
         Image image = mapToEntity(imageDto);
-        Product product = productRepository.findById((int) productId).orElseThrow(() ->
+        Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         image.setProduct(product);
         Image newImage = imageRepository.save(image);
@@ -49,7 +49,7 @@ public class ImageService implements IImageService {
     public ImageDto updateImage(ImageDto imageDto, int id, int productId) {
         Image existingImage = imageRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Image", "Id", id));
-        Product product = productRepository.findById((int) productId).orElseThrow(() ->
+        Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         existingImage.setProduct(product);
         existingImage.setImageUrl(imageDto.getImageUrl());
