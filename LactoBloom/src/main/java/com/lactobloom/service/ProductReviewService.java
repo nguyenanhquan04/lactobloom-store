@@ -34,6 +34,7 @@ public class ProductReviewService implements IProductReviewService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
+
         Product product = productRepository.findById((long) productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         productReview.setUser(user);

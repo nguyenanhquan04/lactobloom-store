@@ -5,6 +5,7 @@ import com.lactobloom.model.Product;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long>{
+
     List<Product> findByProductNameContainingIgnoreCase(String productName);
     List<Product> findByProductNameContainingIgnoreCaseAndCategoryCategoryId(String productName, Integer categoryId);
     List<Product> findByProductNameContainingIgnoreCaseAndBrandBrandId(String productName, Integer brandId);

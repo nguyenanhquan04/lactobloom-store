@@ -95,6 +95,9 @@ public class OrderService implements IOrderService {
             long hoursBetween = ChronoUnit.HOURS.between(existingOrder.getOrderDate(), LocalDateTime.now());
             if (hoursBetween <= 24) {
                 existingOrder.setOrderStatus(OrderStatus.CANCELLED);
+                user.setPoint(user.getPoint() - (int) (existingOrder.getTotalPrice()/100000));
+                userRepository.save(user);
+
                 return mapToDto(orderRepository.save(existingOrder));
             }
         }
