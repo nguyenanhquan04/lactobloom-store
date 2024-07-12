@@ -15,6 +15,15 @@ import Dashboard from "./Dashboard";
 import VoucherManagement from "./VoucherManagement";
 
 const Sidebar = ({ onSelect, role }) => {
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    const token = Cookies.get("authToken");
+    if (!token || role === "MEMBER") {
+      navigate("/login");
+    } 
+  }, [navigate]);
+
   return (
     <div className="col-lg-2">
       <div className="sidebar">

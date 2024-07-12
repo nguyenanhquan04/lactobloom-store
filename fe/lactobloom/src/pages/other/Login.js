@@ -10,6 +10,7 @@ import Cookies from "js-cookie"; // Import js-cookie
 import { useDispatch } from "react-redux";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
 import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
+import {jwtDecode} from "jwt-decode";
 
 const Login = () => {
   let dispatch = useDispatch();
@@ -22,9 +23,15 @@ const Login = () => {
   // Check for authToken cookie and redirect to homepage if it exists
   useEffect(() => {
     const token = Cookies.get("authToken");
-    console.log(token);
     if (token) {
-      navigate("/"); // Redirect to homepage
+      const decodedToken = jwtDecode(token);
+      const userRole = decodedToken.role;
+      console.log(userRole); // Adjust this line based on the structure of your JWT
+      if (userRole !== "MEMBER") {
+        navigate("/admin");
+      } else {
+        navigate("/"); // Redirect to homepage if role is "MEMBER"
+      }
     }
   }, [navigate]);
 
@@ -46,10 +53,18 @@ const Login = () => {
       }); // Store the token in a cookie
       alert("Login successful");
       dispatch(deleteAllFromCart());
-      dispatch(deleteAllFromWishlist())
+      dispatch(deleteAllFromWishlist());
+      const authToken = Cookies.get("authToken");
+      const decodedToken = jwtDecode(authToken);
       // console.log("Login successful", response.data);
       // Navigate to a different page on successful login
-      navigate("/"); // Adjust the path as needed
+      const userRole = decodedToken.role;
+      console.log(userRole); // Adjust this line based on the structure of your JWT
+      if (userRole !== "MEMBER") {
+        navigate("/admin");
+      } else {
+        navigate("/"); // Redirect to homepage if role is "MEMBER"
+      }
     } catch (error) {
       if (error.response && error.response.status === 403) {
         setErrorMessage("Username or password is incorrect or does not exist");
