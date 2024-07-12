@@ -54,8 +54,8 @@ const ShopGridStandard = () => {
       <LayoutOne headerTop="visible">
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Shop", path: process.env.PUBLIC_URL + pathname },
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Cửa Hàng", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
 

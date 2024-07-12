@@ -52,7 +52,7 @@ const UserForm = ({ onSave, initialUser }) => {
         <Grid item xs={12}>
           <TextField
             name="fullName"
-            label="Full Name"
+            label="Họ tên"
             variant="outlined"
             fullWidth
             value={user.fullName}
@@ -75,7 +75,7 @@ const UserForm = ({ onSave, initialUser }) => {
         <Grid item xs={12}>
           <TextField
             name="phone"
-            label="Phone"
+            label="Số điện thoại"
             variant="outlined"
             fullWidth
             type="tel"
@@ -87,7 +87,7 @@ const UserForm = ({ onSave, initialUser }) => {
         <Grid item xs={12}>
           <TextField
             name="address"
-            label="Address"
+            label="Địa chỉ"
             variant="outlined"
             fullWidth
             value={user.address}
@@ -97,7 +97,7 @@ const UserForm = ({ onSave, initialUser }) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl variant="outlined" fullWidth>
-            <InputLabel>Role</InputLabel>
+            <InputLabel>Vai trò</InputLabel>
             <Select
               name="role"
               value={user.role}

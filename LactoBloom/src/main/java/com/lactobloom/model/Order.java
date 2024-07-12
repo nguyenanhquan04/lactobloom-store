@@ -56,8 +56,9 @@ public class Order {
     private double totalPrice;
 
     @Column(name = "Status", nullable = false)
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "Status must not be null")
-    private boolean status;
+    private OrderStatus orderStatus;
 
     @Column(name = "Order_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime orderDate;

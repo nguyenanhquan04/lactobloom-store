@@ -14,7 +14,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
     note: '',
     shippingFee: '',
     totalPrice: '',
-    status: false,
+    status: 'PENDING', // default status
     orderDate: ''
   });
   const [orderDetails, setOrderDetails] = useState([]);
@@ -51,7 +51,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
   const handleStatusChange = (event) => {
     setOrder({
       ...order,
-      status: event.target.value === 'Completed'
+      status: event.target.value
     });
   };
 
@@ -78,7 +78,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
         <Grid item xs={12}>
           <TextField
             name="fullName"
-            label="Full Name"
+            label="Họ tên"
             variant="outlined"
             fullWidth
             value={order.fullName}
@@ -101,7 +101,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
         <Grid item xs={12}>
           <TextField
             name="phone"
-            label="Phone"
+            label="Số điện thoại"
             variant="outlined"
             fullWidth
             type="tel"
@@ -113,7 +113,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
         <Grid item xs={12}>
           <TextField
             name="address"
-            label="Address"
+            label="Địa chỉ"
             variant="outlined"
             fullWidth
             value={order.address}
@@ -124,7 +124,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
         <Grid item xs={12}>
           <TextField
             name="note"
-            label="Note"
+            label="Ghi chú"
             variant="outlined"
             fullWidth
             multiline
@@ -137,46 +137,48 @@ const OrderForm = ({ onSave, initialOrder }) => {
         <Grid item xs={12} sm={6}>
           <TextField
             name="shippingFee"
-            label="Shipping Fee"
+            label="Phí ship"
             variant="outlined"
             fullWidth
             type="number"
             value={order.shippingFee}
             onChange={handleChange}
-            required
+            disabled
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             name="totalPrice"
-            label="Total Price"
+            label="Tổng giá trị đơn hàng"
             variant="outlined"
             fullWidth
             type="number"
             value={order.totalPrice}
             onChange={handleChange}
-            required
+            disabled
           />
         </Grid>
         <Grid item xs={12}>
           <FormControl variant="outlined" fullWidth>
-            <InputLabel>Status</InputLabel>
+            <InputLabel>Trạng thái</InputLabel>
             <Select
               name="status"
-              value={order.status ? 'Completed' : 'Pending'}
+              value={order.status}
               onChange={handleStatusChange}
               label="Status"
               required
+              disabled
             >
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Completed">Completed</MenuItem>
+              <MenuItem value="PENDING">Đang giao</MenuItem>
+              <MenuItem value="DELIVERED">Đã giao</MenuItem>
+              <MenuItem value="CANCELED">Đã hủy</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <TextField
             name="orderDate"
-            label="Order Date"
+            label="Ngày đặt"
             variant="outlined"
             fullWidth
             type="datetime-local"
@@ -193,9 +195,9 @@ const OrderForm = ({ onSave, initialOrder }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Product Name</TableCell>
-                    <TableCell>Quantity</TableCell>
-                    <TableCell>Total Price</TableCell>
+                    <TableCell>Tên sản phẩm</TableCell>
+                    <TableCell>Số lượng</TableCell>
+                    <TableCell>Thành tiền</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -203,7 +205,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
                     <TableRow key={detail.orderDetailId}>
                       <TableCell>{detail.productName}</TableCell>
                       <TableCell>{detail.quantity}</TableCell>
-                      <TableCell>{detail.totalPrice}</TableCell>
+                      <TableCell>{detail.totalPrice.toLocaleString("vi-VN") + " VND"}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -213,7 +215,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
         )}
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">
-            Update Order
+            Cập nhật
           </Button>
         </Grid>
       </Grid>

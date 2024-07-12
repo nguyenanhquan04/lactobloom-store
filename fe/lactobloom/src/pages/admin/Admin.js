@@ -12,6 +12,7 @@ import BrandManagement from "./BrandManagement";
 import CategoryManagement from "./CategoryManagement";
 import OrderManagement from "./OrderManagement";
 import Dashboard from "./Dashboard";
+import VoucherManagement from "./VoucherManagement";
 
 const Sidebar = ({ onSelect, role }) => {
   return (
@@ -20,38 +21,43 @@ const Sidebar = ({ onSelect, role }) => {
         <ul className="nav flex-column">
         <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("dashboard")}>
-              Dashboard
+              Biểu đồ
             </Link>
           </li>
           <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("product")}>
-              Products Management
+              Quản lý sản phẩm
             </Link>
           </li>
           <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("blog")}>
-              Blogs Management
+              Quản lý bài viết
             </Link>
           </li>
           <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("category")}>
-              Categories Management
+              Quản lý danh mục
             </Link>
           </li>
           <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("brand")}>
-              Brands Management
+              Quản lý thương hiệu
             </Link>
           </li>
           <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("order")}>
-              Orders Management
+              Quản lý đơn hàng
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="sidebar-link" onClick={() => onSelect("voucher")}>
+              Quản lý Voucher
             </Link>
           </li>
           {role === "ADMIN" && (
             <li className="nav-item">
               <Link className="sidebar-link" onClick={() => onSelect("user")}>
-                Users Management
+                Quản lý người dùng
               </Link>
             </li>
           )}
@@ -94,6 +100,8 @@ const Admin = () => {
         return <OrderManagement />;
       case "user":
         return <UserManagement />;
+        case "voucher":
+        return <VoucherManagement />;
       default:
         return <Dashboard />;
     }
@@ -106,7 +114,7 @@ const Admin = () => {
         {/* breadcrumb */}
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
             { label: "Admin", path: process.env.PUBLIC_URL + pathname },
           ]}
         />

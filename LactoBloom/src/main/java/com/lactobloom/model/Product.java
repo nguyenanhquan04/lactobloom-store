@@ -33,6 +33,10 @@ public class Product {
     @NotNull(message = "Description must not be null")
     private String description;
 
+    @Column(name = "Long_description", columnDefinition = "TEXT")
+    @NotNull(message = "Long description must not be null")
+    private String longDescription;
+
     @Column(name = "Price", columnDefinition = "DECIMAL(15, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Price must not be null")
     private double price;
@@ -44,6 +48,10 @@ public class Product {
     @Column(name = "Stock", nullable = false)
     @NotNull(message = "Stock must not be null")
     private int stock;
+
+    @Column(name = "Pre_order", nullable = false)
+    @NotNull(message = "Pre-order must not be null")
+    private boolean preOrder;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<ProductReview> productReviews;

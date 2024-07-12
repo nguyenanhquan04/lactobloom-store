@@ -139,8 +139,8 @@ const Dashboard = () => {
       });
       const salesData = response.data.map(item => ({
         month: item.month,
-        revenue: parseFloat(item.revenue) / 1000000, // Adjust revenue scale here
-        orderCounts: item.orderCounts
+        'Doanh Thu': parseFloat(item.revenue) / 1000000, // Adjust revenue scale here
+        'Số Đơn Hàng': item.orderCounts
       }));
       setSalesByMonth(salesData);
     } catch (error) {
@@ -173,8 +173,8 @@ const Dashboard = () => {
       });
       const salesDateData = response.data.map(item => ({
         date: item.date,
-        revenue: parseFloat(item.revenue) / 1000000, // Adjust revenue scale here
-        orderCounts: item.orderCounts
+        'Doanh Thu': parseFloat(item.revenue) / 1000000, // Adjust revenue scale here
+        'Số Đơn Hàng': item.orderCounts
       }));
       setSalesByDate(salesDateData);
     } catch (error) {
@@ -202,7 +202,7 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Total Revenue
+                  Tổng Doanh Thu
                 </Typography>
                 <Box display="flex" justifyContent="center" alignItems="center" height={150}>
                   <Typography variant="h4">
@@ -217,7 +217,7 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Today Revenue
+                  Doanh Thu Hôm Nay
                 </Typography>
                 <Box display="flex" justifyContent="center" alignItems="center" height={150}>
                   <Typography variant="h4">
@@ -232,7 +232,7 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Month Revenue
+                  Doanh Thu Tháng
                 </Typography>
                 <Box display="flex" justifyContent="center" alignItems="center" height={150}>
                   <Typography variant="h4">
@@ -247,16 +247,16 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Sales By Month Of Year
+                  Doanh Thu Năm Nay
                 </Typography>
                 <BarChart width={600} height={300} data={salesByMonth}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
-                  <YAxis label={{ value: 'Revenue (millions)', angle: -90, position: 'insideLeft' }} />
+                  <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
                   <Tooltip formatter={(value, name) => name === 'revenue' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
                   <Legend />
-                  <Bar dataKey="revenue" fill="#8884d8" />
-                  <Bar dataKey="orderCounts" fill="#82ca9d" />
+                  <Bar dataKey="Doanh Thu" fill="#8884d8" />
+                  <Bar dataKey="Số Đơn Hàng" fill="#82ca9d" />
                 </BarChart>
               </CardContent>
             </Card>
@@ -266,16 +266,16 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Sales By Date Of Month
+                  Doanh Thu Tháng Này
                 </Typography>
                 <LineChart width={600} height={300} data={salesByDate}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis label={{ value: 'Revenue (millions)', angle: -90, position: 'insideLeft' }} />
+                  <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
                   <Tooltip formatter={(value, name) => name === 'revenue' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
                   <Legend />
-                  <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
-                  <Line type="monotone" dataKey="orderCounts" stroke="#82ca9d" />
+                  <Line type="monotone" dataKey="Doanh Thu" stroke="#8884d8" />
+                  <Line type="monotone" dataKey="Số Đơn Hàng" stroke="#82ca9d" />
                 </LineChart>
               </CardContent>
             </Card>
@@ -285,14 +285,14 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Top Selling Products
+                  Top Sản Phẩm Bán Chạy
                 </Typography>
                 <List>
                   {topSellingProducts.map((product) => (
                     <ListItem key={product.productId}>
                       <ListItemText
                         primary={product.productName}
-                        secondary={`Total Sales: ${product.totalMoney.toLocaleString("vi-VN")} VND`}
+                        secondary={`Tổng doanh thu của sản phẩm: ${product.totalMoney.toLocaleString("vi-VN")} VND`}
                       />
                     </ListItem>
                   ))}
@@ -305,14 +305,14 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Recent Orders
+                  Đơn Hàng Hiện Tại
                 </Typography>
                 <List>
                   {recentOrders.map((order) => (
                     <ListItem key={order.id}>
                       <ListItemText
-                        primary={`Order ID: ${order.id}`}
-                        secondary={`Customer: ${order.customer} | Date: ${order.date} | Total: ${order.total.toLocaleString("vi-VN")} VND`}
+                        primary={` ID: ${order.id}`}
+                        secondary={`Khách hàng: ${order.customer} | Ngày: ${order.date} | Tổng: ${order.total.toLocaleString("vi-VN")} VND`}
                       />
                     </ListItem>
                   ))}

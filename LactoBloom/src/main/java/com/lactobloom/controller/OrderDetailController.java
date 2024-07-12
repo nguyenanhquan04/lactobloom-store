@@ -22,8 +22,14 @@ public class OrderDetailController {
         return new ResponseEntity<>(orderDetailService.saveOrderDetail(orderDetailDto, orderId, productId), HttpStatus.CREATED);
     }
 
+    @GetMapping("/myOrder/{orderId}")
+    public List<OrderDetailDto> getOrderDetailsByOrderForMember(@PathVariable int orderId) {
+        return orderDetailService.getOrderDetailsByOrderForMember(orderId);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/order/{orderId}")
-    public List<OrderDetailDto> getOrderDetailsByOrder(@PathVariable int orderId) {
+    public List<OrderDetailDto> getOrderDetailsByOrderForStaff(@PathVariable int orderId) {
         return orderDetailService.getOrderDetailsByOrder(orderId);
     }
 

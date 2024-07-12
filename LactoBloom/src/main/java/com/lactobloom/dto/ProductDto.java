@@ -14,9 +14,11 @@ public abstract class ProductDto {
         private int productId;
         private String productName;
         private String description;
+        private String longDescription;
         private double price;
         private double discount;
         private int stock;
+        private boolean preOrder;
     }
 
     @Data
@@ -29,8 +31,10 @@ public abstract class ProductDto {
         private String brandName;
         private String categoryName;
         private String description;
+        private String longDescription;
         private double price;
         private double discount;
         private int stock;
+        private boolean preOrder;
     }
 }

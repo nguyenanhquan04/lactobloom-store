@@ -12,9 +12,6 @@ import java.util.Map;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByUserUserId(int userId);
 
-    @Query("SELECT o FROM Order o WHERE o.status = false")
-    List<Order> findPendingOrders();
-
     @Query("SELECT new map(od.product.productId as productId, SUM(od.totalPrice) as totalMoney) " +
             "FROM OrderDetail od " +
             "GROUP BY od.product.productId " +

@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WishlistDto {
     private int wishlistId;
+    private int productId;
 }

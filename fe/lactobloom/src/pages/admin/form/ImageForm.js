@@ -131,15 +131,15 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Edit Product Image</DialogTitle>
+      <DialogTitle>Cập nhật ảnh sản phẩm</DialogTitle>
       <DialogContent>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Image URL</TableCell>
-                <TableCell>Preview</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell>Xem trước</TableCell>
+                <TableCell>Thao tác</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -217,7 +217,7 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
           </Table>
         </TableContainer>
         <Button onClick={handleAddNewImage} style={{ marginTop: "20px" }}>
-          Add New Image
+          Thêm ảnh mới
         </Button>
       </DialogContent>
 
@@ -230,7 +230,7 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
       >
         <DialogTitle id="alert-dialog-title">{"Delete Image"}</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete this image?
+          Bạn có muốn xóa ảnh?
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteIndex(null)} color="primary">

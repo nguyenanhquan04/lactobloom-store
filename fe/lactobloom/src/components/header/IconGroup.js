@@ -82,7 +82,7 @@ const IconGroup = ({ iconWhiteClass }) => {
           <form onSubmit={handleSubmit}>
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Tìm kiếm"
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -104,11 +104,11 @@ const IconGroup = ({ iconWhiteClass }) => {
             {!authToken ? (
               <>
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/login"}>Login</Link>
+                  <Link to={process.env.PUBLIC_URL + "/login"}>Đăng Nhập</Link>
                 </li>
                 <li>
                   <Link to={process.env.PUBLIC_URL + "/register"}>
-                    Register
+                    Đăng ký
                   </Link>
                 </li>
               </>
@@ -123,17 +123,17 @@ const IconGroup = ({ iconWhiteClass }) => {
                 )}
                 <li>
                   <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                    My Account
+                    Tài khoản
                   </Link>
                 </li>
                 <li>
                   <Link to={process.env.PUBLIC_URL + "/order-history"}>
-                    Order History
+                    Lịch sử mua 
                   </Link>
                 </li>
                 <li>
                   <Link onClick={handleLogout} to="/login">
-                    Log Out
+                    Đăng xuất
                   </Link>
                 </li>
               </>

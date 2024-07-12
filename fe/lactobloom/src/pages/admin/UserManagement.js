@@ -112,11 +112,11 @@ const UserManagement = () => {
 
   return (
     <div className="user-management-container">
-      <h1>User Management</h1>
+      <h1>Quản lý người dùng</h1>
       <Grid container spacing={0} alignItems="center" className="user-management-controls">
         <Grid item xs={12} md={9}>
           <TextField
-            label="Search Users"
+            label="Tìm người dùng"
             variant="outlined"
             value={searchValue}
             onChange={handleSearchChange}
@@ -125,13 +125,13 @@ const UserManagement = () => {
         </Grid>
       </Grid>
       <FormControl variant="outlined" fullWidth className="user-management-role-select">
-        <InputLabel>Role</InputLabel>
+        <InputLabel>Vai trò</InputLabel>
         <Select
           value={selectedRole}
           onChange={handleRoleChange}
           label="Role"
         >
-          <MenuItem value="all">All Users</MenuItem>
+          <MenuItem value="all">Tất cả người dùng</MenuItem>
           <MenuItem value="ADMIN">Admin</MenuItem>
           <MenuItem value="STAFF">Staff</MenuItem>
           <MenuItem value="MEMBER">Member</MenuItem>
@@ -142,13 +142,13 @@ const UserManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Full Name</TableCell>
-              <TableCell>Role</TableCell>
+              <TableCell>Họ tên</TableCell>
+              <TableCell>Vai trò</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Points</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Số điện thoại</TableCell>
+              <TableCell>Địa chỉ</TableCell>
+              <TableCell>Điểm</TableCell>
+              <TableCell>Thao tác</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -185,12 +185,12 @@ const UserManagement = () => {
         />
       </TableContainer>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>Edit User</DialogTitle>
+        <DialogTitle>Cập Nhật Người Dùng</DialogTitle>
         <DialogContent>
           <UserForm onSave={handleSave} initialUser={editUser} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
+          <Button onClick={handleClose} color="secondary">Hủy</Button>
         </DialogActions>
       </Dialog>
     </div>

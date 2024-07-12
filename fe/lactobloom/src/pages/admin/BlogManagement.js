@@ -111,11 +111,11 @@ const BlogManagement = () => {
 
   return (
     <div className="blog-management-container">
-      <h1>Blogs Management</h1>
+      <h1>Quản lý bài viết</h1>
       <Grid container spacing={0} alignItems="center" className="blog-management-controls">
         <Grid item xs={12} md={9}>
           <TextField
-            label="Search Blogs"
+            label="Tìm bài viết"
             variant="outlined"
             value={searchValue}
             onChange={handleSearchChange}
@@ -129,18 +129,18 @@ const BlogManagement = () => {
             className="blog-management-add-button"
             onClick={handleAddBlog}
           >
-            Add New Blog
+            Thêm bài viết
           </Button>
         </Grid>
       </Grid>
       <FormControl variant="outlined" fullWidth className="blog-management-category-select">
-        <InputLabel>Category</InputLabel>
+        <InputLabel>Danh mục</InputLabel>
         <Select
           value={selectedCategory}
           onChange={handleCategoryChange}
           label="Category"
         >
-          <MenuItem value="all">All Blogs</MenuItem>
+          <MenuItem value="all">Tất cả</MenuItem>
           {categories.map((category) => (
             <MenuItem key={category.blogCategoryId} value={category.blogCategoryName}>
               {category.blogCategoryName}
@@ -153,10 +153,10 @@ const BlogManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Publish Date</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Danh mục</TableCell>
+              <TableCell>Tiêu đề</TableCell>
+              <TableCell>Ngày đăng</TableCell>
+              <TableCell>Thao tác</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -190,12 +190,12 @@ const BlogManagement = () => {
         />
       </TableContainer>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>{editingBlog ? 'Edit Blog' : 'Add New Blog'}</DialogTitle>
+        <DialogTitle>{editingBlog ? 'Cập nhật bài viết' : 'Thêm bài viết'}</DialogTitle>
         <DialogContent>
           <BlogForm onSave={handleSave} initialBlog={editingBlog} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
+          <Button onClick={handleClose} color="secondary">Hủy</Button>
         </DialogActions>
       </Dialog>
     </div>

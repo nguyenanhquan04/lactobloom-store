@@ -33,9 +33,9 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/myWishlist")
-    public List<ProductDto.ProductResponse> getWishlistsByUser() {
-        return productService.getUserWishlist();
+    @GetMapping("/random")
+    public List<ProductDto.ProductResponse> get4RandomProducts() {
+        return productService.get4RandomProducts();
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
@@ -64,5 +64,10 @@ public class ProductController {
     @GetMapping("/brand/{brandId}")
     public List<ProductDto.ProductResponse> getProductsByBrandId(@PathVariable int brandId) {
         return productService.getProductsByBrandId(brandId);
+    }
+
+    @GetMapping("/wishlist/{wishlistId}")
+    public ResponseEntity<ProductDto.ProductResponse> getProductByWishlistId(@PathVariable int wishlistId) {
+        return new ResponseEntity<>(productService.getProductByWishlistId(wishlistId), HttpStatus.OK);
     }
 }

@@ -10,6 +10,7 @@ import { addToCompare } from "../../store/slices/compare-slice";
 import { getProductReviewByProductId } from "../../utils/ProductReviewService";
 import { getCategoryByProductId } from "../../utils/CategoryService";
 import { getBrandByProductId } from "../../utils/BrandService";
+import Cookies from "js-cookie";
 
 const ProductDescriptionInfo = ({
   product,
@@ -27,6 +28,7 @@ const ProductDescriptionInfo = ({
   const [brand, setBrand] = useState(null);
 
   const productCartQty = getProductCartQuantity(cartItems, product);
+  const authToken = Cookies.get("authToken");
 
   useEffect(() => {
     // Fetch the reviews from the API
@@ -62,7 +64,9 @@ const ProductDescriptionInfo = ({
 
   return (
     <div className="product-details-content ml-70">
-      <h2>{product.productName}</h2>
+      {(product.stock <= 0 && product.preOrder && authToken) ?
+      <h2>{product.productName} (Pre Order)</h2> 
+      : <h2>{product.productName}</h2>}
       <div className="product-details-price">
         {discountedPrice !== null ? (
           <Fragment>
@@ -80,14 +84,14 @@ const ProductDescriptionInfo = ({
           <div className="pro-details-rating">
             <Rating ratingValue={averageRating} />
           </div>
-          <span>({averageRating.toFixed(1)} out of 5)</span>
+          <span>({averageRating.toFixed(1)} / 5)</span>
         </div>
       ) : (
         <div className="pro-details-rating-wrap">
           <div className="pro-details-rating">
             <Rating ratingValue={0} />
           </div>
-          <span>(0 out of 5)</span>
+          <span>(0 / 5)</span>
         </div>
       )}
       <div className="pro-details-list">
@@ -102,7 +106,7 @@ const ProductDescriptionInfo = ({
               rel="noopener noreferrer"
               target="_blank"
             >
-              Buy Now
+              Mua ngay
             </a>
           </div>
         </div>
@@ -125,7 +129,9 @@ const ProductDescriptionInfo = ({
             />
             <button
               onClick={() =>
-                setQuantityCount(
+                product.stock > 0 || (product.stock <= 0 && product.preOrder && authToken)
+                  ? setQuantityCount(quantityCount + 1)
+                  : setQuantityCount(
                   quantityCount < product.stock - productCartQty
                     ? quantityCount + 1
                     : quantityCount
@@ -143,17 +149,29 @@ const ProductDescriptionInfo = ({
                   dispatch(
                     addToCart({
                       ...product,
-                      quantity: quantityCount
+                      quantity: quantityCount,
                     })
                   )
                 }
                 disabled={productCartQty >= product.stock}
               >
-                {" "}
-                Add To Cart{" "}
+                Thêm vào giỏ
+              </button>
+            ) : product.stock <= 0 && product.preOrder && authToken ? (
+              <button
+                onClick={() =>
+                  dispatch(
+                    addToCart({
+                      ...product,
+                      quantity: quantityCount,
+                    })
+                  )
+                }
+              >
+                Pre Order
               </button>
             ) : (
-              <button disabled>Out of Stock</button>
+              <button disabled>Hết hàng</button>
             )}
           </div>
           <div className="pro-details-wishlist">
@@ -188,7 +206,7 @@ const ProductDescriptionInfo = ({
       )}
       {category && (
         <div className="pro-details-meta">
-          <span>Category:</span>
+          <span>Danh mục:</span>
           <ul>
             <li>
               <Link>{category.categoryName}</Link>
@@ -198,7 +216,7 @@ const ProductDescriptionInfo = ({
       )}
       {brand && (
         <div className="pro-details-meta">
-          <span>Brand:</span>
+          <span>Thương hiệu:</span>
           <ul>
             <li>
               <Link>{brand.brandName}</Link>

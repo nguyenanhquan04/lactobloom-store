@@ -59,12 +59,6 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<OrderDto> getPendingOrders() {
-        List<Order> orderList = orderRepository.findPendingOrders();
-        return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
-    }
-
-    @Override
     public List<OrderDto> getOrdersByUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
@@ -81,6 +75,28 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public OrderDto deliverOrder(int id) {
+        Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Order", "Id", id));
+        existingOrder.setOrderStatus(OrderStatus.DELIVERED);
+        return mapToDto(orderRepository.save(existingOrder));
+    }
+
+    @Override
+    public OrderDto cancelOrder(int id) {
+        Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Order", "Id", id));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        if (existingOrder.getUser().equals(user) && existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
+            existingOrder.setOrderStatus(OrderStatus.CANCELLED);
+            return mapToDto(orderRepository.save(existingOrder));
+        }
+        return null;
+    }
+
+    @Override
     public OrderDto updateOrder(OrderDto orderDto, int id) {
         Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
@@ -88,9 +104,10 @@ public class OrderService implements IOrderService {
         existingOrder.setEmail(orderDto.getEmail());
         existingOrder.setPhone(orderDto.getPhone());
         existingOrder.setAddress(orderDto.getAddress());
+        existingOrder.setNote(orderDto.getNote());
         existingOrder.setShippingFee(orderDto.getShippingFee());
         existingOrder.setTotalPrice(orderDto.getTotalPrice());
-        existingOrder.setStatus(orderDto.isStatus());
+        existingOrder.setOrderStatus(OrderStatus.valueOf(orderDto.getStatus()));
         return mapToDto(orderRepository.save(existingOrder));
     }
 
@@ -111,7 +128,7 @@ public class OrderService implements IOrderService {
         orderResponse.setNote(order.getNote());
         orderResponse.setShippingFee(order.getShippingFee());
         orderResponse.setTotalPrice(order.getTotalPrice());
-        orderResponse.setStatus(order.isStatus());
+        orderResponse.setStatus(order.getOrderStatus().name());
         orderResponse.setOrderDate(order.getOrderDate());
         return orderResponse;
     }
@@ -125,7 +142,7 @@ public class OrderService implements IOrderService {
         order.setNote(orderDto.getNote());
         order.setShippingFee(orderDto.getShippingFee());
         order.setTotalPrice(orderDto.getTotalPrice());
-        order.setStatus(false);
+        order.setOrderStatus(OrderStatus.PENDING);
         return order;
     }
 }

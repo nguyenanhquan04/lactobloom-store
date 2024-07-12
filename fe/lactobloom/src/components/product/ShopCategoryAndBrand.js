@@ -81,7 +81,7 @@ const ShopCategoryAndBrand = ({
   return (
     <div>
       <div className="sidebar-widget">
-        <h4 className="pro-sidebar-title">Categories</h4>
+        <h4 className="pro-sidebar-title">Danh mục</h4>
         <div className="sidebar-widget-list mt-30">
           <ul>
             <li>
@@ -90,7 +90,7 @@ const ShopCategoryAndBrand = ({
                   onClick={handleAllCategories}
                   className={selectedCategories.length === 0 ? "active" : ""}
                 >
-                  <span className="checkmark" /> All Categories
+                  <span className="checkmark" /> Tất cả
                 </button>
               </div>
             </li>
@@ -123,7 +123,7 @@ const ShopCategoryAndBrand = ({
       </div>
 
       <div className="sidebar-widget mt-50">
-        <h4 className="pro-sidebar-title">Brand</h4>
+        <h4 className="pro-sidebar-title">Thương hiệu</h4>
         <div className="sidebar-widget-list mt-25">
           <ul>
             <li>
@@ -132,7 +132,7 @@ const ShopCategoryAndBrand = ({
                   onClick={handleAllBrands}
                   className={selectedBrands.length === 0 ? "active" : ""}
                 >
-                  <span className="checkmark" /> All Brands
+                  <span className="checkmark" /> Tất cả
                 </button>
               </div>
             </li>

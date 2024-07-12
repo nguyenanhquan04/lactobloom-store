@@ -163,17 +163,17 @@ const ProductDescriptionTab = ({
           <Tab.Container defaultActiveKey="productDescription">
             <Nav variant="pills" className="description-review-topbar">
               <Nav.Item>
-                <Nav.Link eventKey="productDescription">Description</Nav.Link>
+                <Nav.Link eventKey="productDescription">Mô tả</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="productReviews">
-                  Reviews({reviews.length})
+                  Bình luận({reviews.length})
                 </Nav.Link>
               </Nav.Item>
             </Nav>
             <Tab.Content className="description-review-bottom">
               <Tab.Pane eventKey="productDescription">
-                {productFullDesc}
+              <div dangerouslySetInnerHTML={{ __html: productFullDesc}} />
               </Tab.Pane>
               <Tab.Pane eventKey="productReviews">
                 <div className="row">
