@@ -171,7 +171,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
             >
               <MenuItem value="PENDING">Đang giao</MenuItem>
               <MenuItem value="DELIVERED">Đã giao</MenuItem>
-              <MenuItem value="CANCELED">Đã hủy</MenuItem>
+              <MenuItem value="CANCELLED">Đã hủy</MenuItem>
             </Select>
           </FormControl>
         </Grid>

@@ -133,9 +133,9 @@ const ForgotPassword = () => {
       <LayoutOne headerTop="visible">
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
             {
-              label: "Forgot Password",
+              label: "Quên Mật Khẩu",
               path: process.env.PUBLIC_URL + pathname,
             },
           ]}
@@ -149,7 +149,7 @@ const ForgotPassword = () => {
                     <Nav variant="pills" className="forgot-password-tab-list">
                       <Nav.Item>
                         <Nav.Link eventKey="forgot-password">
-                          <h4>Forgot Password</h4>
+                          <h4>Quên Mật Khẩu</h4>
                         </Nav.Link>
                       </Nav.Item>
                     </Nav>
@@ -172,7 +172,7 @@ const ForgotPassword = () => {
                                 disabled={loading || countdown > 0}
                                 className="send-otp-button"
                               >
-                                {countdown > 0 ? `Re-send after ${countdown}s` : "Send OTP"}
+                                {countdown > 0 ? `Gửi lại sau ${countdown}s` : "Gửi OTP"}
                               </button>
                             </div>
                             {otpSent && (
@@ -188,7 +188,7 @@ const ForgotPassword = () => {
                                 <input
                                   type="password"
                                   name="password"
-                                  placeholder="New Password"
+                                  placeholder="Mật khẩu mới"
                                   value={formData.password}
                                   onChange={handleChange}
                                   required
@@ -196,7 +196,7 @@ const ForgotPassword = () => {
                                 <input
                                   type="password"
                                   name="reenterPassword"
-                                  placeholder="Re-enter New Password"
+                                  placeholder="Nhập lại mật khẩu mới"
                                   value={formData.reenterPassword}
                                   onChange={handleChange}
                                   required
@@ -209,13 +209,13 @@ const ForgotPassword = () => {
                             {loading && countdown === 0 && (
                               <div className="loading-animation">
                                 {/* Replace this div with your actual loading animation */}
-                                Loading...
+                                Đang chờ...
                               </div>
                             )}
                             {otpSent && (
                               <div className="button-box">
                                 <button type="submit" disabled={loading}>
-                                  <span>Submit</span>
+                                  <span>OK</span>
                                 </button>
                               </div>
                             )}
