@@ -92,7 +92,9 @@ const BlogStandard = () => {
     axios.get(`http://localhost:8080/blog/search?title=${searchTerm}`)
       .then(response => {
         const searchResults = response.data;
-        if (categoryId) {
+        if (categoryId === "all") {
+          setFilteredBlogs(searchResults);
+        } else {
           // Fetch blogs by selected category
           axios.get(`http://localhost:8080/blog/blogCategory/${categoryId}`)
             .then(response => {
@@ -101,8 +103,6 @@ const BlogStandard = () => {
               filterBlogs(searchResults, categoryBlogs);
             })
             .catch(error => console.error('Error fetching blogs by category:', error));
-        } else {
-          setFilteredBlogs(searchResults);
         }
       })
       .catch(error => console.error('Error fetching blogs by search:', error));
@@ -268,16 +268,35 @@ const BlogStandard = () => {
                     <h4 className="pro-sidebar-title">Danh mục</h4>
                     <div className="sidebar-widget-list sidebar-widget-list--blog mt-20">
                       <ul>
+                        <li>
+                          <div className="sidebar-widget-list-left">
+                            <input
+                              type="radio"
+                              id="all-categories"
+                              name="category"
+                              value="all"
+                              checked={selectedCategory === "all"}
+                              onChange={() => handleCategoryChange("all")}
+                            />
+                            <Link>
+                              Tất cả danh mục
+                            </Link>
+                            <span className="checkmark" />
+                          </div>
+                        </li>
                         {categories.map(category => (
                           <li key={category.blogCategoryId}>
                             <div className="sidebar-widget-list-left">
                               <input
                                 type="radio"
+                                id={`category-${category.blogCategoryId}`}
+                                name="category"
+                                value={category.blogCategoryId}
                                 checked={selectedCategory === category.blogCategoryId}
                                 onChange={() => handleCategoryChange(category.blogCategoryId)}
-                              />{" "}
+                              />
                               <Link>
-                                {category.blogCategoryName}{" "}
+                                {category.blogCategoryName}
                               </Link>
                               <span className="checkmark" />
                             </div>

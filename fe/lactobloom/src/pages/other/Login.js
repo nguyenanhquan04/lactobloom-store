@@ -26,9 +26,6 @@ const Login = () => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const userRole = decodedToken.role;
-
-      console.log(userRole); // Adjust this line based on the structure of your JWT
-
       if (userRole !== "MEMBER") {
         navigate("/admin");
       } else {
@@ -53,7 +50,7 @@ const Login = () => {
         secure: true,
         sameSite: "strict",
       }); // Store the token in a cookie
-      alert("Login successful");
+      alert("Đăng nhập thành công");
       dispatch(deleteAllFromCart());
       dispatch(deleteAllFromWishlist());
       const authToken = Cookies.get("authToken");
@@ -73,7 +70,7 @@ const Login = () => {
       } else {
         setErrorMessage("An unexpected error occurred. Please try again.");
       }
-      console.error("Login failed", error);
+      console.error("Đăng nhập thất bại", error);
     }
   };
 
@@ -85,7 +82,7 @@ const Login = () => {
         <Breadcrumb
           pages={[
             { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
-            { label: "Đăng nhập", path: process.env.PUBLIC_URL + pathname },
+            { label: "Đăng Nhập", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
         <div className="login-register-area pt-100 pb-100">
@@ -133,12 +130,12 @@ const Login = () => {
                                       "/forgot-password"
                                     }
                                   >
-                                    Quên mật khẩu?
+                                    Quên Mật Khẩu?
                                   </Link>
                                   <Link
                                     to={process.env.PUBLIC_URL + "/register"}
                                   >
-                                    Đăng ký ngay
+                                    Đăng Ký
                                   </Link>
                                 </div>
                                 <button type="submit">

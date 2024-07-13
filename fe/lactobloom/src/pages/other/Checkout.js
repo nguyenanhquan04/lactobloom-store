@@ -26,7 +26,7 @@ const Checkout = () => {
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [orderNotes, setOrderNotes] = useState(""); // Added state for order notes
+  const [orderNotes, setOrderNotes] = useState(""); // Đã thêm state for order notes
   let navigate = useNavigate();
   // Check for authToken cookie and redirect to homepage if it exists
   useEffect(() => {

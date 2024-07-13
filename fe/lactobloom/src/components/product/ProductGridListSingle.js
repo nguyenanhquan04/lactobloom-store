@@ -132,8 +132,8 @@ const ProductGridListSingle = ({
                 disabled={isProductInWishlist}
                 title={
                   isProductInWishlist
-                    ? "Added to wishlist"
-                    : "Add to wishlist"
+                    ? "Đã thêm vào yêu thích"
+                    : "Thêm vào yêu thích"
                 }
                 onClick={() => handleWishlistClick(product)}
               >
@@ -183,18 +183,18 @@ const ProductGridListSingle = ({
                   }
                   disabled={cartItem !== undefined && cartItem.quantity > 0}
                   title={
-                    cartItem !== undefined ? "Added to cart" : "Pre Order"
+                    cartItem !== undefined ? "Đã thêm vào giỏ hàng" : "Pre Order"
                   }
                 >
                   {" "}
                   <i className="pe-7s-cart"></i>{" "}
                   {cartItem !== undefined && cartItem.quantity > 0
-                    ? "Added"
+                    ? "Đã thêm"
                     : "Pre Order"}
                 </button>
               ) : (
                 <button disabled className="active">
-                  Out of Stock
+                  Hết hàng
                 </button>
               )}
             </div>
@@ -355,7 +355,7 @@ const ProductGridListSingle = ({
                     </button>
                   ) : (
                     <button disabled className="active">
-                      Out of Stock
+                      Hết hàng
                     </button>
                   )}
                 </div>
@@ -365,8 +365,8 @@ const ProductGridListSingle = ({
                     disabled={isProductInWishlist}
                     title={
                       isProductInWishlist
-                        ? "Added to wishlist"
-                        : "Add to wishlist"
+                        ? "Đã thêm vào yêu thích"
+                        : "Thêm vào yêu thích"
                     }
                     onClick={() => handleWishlistClick(product)}
                   >
@@ -379,8 +379,8 @@ const ProductGridListSingle = ({
                     disabled={compareItem !== undefined}
                     title={
                       compareItem !== undefined
-                        ? "Added to compare"
-                        : "Add to compare"
+                        ? "Đã thêm vào so sánh"
+                        : "Thêm vào so sánh"
                     }
                     onClick={() => dispatch(addToCompare(product))}
                   >
@@ -405,10 +405,11 @@ const ProductGridListSingle = ({
         show={modalShow}
         onHide={() => setModalShow(false)}
         product={product}
-        currency={currency}
-        discountedprice={finalDiscountedPrice}
-        finalproductprice={finalProductPrice}
-        finaldiscountedprice={finalDiscountedPrice}
+        discountedPrice={discountedPrice}
+        finalProductPrice={finalProductPrice}
+        finalDiscountedPrice={finalDiscountedPrice}
+        wishlistItem={wishlistItem}
+        compareItem={compareItem}
       />
     </Fragment>
   );

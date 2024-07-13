@@ -200,7 +200,7 @@ import clsx from "clsx";
 import MenuCart from "./sub-components/MenuCart";
 import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode'; // Fixed import syntax
-import axios from "axios"; // Added axios import
+import axios from "axios"; // Đã thêm axios import
 import { logOut } from "../../utils/UserService";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
 import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
@@ -267,7 +267,7 @@ const IconGroup = ({ iconWhiteClass }) => {
   };
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất?");
     if (confirmLogout) {
       logOut(Cookies.get('authToken'));
       Cookies.remove('authToken'); 

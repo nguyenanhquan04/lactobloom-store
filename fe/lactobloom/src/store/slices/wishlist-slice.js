@@ -10,10 +10,10 @@ const wishlistSlice = createSlice({
         addToWishlist(state, action) {
             const isInWishlist = state.wishlistItems.findIndex(item => item.productId === action.payload.productId);
             if(isInWishlist > -1){
-                cogoToast.info("Product already in wishlist", {position: "bottom-left"});
+                cogoToast.info("Sản phẩm đã tồn tại", {position: "bottom-left"});
             } else {
                 state.wishlistItems.push(action.payload);
-                cogoToast.success("Added To wishlist", {position: "bottom-left"});
+                cogoToast.success("Đã thêm vào yêu thích", {position: "bottom-left"});
             }
             
         },
@@ -26,7 +26,7 @@ const wishlistSlice = createSlice({
         },
         deleteFromWishlist(state, action){
             state.wishlistItems = state.wishlistItems.filter(item => item.productId !== action.payload);
-            cogoToast.error("Removed From Wishlist", {position: "bottom-left"});
+            cogoToast.error("Đã xóa khỏi yêu thích", {position: "bottom-left"});
         },
         deleteAllFromWishlist(state){
             state.wishlistItems = []

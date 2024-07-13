@@ -43,18 +43,18 @@ const Register = () => {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     if (registerData.password !== registerData.confirmPassword) {
-      setError("Passwords do not match!");
+      setError("Mật khẩu không khớp!");
       return;
     }
     try {
       const response = await register(registerData.fullName, registerData.email, registerData.password);
-      alert("Registration successful", response.data);
+      alert("Đăng ký thành công", response.data);
       // console.log("Registration successful", response.data);
       // Navigate to a different page on successful registration
       navigate("/login"); // Adjust the path as needed
     } catch (error) {
       console.error("Registration failed", error);
-      setError("Registration failed. Please try again.");
+      setError("Đăng ký thất bại. Vui lòng thử lại.");
     }
   };
 
@@ -62,14 +62,14 @@ const Register = () => {
     <Fragment>
       <SEO
         titleTemplate="Register"
-        description="Lactobloom Register Page."
+        description="Lactobloom Đăng Ký."
       />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
         <Breadcrumb 
           pages={[
             {label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
-            {label: "Đăng ký", path: process.env.PUBLIC_URL + pathname }
+            {label: "Đăng Ký", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="login-register-area pt-100 pb-100">
@@ -81,7 +81,7 @@ const Register = () => {
                     <Nav variant="pills" className="login-register-tab-list">
                       <Nav.Item>
                         <Nav.Link eventKey="register">
-                          <h4>Đăng ký</h4>
+                          <h4>Đăng Ký</h4>
                         </Nav.Link>
                       </Nav.Item>
                     </Nav>
@@ -107,7 +107,7 @@ const Register = () => {
                               <input
                                 type="password"
                                 name="password"
-                                placeholder="Mật Khẩu"
+                                placeholder="Mật khẩu"
                                 value={registerData.password}
                                 onChange={handleRegisterChange}
                               />
@@ -121,7 +121,7 @@ const Register = () => {
                               {error && <p style={{ color: 'red' }}>{error}</p>}
                               <div className="button-box">
                                 <button type="submit">
-                                  <span>Đăng ký</span>
+                                  <span>Đăng Ký</span>
                                 </button>
                               </div>
                             </form>

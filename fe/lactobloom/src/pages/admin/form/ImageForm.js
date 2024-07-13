@@ -268,9 +268,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDropzone } from "react-dropzone";
-import { storage } from "../firebaseConfig"; // Adjust the path as needed
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
 
 const ImageForm = ({ open, onClose, product, onSave }) => {
   const [productImages, setProductImages] = useState([]);
@@ -305,65 +302,6 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
     }
   };
 
-  const handleSaveImage = async (imageUrl, index) => {
-    const token = Cookies.get("authToken");
-    try {
-      if (index === null) {
-        // Add new image
-        await axios.post(
-          `http://localhost:8080/image/save/product/${product.productId}`,
-          { imageUrl },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      } else {
-        // Update existing image
-        const imageId = productImages[index].imageId;
-        await axios.put(
-          `http://localhost:8080/image/update/${imageId}/product/${product.productId}`,
-          { imageUrl: productImages[index].imageUrl },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      }
-      onSave(); // Call onSave to refresh the product list in the parent component
-      fetchProductImages(); // Refetch the images
-      setEditIndex(null); // Reset the edit index
-    } catch (error) {
-      console.error("Error saving product image:", error);
-    }
-  };
-
-  const handleEditImage = (index) => {
-    setEditIndex(index);
-  };
-
-  const handleCancelEdit = () => {
-    setEditIndex(null);
-  };
-
-  const handleAddNewImage = () => {
-    setEditIndex(productImages.length);
-    setImageUrl("");
-  };
-
-  const handleImageChange = (e, index) => {
-    if (index === null) {
-      setImageUrl(e.target.value);
-    } else {
-      const updatedImages = [...productImages];
-      updatedImages[index].imageUrl = e.target.value;
-      setProductImages(updatedImages);
-    }
-  };
-
-
   const handleDeleteImage = async () => {
     const token = Cookies.get("authToken");
     try {
@@ -382,7 +320,6 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
   };
 
   const onDrop = useCallback(
-
     async (acceptedFiles) => {
       const file = acceptedFiles[0];
       const formData = new FormData();
@@ -411,35 +348,6 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
       }
     },
     [product, onSave]
-
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      const storageRef = ref(storage, `images/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      setUploading(true);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Handle progress
-        },
-        (error) => {
-          console.error("Error uploading file:", error);
-          setUploading(false);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUrl(downloadURL);
-            setUploading(false);
-            // Save the image URL to the database
-            handleSaveImage(downloadURL, null);
-          });
-        }
-      );
-    },
-    [setImageUrl]
-
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -492,63 +400,12 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
                     />
                   </TableCell>
                   <TableCell>
-
                     <IconButton onClick={() => setDeleteIndex(index)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
-
-                    {editIndex === index ? (
-                      <>
-                        <Button onClick={() => handleSaveImage(null, index)}>
-                          Update
-                        </Button>
-                        <Button onClick={handleCancelEdit}>Cancel</Button>
-                      </>
-                    ) : (
-                      <>
-                        <IconButton onClick={() => handleEditImage(index)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => setDeleteIndex(index)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-              {editIndex === productImages.length && (
-                <TableRow>
-                  <TableCell>
-                    <TextField
-                      value={imageUrl}
-                      onChange={(e) => handleImageChange(e, null)}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {imageUrl && (
-                      <img
-                        src={imageUrl}
-                        alt="Preview"
-                        style={{
-                          width: "200px",
-                          height: "200px",
-                          objectFit: "contain",
-                        }}
-                      />
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleSaveImage(imageUrl, null)}>Save</Button>
-                    <Button onClick={handleCancelEdit}>Cancel</Button>
-                  </TableCell>
-                </TableRow>
-              )}
-
             </TableBody>
           </Table>
         </TableContainer>
@@ -569,11 +426,7 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
           <Button onClick={() => setDeleteIndex(null)} color="primary">
             Cancel
           </Button>
-          <Button
-            onClick={handleDeleteImage}
-            color="primary"
-            autoFocus
-          >
+          <Button onClick={handleDeleteImage} color="primary" autoFocus>
             Delete
           </Button>
         </DialogActions>

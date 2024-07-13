@@ -218,7 +218,7 @@
       }
     }
     .blog-comment-content {
-      flex-grow: 1; // Added to make the content take the remaining space
+      flex-grow: 1; // Đã thêm to make the content take the remaining space
       .edit-comment {
         .cancel-button {
           background: none;
@@ -253,7 +253,7 @@
         }
         .more-options-icon {
           cursor: pointer;
-          margin-left: 10px; // Added margin for spacing
+          margin-left: 10px; // Đã thêm margin for spacing
         }
       }
       span {

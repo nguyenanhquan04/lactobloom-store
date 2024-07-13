@@ -47,7 +47,7 @@ const UserForm = ({ onSave, initialUser }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ paddingTop: '20px' }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -69,7 +69,7 @@ const UserForm = ({ onSave, initialUser }) => {
             type="email"
             value={user.email}
             onChange={handleChange}
-            required
+            disabled
           />
         </Grid>
         <Grid item xs={12}>
@@ -81,7 +81,6 @@ const UserForm = ({ onSave, initialUser }) => {
             type="tel"
             value={user.phone}
             onChange={handleChange}
-            required
           />
         </Grid>
         <Grid item xs={12}>
@@ -92,7 +91,6 @@ const UserForm = ({ onSave, initialUser }) => {
             fullWidth
             value={user.address}
             onChange={handleChange}
-            required
           />
         </Grid>
         <Grid item xs={12} sm={6}>

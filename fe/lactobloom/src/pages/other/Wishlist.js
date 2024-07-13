@@ -253,12 +253,12 @@ console.log("Auth Token:", authToken);
                                       }
                                       title={
                                         wishlistItem !== undefined
-                                          ? "Added to cart"
+                                          ? "Đã thêm vào giỏ hàng"
                                           : "Pre Order"
                                       }
                                     >
                                       {cartItem !== undefined && cartItem.quantity > 0
-                                        ? "Added"
+                                        ? "Đã thêm"
                                         : "Pre Order"}
                                     </button>
                                   ) : (

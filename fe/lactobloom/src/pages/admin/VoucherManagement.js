@@ -42,7 +42,7 @@ const VoucherManagement = () => {
 
   const handleDelete = async (voucherId) => {
     const token = Cookies.get('authToken');
-    if (window.confirm('Are you sure you want to delete this voucher?')) {
+    if (window.confirm('Bạn có chắc muốn xóa voucher này?')) {
       try {
         await axios.delete(`http://localhost:8080/voucher/delete/${voucherId}`, {
           headers: {
@@ -170,7 +170,7 @@ const VoucherManagement = () => {
                 <TableCell>{voucher.point}</TableCell>
                 <TableCell>{voucher.discount}</TableCell>
                 <TableCell>{voucher.expirationDate}</TableCell>
-                <TableCell>{voucher.available ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{voucher.available ? 'Khả dụng' : 'Không khả dụng'}</TableCell>
                 <TableCell className="voucher-management-actions">
                   <IconButton onClick={() => handleEditVoucher(voucher)}>
                     <EditIcon />
