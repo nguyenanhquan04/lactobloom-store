@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
@@ -8,6 +8,8 @@ import { getAllBlogCategories } from "../../utils/BlogCategoryService";
 import { getBlogReviewByBlogId } from "../../utils/BlogReviewService";
 import BlogPagination from "../../wrappers/blog/BlogPagination"; // Adjust the import path as needed
 import axios from "axios";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const BlogStandard = () => {
   let { pathname } = useLocation();
@@ -20,6 +22,19 @@ const BlogStandard = () => {
   const [blogsPerPage] = useState(4);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     // Fetch all blogs and categories initially

@@ -250,7 +250,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  TextField,
   Button,
   Dialog,
   DialogContent,
@@ -267,16 +266,14 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import Cookies from "js-cookie";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDropzone } from "react-dropzone";
 import { storage } from "../firebaseConfig"; // Adjust the path as needed
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
+
 const ImageForm = ({ open, onClose, product, onSave }) => {
-  const [imageUrl, setImageUrl] = useState("");
   const [productImages, setProductImages] = useState([]);
-  const [editIndex, setEditIndex] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -366,6 +363,7 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
     }
   };
 
+
   const handleDeleteImage = async () => {
     const token = Cookies.get("authToken");
     try {
@@ -384,6 +382,36 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
   };
 
   const onDrop = useCallback(
+
+    async (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      const formData = new FormData();
+      formData.append("files", file);
+
+      const token = Cookies.get("authToken");
+      setUploading(true);
+
+      try {
+        await axios.post(
+          `http://localhost:8080/image/save/product/${product.productId}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        onSave(); // Call onSave to refresh the product list in the parent component
+        fetchProductImages(); // Refetch the images
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      } finally {
+        setUploading(false);
+      }
+    },
+    [product, onSave]
+
     (acceptedFiles) => {
       const file = acceptedFiles[0];
       const storageRef = ref(storage, `images/${file.name}`);
@@ -411,6 +439,7 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
       );
     },
     [setImageUrl]
+
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -444,7 +473,6 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Image URL</TableCell>
                 <TableCell>Xem trước</TableCell>
                 <TableCell>Thao tác</TableCell>
               </TableRow>
@@ -452,14 +480,6 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
             <TableBody>
               {productImages.map((img, index) => (
                 <TableRow key={img.imageId}>
-                  <TableCell>
-                    <TextField
-                      value={img.imageUrl}
-                      onChange={(e) => handleImageChange(e, index)}
-                      fullWidth
-                      disabled={editIndex !== index}
-                    />
-                  </TableCell>
                   <TableCell>
                     <img
                       src={img.imageUrl}
@@ -472,6 +492,14 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
                     />
                   </TableCell>
                   <TableCell>
+
+                    <IconButton onClick={() => setDeleteIndex(index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+
                     {editIndex === index ? (
                       <>
                         <Button onClick={() => handleSaveImage(null, index)}>
@@ -520,12 +548,10 @@ const ImageForm = ({ open, onClose, product, onSave }) => {
                   </TableCell>
                 </TableRow>
               )}
+
             </TableBody>
           </Table>
         </TableContainer>
-        <Button onClick={handleAddNewImage} style={{ marginTop: "20px" }}>
-          Thêm ảnh mới
-        </Button>
       </DialogContent>
 
       {/* Delete Confirmation Dialog */}

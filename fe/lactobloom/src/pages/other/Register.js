@@ -6,7 +6,8 @@ import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { register } from "../../utils/UserService"; // Adjust the import path as needed
-import Cookies from 'js-cookie'; // Import js-cookie
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const Register = () => {
   let { pathname } = useLocation();
@@ -14,6 +15,17 @@ const Register = () => {
 
   const [registerData, setRegisterData] = useState({ fullName: "", email: "", password: "", confirmPassword: "" });
   const [error, setError] = useState("");
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   // Check for authToken cookie and redirect to homepage if it exists
   useEffect(() => {
@@ -56,8 +68,8 @@ const Register = () => {
         {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Register", path: process.env.PUBLIC_URL + pathname }
+            {label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            {label: "Đăng ký", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
         <div className="login-register-area pt-100 pb-100">
@@ -69,7 +81,7 @@ const Register = () => {
                     <Nav variant="pills" className="login-register-tab-list">
                       <Nav.Item>
                         <Nav.Link eventKey="register">
-                          <h4>Register</h4>
+                          <h4>Đăng ký</h4>
                         </Nav.Link>
                       </Nav.Item>
                     </Nav>
@@ -81,7 +93,7 @@ const Register = () => {
                               <input
                                 type="text"
                                 name="fullName"
-                                placeholder="Full Name"
+                                placeholder="Họ tên"
                                 value={registerData.fullName}
                                 onChange={handleRegisterChange}
                               />
@@ -95,21 +107,21 @@ const Register = () => {
                               <input
                                 type="password"
                                 name="password"
-                                placeholder="Password"
+                                placeholder="Mật Khẩu"
                                 value={registerData.password}
                                 onChange={handleRegisterChange}
                               />
                               <input
                                 type="password"
                                 name="confirmPassword"
-                                placeholder="Confirm Password"
+                                placeholder="Xác nhận mật khẩu"
                                 value={registerData.confirmPassword}
                                 onChange={handleRegisterChange}
                               />
                               {error && <p style={{ color: 'red' }}>{error}</p>}
                               <div className="button-box">
                                 <button type="submit">
-                                  <span>Register</span>
+                                  <span>Đăng ký</span>
                                 </button>
                               </div>
                             </form>
