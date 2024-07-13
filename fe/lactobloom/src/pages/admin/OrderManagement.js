@@ -17,7 +17,7 @@ const translateStatus = (status) => {
       return 'Đang chờ xử lý';
     case 'delivered':
       return 'Đã giao hàng';
-    case 'canceled':
+    case 'cancelled':
       return 'Đã hủy';
     default:
       return status;

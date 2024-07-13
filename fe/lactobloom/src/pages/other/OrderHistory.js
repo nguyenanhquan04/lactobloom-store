@@ -82,7 +82,7 @@ const OrderHistory = () => {
         // Update the orders state to reflect the canceled order
         setOrders(prevOrders => prevOrders.map(order => {
           if (order.orderId === orderId) {
-            return { ...order, status: "CANCELED" };
+            return { ...order, status: "CANCELLED" };
           }
           return order;
         }));
