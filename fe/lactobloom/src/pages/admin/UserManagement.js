@@ -9,6 +9,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import UserForm from './form/UserForm'; // Import the UserForm component
 
+const translateRole = (role) => {
+  switch (role) {
+    case 'ADMIN':
+      return 'Admin';
+    case 'STAFF':
+      return 'Nhân viên';
+    case 'MEMBER':
+      return 'Thành viên';
+    default:
+      return role;
+  }
+};
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -42,7 +55,7 @@ const UserManagement = () => {
 
   const handleDelete = async (userId) => {
     const token = Cookies.get('authToken');
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm('Bạn có chắc muốn xóa người dùng này?')) {
       try {
         await axios.delete(`http://localhost:8080/user/delete/${userId}`, {
           headers: {
@@ -133,8 +146,8 @@ const UserManagement = () => {
         >
           <MenuItem value="all">Tất cả người dùng</MenuItem>
           <MenuItem value="ADMIN">Admin</MenuItem>
-          <MenuItem value="STAFF">Staff</MenuItem>
-          <MenuItem value="MEMBER">Member</MenuItem>
+          <MenuItem value="STAFF">Nhân viên</MenuItem>
+          <MenuItem value="MEMBER">Thành viên</MenuItem>
         </Select>
       </FormControl>
       <TableContainer component={Paper} className="user-management-table-container">
@@ -156,7 +169,7 @@ const UserManagement = () => {
               <TableRow key={user.userId}>
                 <TableCell>{user.userId}</TableCell>
                 <TableCell>{user.fullName}</TableCell>
-                <TableCell>{user.role}</TableCell>
+                <TableCell>{translateRole(user.role)}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
                 <TableCell>{user.address}</TableCell>

@@ -11,6 +11,19 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Cookies from "js-cookie";
 import OrderForm from './form/OrderForm'; // Ensure this path is correct
 
+const translateStatus = (status) => {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'Đang chờ xử lý';
+    case 'delivered':
+      return 'Đã giao hàng';
+    case 'canceled':
+      return 'Đã hủy';
+    default:
+      return status;
+  }
+};
+
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(0);
@@ -42,7 +55,7 @@ const OrderManagement = () => {
 
   const handleDelete = async (orderId) => {
     const token = Cookies.get("authToken");
-    if (window.confirm('Are you sure you want to delete this order?')) {
+    if (window.confirm('Bạn có chắc muốn xóa đơn hàng này?')) {
       try {
         await axios.delete(`http://localhost:8080/order/delete/${orderId}`, {
           headers: {
@@ -152,8 +165,8 @@ const OrderManagement = () => {
               label="Status"
             >
               <MenuItem value="all">Tất cả đơn hàng</MenuItem>
-              <MenuItem value="pending">Đang giao</MenuItem>
-              <MenuItem value="delivered">Đã giao</MenuItem>
+              <MenuItem value="pending">Đang chờ xử lí</MenuItem>
+              <MenuItem value="delivered">Đã giao hàng</MenuItem>
               <MenuItem value="canceled">Đã hủy</MenuItem>
             </Select>
           </FormControl>
@@ -183,7 +196,7 @@ const OrderManagement = () => {
                 <TableCell>{order.phone}</TableCell>
                 <TableCell>{order.address}</TableCell>
                 <TableCell>{order.totalPrice.toLocaleString("vi-VN")}</TableCell>
-                <TableCell>{order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}</TableCell>
+                <TableCell>{translateStatus(order.status)}</TableCell>
                 <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                 <TableCell className="order-management-actions">
                   <IconButton onClick={() => handleEdit(order)}>
@@ -214,7 +227,7 @@ const OrderManagement = () => {
         />
       </TableContainer>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>Edit Order</DialogTitle>
+        <DialogTitle>Cập nhật đơn hàng</DialogTitle>
         <DialogContent>
           <OrderForm onSave={handleSave} initialOrder={editOrder} />
         </DialogContent>

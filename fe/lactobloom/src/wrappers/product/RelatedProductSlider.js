@@ -1,10 +1,11 @@
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
+import axios from "axios";
 import Swiper, { SwiperSlide } from "../../components/swiper";
 import SectionTitle from "../../components/section-title/SectionTitle";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
-import { getProducts } from "../../helpers/product";
 
 const settings = {
   loop: false,
@@ -13,29 +14,40 @@ const settings = {
   spaceBetween: 30,
   breakpoints: {
     320: {
-      slidesPerView: 1
+      slidesPerView: 1,
     },
     576: {
-      slidesPerView: 2
+      slidesPerView: 2,
     },
     768: {
-      slidesPerView: 3
+      slidesPerView: 3,
     },
     1024: {
-      slidesPerView: 4
-    }
-  }
+      slidesPerView: 4,
+    },
+  },
 };
 
-
 const RelatedProductSlider = ({ spaceBottomClass }) => {
-  const { products } = useSelector((state) => state.product);
+  const [randomProducts, setRandomProducts] = useState([]);
   const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { compareItems } = useSelector((state) => state.compare);
-  const prods = getProducts(products, null, 6);
-  
+
+  useEffect(() => {
+    const fetchRandomProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/product/random");
+        setRandomProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching random products", error);
+      }
+    };
+
+    fetchRandomProducts();
+  }, []);
+
   return (
     <div className={clsx("related-product-area", spaceBottomClass)}>
       <div className="container">
@@ -44,29 +56,25 @@ const RelatedProductSlider = ({ spaceBottomClass }) => {
           positionClass="text-center"
           spaceClass="mb-50"
         />
-        {prods?.length ? (
+        {randomProducts.length ? (
           <Swiper options={settings}>
-              {prods.map(product => (
-                <SwiperSlide key={product.productId}>
-                  <ProductGridSingle
-                    product={product}
-                    currency={currency}
-                    cartItem={
-                      cartItems.find((cartItem) => cartItem.productId === product.productId)
-                    }
-                    wishlistItem={
-                      wishlistItems.find(
-                        (wishlistItem) => wishlistItem.productId === product.productId
-                      )
-                    }
-                    compareItem={
-                      compareItems.find(
-                        (compareItem) => compareItem.productId === product.productId
-                      )
-                    }
-                  />
-                </SwiperSlide>
-              ))}
+            {randomProducts.map((product) => (
+              <SwiperSlide key={product.productId}>
+                <ProductGridSingle
+                  product={product}
+                  currency={currency}
+                  cartItem={cartItems.find(
+                    (cartItem) => cartItem.productId === product.productId
+                  )}
+                  wishlistItem={wishlistItems.find(
+                    (wishlistItem) => wishlistItem.productId === product.productId
+                  )}
+                  compareItem={compareItems.find(
+                    (compareItem) => compareItem.productId === product.productId
+                  )}
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
         ) : null}
       </div>
@@ -75,8 +83,7 @@ const RelatedProductSlider = ({ spaceBottomClass }) => {
 };
 
 RelatedProductSlider.propTypes = {
-  // category: PropTypes.string,
-  spaceBottomClass: PropTypes.string
+  spaceBottomClass: PropTypes.string,
 };
 
 export default RelatedProductSlider;

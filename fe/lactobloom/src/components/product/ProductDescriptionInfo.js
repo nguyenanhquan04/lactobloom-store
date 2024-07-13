@@ -183,8 +183,8 @@
 //               disabled={wishlistItem !== undefined}
 //               title={
 //                 wishlistItem !== undefined
-//                   ? "Added to wishlist"
-//                   : "Add to wishlist"
+//                   ? "Đã thêm vào yêu thích"
+//                   : "Thêm vào yêu thích"
 //               }
 //               onClick={() => dispatch(addToWishlist(product))}
 //             >
@@ -197,8 +197,8 @@
 //               disabled={compareItem !== undefined}
 //               title={
 //                 compareItem !== undefined
-//                   ? "Added to compare"
-//                   : "Add to compare"
+//                   ? "Đã thêm vào so sánh"
+//                   : "Thêm vào so sánh"
 //               }
 //               onClick={() => dispatch(addToCompare(product))}
 //             >
@@ -497,8 +497,8 @@ const ProductDescriptionInfo = ({
               disabled={isProductInWishlist}
               title={
                 isProductInWishlist
-                  ? "Added to wishlist"
-                  : "Add to wishlist"
+                  ? "Đã thêm vào yêu thích"
+                  : "Thêm vào yêu thích"
               }
               onClick={handleWishlistClick}
             >
@@ -511,8 +511,8 @@ const ProductDescriptionInfo = ({
               disabled={compareItem !== undefined}
               title={
                 compareItem !== undefined
-                  ? "Added to compare"
-                  : "Add to compare"
+                  ? "Đã thêm vào so sánh"
+                  : "Thêm vào so sánh"
               }
               onClick={() => dispatch(addToCompare(product))}
             >
@@ -541,15 +541,6 @@ const ProductDescriptionInfo = ({
           </ul>
         </div>
       )}
-
-      <div className="pro-details-meta">
-        <span>Mã sản phẩm:</span>
-        <ul>
-          <li>
-            <Link>{product.productId}</Link>
-          </li>
-        </ul>
-      </div>
     </div>
   );
 };

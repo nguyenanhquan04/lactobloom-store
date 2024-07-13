@@ -38,7 +38,7 @@ const BrandManagement = () => {
 
   const handleDelete = async (brandId) => {
     const token = Cookies.get("authToken");
-    if (window.confirm('Are you sure you want to delete this brand?')) {
+    if (window.confirm('Bạn có chắc muốn xóa thương hiệu này?')) {
       try {
         await axios.delete(`http://localhost:8080/brand/delete/${brandId}`, {
           headers: {
