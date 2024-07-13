@@ -167,7 +167,7 @@ const OrderManagement = () => {
               <MenuItem value="all">Tất cả đơn hàng</MenuItem>
               <MenuItem value="pending">Đang chờ xử lí</MenuItem>
               <MenuItem value="delivered">Đã giao hàng</MenuItem>
-              <MenuItem value="canceled">Đã hủy</MenuItem>
+              <MenuItem value="cancelled">Đã hủy</MenuItem>
             </Select>
           </FormControl>
         </Grid>
