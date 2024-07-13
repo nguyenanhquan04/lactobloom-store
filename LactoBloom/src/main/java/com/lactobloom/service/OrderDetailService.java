@@ -38,7 +38,7 @@ public class OrderDetailService implements IOrderDetailService {
         OrderDetail orderDetail = mapToEntity(orderDetailDto);
         Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
-        Product product = productRepository.findById((long) productId).orElseThrow(() ->
+        Product product = productRepository.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         orderDetail.setPreOrder(product.isPreOrder());
         product.setStock(product.getStock() - orderDetail.getQuantity());
@@ -92,7 +92,7 @@ public class OrderDetailService implements IOrderDetailService {
                 new ResourceNotFoundException("OrderDetail", "Id", id));
         Order order = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
-        Product product = productRepository.findById((long) productId).orElseThrow(() ->
+        Product product = productRepository.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         existingOrderDetail.setOrder(order);
         existingOrderDetail.setProduct(product);

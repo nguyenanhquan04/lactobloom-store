@@ -42,16 +42,16 @@ public class ImageService implements IImageService {
     public List<?> saveImage(List<MultipartFile> files, int productId) {
         List<ImageDto> imageUrls = new ArrayList<>();
         try {
-            Product product = productRepository.findById((long) productId).orElseThrow(() ->
+            Product product = productRepository.findById(productId).orElseThrow(() ->
                     new ResourceNotFoundException("Product", "Id", productId));
             for (MultipartFile multipartFile : files) {
                 String fileName = multipartFile.getOriginalFilename();
                 File file = this.convertToFile(multipartFile, fileName);
-                String URL = this.uploadFile(file, fileName, multipartFile.getContentType());
+                String url = this.uploadFile(file, fileName, multipartFile.getContentType());
                 file.delete();
                 Image image = new Image();
                 image.setProduct(product);
-                image.setImageUrl(URL);
+                image.setImageUrl(url);
                 imageUrls.add(mapToDto(imageRepository.save(image)));
             }
             return imageUrls;
@@ -77,7 +77,7 @@ public class ImageService implements IImageService {
     public ImageDto updateImage(ImageDto imageDto, int id, int productId) {
         Image existingImage = imageRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Image", "Id", id));
-        Product product = productRepository.findById((long) productId).orElseThrow(() ->
+        Product product = productRepository.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         existingImage.setProduct(product);
         existingImage.setImageUrl(imageDto.getImageUrl());
@@ -96,18 +96,18 @@ public class ImageService implements IImageService {
         return imageRepository.findByProductProductId(productId).stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
-    private String uploadFile(File file, String fileName, String contentType) throws IOException {
+    public String uploadFile(File file, String fileName, String contentType) throws IOException {
         BlobId blobId = BlobId.of("lactobloom-68aa5.appspot.com", fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
         InputStream inputStream = ImageService.class.getClassLoader().getResourceAsStream("lactobloom-firebase-adminsdk.json");
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-        String DOWNLOAD_URL = "https://firebasestorage.googleapis.com/v0/b/lactobloom-68aa5.appspot.com/o/%s?alt=media";
-        return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+        String downloadUrl = "https://firebasestorage.googleapis.com/v0/b/lactobloom-68aa5.appspot.com/o/%s?alt=media";
+        return String.format(downloadUrl, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
 
-    private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
+    public File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
         File tempFile = new File(fileName);
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             fos.write(multipartFile.getBytes());

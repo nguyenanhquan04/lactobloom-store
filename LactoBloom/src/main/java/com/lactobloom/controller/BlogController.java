@@ -1,18 +1,16 @@
 package com.lactobloom.controller;
 
 import com.lactobloom.dto.BlogDto;
-import com.lactobloom.model.Blog;
-import com.lactobloom.model.BlogCategory;
-import com.lactobloom.model.User;
-import com.lactobloom.service.interfaces.IBlogCategoryService;
 import com.lactobloom.service.interfaces.IBlogService;
-import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,8 +22,19 @@ public class BlogController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PostMapping("/save/category/{categoryId}")
-    public ResponseEntity<BlogDto> saveBlog(@PathVariable int categoryId, @RequestBody BlogDto blogDto) {
-        return new ResponseEntity<>(blogService.saveBlog(blogDto, categoryId), HttpStatus.CREATED);
+    public ResponseEntity<BlogDto> saveBlog(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("shortDescription") String shortDescription,
+            @RequestParam("content") String content,
+            @RequestParam("publishDate") LocalDateTime publishDate,
+            @PathVariable int categoryId) throws IOException {
+        BlogDto blogDto = new BlogDto();
+        blogDto.setTitle(title);
+        blogDto.setShortDescription(shortDescription);
+        blogDto.setContent(content);
+        blogDto.setPublishDate(publishDate);
+        return new ResponseEntity<>(blogService.saveBlog(file, blogDto, categoryId), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
@@ -45,8 +54,20 @@ public class BlogController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/update/{id}/category/{categoryId}")
-    public ResponseEntity<BlogDto> updateBlog(@PathVariable int id, @PathVariable int categoryId, @RequestBody BlogDto blogDto) {
-        return new ResponseEntity<>(blogService.updateBlog(blogDto, id, categoryId), HttpStatus.OK);
+    public ResponseEntity<BlogDto> updateBlog(
+            @PathVariable int id,
+            @PathVariable int categoryId,
+            @RequestParam("imageUrl") String imageUrl,
+            @RequestParam("title") String title,
+            @RequestParam("shortDescription") String shortDescription,
+            @RequestParam("content") String content,
+            @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        BlogDto blogDto = new BlogDto();
+        blogDto.setImageUrl(imageUrl);
+        blogDto.setTitle(title);
+        blogDto.setShortDescription(shortDescription);
+        blogDto.setContent(content);
+        return new ResponseEntity<>(blogService.updateBlog(blogDto, id, categoryId, file), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
