@@ -26,6 +26,9 @@ const Login = () => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const userRole = decodedToken.role;
+
+      console.log(userRole); // Adjust this line based on the structure of your JWT
+
       if (userRole !== "MEMBER") {
         navigate("/admin");
       } else {
