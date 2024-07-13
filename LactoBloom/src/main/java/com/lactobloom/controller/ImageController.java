@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class ImageController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PostMapping("/save/product/{productId}")
-    public ResponseEntity<ImageDto> saveImage(@RequestBody ImageDto imageDto, @PathVariable int productId) {
-        return new ResponseEntity<>(imageService.saveImage(imageDto, productId), HttpStatus.CREATED);
+    public List<?> saveImage(@RequestParam("files") List<MultipartFile> files, @PathVariable int productId) {
+        return imageService.saveImage(files, productId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
