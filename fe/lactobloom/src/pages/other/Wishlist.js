@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate  } from "react-router-dom";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
@@ -9,7 +9,8 @@ import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlistFormAPI, deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
 import axios from "axios";
 import { getImagesByProductId } from "../../utils/ImageService";
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,19 @@ const Wishlist = () => {
   const [loading, setLoading] = useState(true);
 
   const authToken = Cookies.get("authToken");
+
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     const fetchWishlistItems = async () => {
@@ -61,6 +75,10 @@ const Wishlist = () => {
     const fetchWishlistImages = async () => {
       const imagesMap = {};
       for (const wishlistItem of wishlistItems) {
+        console.log("Stock:", wishlistItem.stock);
+console.log("Pre Order:", wishlistItem.preOrder);
+console.log("Auth Token:", authToken);
+
         try {
           const response = await getImagesByProductId(wishlistItem.productId);
           imagesMap[wishlistItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
@@ -222,30 +240,25 @@ const Wishlist = () => {
                                         ? "Đã thêm"
                                         : "Thêm vào giỏ"}
                                     </button>
-                                  ) : wishlistItem.stock && wishlistItem.stock <= 0 && wishlistItem.preOrder && authToken  ? (
+                                  ) : wishlistItem.stock <= 0 && wishlistItem.preOrder && authToken ? (
                                     <button
-                                      onClick={() =>
-                                        dispatch(addToCart(wishlistItem))
-                                      }
+                                      onClick={() => dispatch(addToCart(wishlistItem))}
                                       className={
-                                        cartItem !== undefined &&
-                                        cartItem.quantity > 0
+                                        cartItem !== undefined && cartItem.quantity > 0
                                           ? "active"
                                           : ""
                                       }
                                       disabled={
-                                        cartItem !== undefined &&
-                                        cartItem.quantity > 0
+                                        cartItem !== undefined && cartItem.quantity > 0
                                       }
                                       title={
                                         wishlistItem !== undefined
-                                          ? "Added to cart"
+                                          ? "Đã thêm vào giỏ hàng"
                                           : "Pre Order"
                                       }
                                     >
-                                      {cartItem !== undefined &&
-                                      cartItem.quantity > 0
-                                        ? "Added"
+                                      {cartItem !== undefined && cartItem.quantity > 0
+                                        ? "Đã thêm"
                                         : "Pre Order"}
                                     </button>
                                   ) : (

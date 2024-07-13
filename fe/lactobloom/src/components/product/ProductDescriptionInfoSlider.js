@@ -116,8 +116,8 @@ const ProductDescriptionInfoSlider = ({
               disabled={wishlistItem !== undefined}
               title={
                 wishlistItem !== undefined
-                  ? "Added to wishlist"
-                  : "Add to wishlist"
+                  ? "Đã thêm vào yêu thích"
+                  : "Thêm vào yêu thích"
               }
               onClick={() => dispatch(addToWishlist(product))}
             >
@@ -130,8 +130,8 @@ const ProductDescriptionInfoSlider = ({
               disabled={compareItem !== undefined}
               title={
                 compareItem !== undefined
-                  ? "Added to compare"
-                  : "Add to compare"
+                  ? "Đã thêm vào so sánh"
+                  : "Thêm vào so sánh"
               }
               onClick={() => dispatch(addToCompare(product))}
             >

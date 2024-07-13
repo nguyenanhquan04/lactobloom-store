@@ -54,7 +54,7 @@ const CategoryForm = ({ onSave, initialCategory }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ paddingTop: '20px' }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField

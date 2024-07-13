@@ -49,7 +49,7 @@ const BlogManagement = () => {
 
   const handleDelete = async (blogId) => {
     const token = Cookies.get("authToken");
-    if (window.confirm('Are you sure you want to delete this blog?')) {
+    if (window.confirm('Bạn có chắc muốn xóa Blog?')) {
       try {
         await axios.delete(`http://localhost:8080/blog/delete/${blogId}`, {
           headers: {

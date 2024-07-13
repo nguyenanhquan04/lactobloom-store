@@ -26,7 +26,6 @@ const Login = () => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const userRole = decodedToken.role;
-      console.log(userRole); // Adjust this line based on the structure of your JWT
       if (userRole !== "MEMBER") {
         navigate("/admin");
       } else {
@@ -51,7 +50,7 @@ const Login = () => {
         secure: true,
         sameSite: "strict",
       }); // Store the token in a cookie
-      alert("Login successful");
+      alert("Đăng nhập thành công");
       dispatch(deleteAllFromCart());
       dispatch(deleteAllFromWishlist());
       const authToken = Cookies.get("authToken");
@@ -71,19 +70,19 @@ const Login = () => {
       } else {
         setErrorMessage("An unexpected error occurred. Please try again.");
       }
-      console.error("Login failed", error);
+      console.error("Đăng nhập thất bại", error);
     }
   };
 
   return (
     <Fragment>
-      <SEO titleTemplate="Login" description="Lactobloom Login Page." />
+      <SEO titleTemplate="Login" description="Lactobloom Đăng Nhập." />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Login", path: process.env.PUBLIC_URL + pathname },
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Đăng Nhập", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
         <div className="login-register-area pt-100 pb-100">
@@ -95,7 +94,7 @@ const Login = () => {
                     <Nav variant="pills" className="login-register-tab-list">
                       <Nav.Item>
                         <Nav.Link eventKey="login">
-                          <h4>Login</h4>
+                          <h4>Đăng Nhập</h4>
                         </Nav.Link>
                       </Nav.Item>
                     </Nav>
@@ -114,7 +113,7 @@ const Login = () => {
                               <input
                                 type="password"
                                 name="password"
-                                placeholder="Password"
+                                placeholder="Mật khẩu"
                                 value={loginData.password}
                                 onChange={handleLoginChange}
                               />
@@ -131,16 +130,16 @@ const Login = () => {
                                       "/forgot-password"
                                     }
                                   >
-                                    Forgot Password
+                                    Quên Mật Khẩu?
                                   </Link>
                                   <Link
                                     to={process.env.PUBLIC_URL + "/register"}
                                   >
-                                    Register Now
+                                    Đăng Ký
                                   </Link>
                                 </div>
                                 <button type="submit">
-                                  <span>Login</span>
+                                  <span>Đăng Nhập</span>
                                 </button>
                               </div>
                             </form>

@@ -12,7 +12,10 @@ import com.lactobloom.service.interfaces.IBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,15 +31,23 @@ public class BlogService implements IBlogService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ImageService imageService;
+
     @Override
-    public BlogDto saveBlog(BlogDto blogDto, int categoryId) {
+    public BlogDto saveBlog(MultipartFile multipartFile, BlogDto blogDto, int categoryId) throws IOException {
         Blog blog = mapToEntity(blogDto);
         BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
             new ResourceNotFoundException("Blog", "Id", categoryId));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
+        String fileName = multipartFile.getOriginalFilename();
+        File file = imageService.convertToFile(multipartFile, fileName);
+        String URL = imageService.uploadFile(file, fileName, multipartFile.getContentType());
+        file.delete();
         blog.setBlogCategory(blogCategory);
+        blog.setImageUrl(URL);
         blog.setUser(user);
         Blog newBlog = blogRepository.save(blog);
         return mapToDto(newBlog);
@@ -62,7 +73,7 @@ public class BlogService implements IBlogService {
     }
 
     @Override
-    public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId) {
+    public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId, MultipartFile multipartFile) throws IOException {
         Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
         BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
@@ -72,7 +83,14 @@ public class BlogService implements IBlogService {
                 new ResourceNotFoundException("User", "email", email));
         existingBlog.setBlogCategory(blogCategory);
         existingBlog.setUser(user);
-        existingBlog.setImageUrl(blogDto.getImageUrl());
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            String fileName = multipartFile.getOriginalFilename();
+            File file = imageService.convertToFile(multipartFile, fileName);
+            String url = imageService.uploadFile(file, fileName, multipartFile.getContentType());
+            file.delete();
+            existingBlog.setImageUrl(url);
+        } else
+            existingBlog.setImageUrl(blogDto.getImageUrl());
         existingBlog.setTitle(blogDto.getTitle());
         existingBlog.setShortDescription(blogDto.getShortDescription());
         existingBlog.setContent(blogDto.getContent());

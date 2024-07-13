@@ -4,7 +4,8 @@ import Accordion from "react-bootstrap/Accordion";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 import { myOrders } from "../../utils/OrderHistoryService";
 import { orderProducts } from "../../utils/OrderDetailService";
 import axios from "axios";
@@ -15,6 +16,17 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
   const [orderDetails, setOrderDetails] = useState({});
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     const token = Cookies.get("authToken");

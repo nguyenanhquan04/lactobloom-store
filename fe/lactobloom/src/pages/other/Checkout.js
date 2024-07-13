@@ -1,14 +1,15 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import Cookies from "js-cookie";
 import { myVoucher } from "../../utils/VoucherService";
 import { userInfo } from "../../utils/UserService";
 import { createPayment } from "../../utils/PaymentService";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const Checkout = () => {
   let cartTotalPrice = 0;
@@ -25,8 +26,20 @@ const Checkout = () => {
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [orderNotes, setOrderNotes] = useState(""); // Added state for order notes
-
+  const [orderNotes, setOrderNotes] = useState(""); // Đã thêm state for order notes
+  let navigate = useNavigate();
+  // Check for authToken cookie and redirect to homepage if it exists
+  useEffect(() => {
+    const token = Cookies.get("authToken");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const userRole = decodedToken.role;
+      if (userRole !== "MEMBER") {
+        navigate("/admin");
+      } 
+    }
+  }, [navigate]);
+  
   useEffect(() => {
     const fetchVouchers = async () => {
       try {

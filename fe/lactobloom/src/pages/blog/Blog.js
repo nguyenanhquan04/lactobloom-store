@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
@@ -8,6 +8,8 @@ import { getAllBlogCategories } from "../../utils/BlogCategoryService";
 import { getBlogReviewByBlogId } from "../../utils/BlogReviewService";
 import BlogPagination from "../../wrappers/blog/BlogPagination"; // Adjust the import path as needed
 import axios from "axios";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const BlogStandard = () => {
   let { pathname } = useLocation();
@@ -20,6 +22,19 @@ const BlogStandard = () => {
   const [blogsPerPage] = useState(4);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     // Fetch all blogs and categories initially
@@ -77,7 +92,9 @@ const BlogStandard = () => {
     axios.get(`http://localhost:8080/blog/search?title=${searchTerm}`)
       .then(response => {
         const searchResults = response.data;
-        if (categoryId) {
+        if (categoryId === "all") {
+          setFilteredBlogs(searchResults);
+        } else {
           // Fetch blogs by selected category
           axios.get(`http://localhost:8080/blog/blogCategory/${categoryId}`)
             .then(response => {
@@ -86,8 +103,6 @@ const BlogStandard = () => {
               filterBlogs(searchResults, categoryBlogs);
             })
             .catch(error => console.error('Error fetching blogs by category:', error));
-        } else {
-          setFilteredBlogs(searchResults);
         }
       })
       .catch(error => console.error('Error fetching blogs by search:', error));
@@ -253,16 +268,35 @@ const BlogStandard = () => {
                     <h4 className="pro-sidebar-title">Danh mục</h4>
                     <div className="sidebar-widget-list sidebar-widget-list--blog mt-20">
                       <ul>
+                        <li>
+                          <div className="sidebar-widget-list-left">
+                            <input
+                              type="radio"
+                              id="all-categories"
+                              name="category"
+                              value="all"
+                              checked={selectedCategory === "all"}
+                              onChange={() => handleCategoryChange("all")}
+                            />
+                            <Link>
+                              Tất cả danh mục
+                            </Link>
+                            <span className="checkmark" />
+                          </div>
+                        </li>
                         {categories.map(category => (
                           <li key={category.blogCategoryId}>
                             <div className="sidebar-widget-list-left">
                               <input
                                 type="radio"
+                                id={`category-${category.blogCategoryId}`}
+                                name="category"
+                                value={category.blogCategoryId}
                                 checked={selectedCategory === category.blogCategoryId}
                                 onChange={() => handleCategoryChange(category.blogCategoryId)}
-                              />{" "}
+                              />
                               <Link>
-                                {category.blogCategoryName}{" "}
+                                {category.blogCategoryName}
                               </Link>
                               <span className="checkmark" />
                             </div>

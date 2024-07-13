@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Paginator from "react-hooks-paginator";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
@@ -9,6 +9,8 @@ import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProducts from "../../wrappers/product/ShopProducts";
 import ShopSearch from "../../components/product/ShopSearch";
 import ShopCategoryAndBrand from "../../components/product/ShopCategoryAndBrand";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const ShopGridStandard = () => {
   const [layout, setLayout] = useState("grid three-column");
@@ -22,6 +24,18 @@ const ShopGridStandard = () => {
   const pageLimit = 15;
 
   let { pathname, search } = useLocation();
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   const fetchProducts = useCallback(async (searchQuery) => {
     try {

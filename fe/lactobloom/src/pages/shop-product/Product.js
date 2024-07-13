@@ -1,23 +1,35 @@
-import React, { Fragment } from "react"; 
+import React, { Fragment, useEffect } from "react"; 
 import { useSelector } from "react-redux";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import RelatedProductSlider from "../../wrappers/product/RelatedProductSlider";
 import ProductDescriptionTab from "../../wrappers/product/ProductDescriptionTab";
 import ProductImageDescription from "../../wrappers/product/ProductImageDescription";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const Product = () => {
   let { pathname } = useLocation();
   let { id } = useParams();
   const { products } = useSelector((state) => state.product);
   const product = products.find(product => String(product.productId) === id);
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
   
 
   return (
-    // console.log(product.productId),
-
     <Fragment>
       <SEO
         titleTemplate="Product"
@@ -52,7 +64,6 @@ const Product = () => {
         {/* related product slider */}
         <RelatedProductSlider
           spaceBottomClass="pb-95"
-          // category={product.category[0]}
         />
       </LayoutOne>
     </Fragment>

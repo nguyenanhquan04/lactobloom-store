@@ -37,7 +37,7 @@ const CategoryManagement = () => {
 
   const handleDelete = async (categoryId) => {
     const token = Cookies.get("authToken");
-    if (window.confirm('Are you sure you want to delete this category?')) {
+    if (window.confirm('Bạn có chắc muốn xóa danh mục này?')) {
       try {
         await axios.delete(`http://localhost:8080/category/delete/${categoryId}`, {
           headers: {

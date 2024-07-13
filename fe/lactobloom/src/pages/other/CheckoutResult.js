@@ -8,9 +8,10 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
-import Cookies from "js-cookie";
 import { transactionStatus } from "../../utils/PaymentService";
 import { saveOrder } from "../../utils/OrderService";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const CheckoutResult = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,17 @@ const CheckoutResult = () => {
 
   const query = new URLSearchParams(search);
   const transactionId = query.get("transactionId");
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     if (!transactionId) {

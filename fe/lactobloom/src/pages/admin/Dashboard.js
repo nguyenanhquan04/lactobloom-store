@@ -253,7 +253,7 @@ const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip formatter={(value, name) => name === 'revenue' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
+                  <Tooltip formatter={(value, name) => name === 'Doanh Thu' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
                   <Legend />
                   <Bar dataKey="Doanh Thu" fill="#8884d8" />
                   <Bar dataKey="Số Đơn Hàng" fill="#82ca9d" />
@@ -272,7 +272,7 @@ const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip formatter={(value, name) => name === 'revenue' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
+                  <Tooltip formatter={(value, name) => name === 'Doanh Thu' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
                   <Legend />
                   <Line type="monotone" dataKey="Doanh Thu" stroke="#8884d8" />
                   <Line type="monotone" dataKey="Số Đơn Hàng" stroke="#82ca9d" />

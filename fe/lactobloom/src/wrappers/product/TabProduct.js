@@ -8,8 +8,7 @@ import ProductGrid from "./ProductGrid";
 const TabProduct = ({
   spaceTopClass,
   spaceBottomClass,
-  bgColorClass,
-  category
+  bgColorClass
 }) => {
   return (
     <div
@@ -27,7 +26,6 @@ const TabProduct = ({
             <Tab.Pane eventKey="saleItems">
               <div className="row">
                 <ProductGrid
-                  category={category}
                   type="saleItems"
                   limit={8}
                   spaceBottomClass="mb-25"

@@ -263,7 +263,7 @@ const ProductManagement = () => {
 
   const handleDelete = async (productId) => {
     const token = Cookies.get('authToken');
-    if (window.confirm('Are you sure you want to delete this product?')) {
+    if (window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
       try {
         await axios.delete(`http://localhost:8080/product/delete/${productId}`, {
           headers: {
