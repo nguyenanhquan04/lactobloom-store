@@ -1,7 +1,6 @@
 package com.lactobloom.service.interfaces;
 
 import com.lactobloom.dto.ImageDto;
-import com.lactobloom.model.Image;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
