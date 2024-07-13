@@ -6,7 +6,6 @@ import ProductGridSingle from "../../components/product/ProductGridSingle";
 
 const ProductGrid = ({
   spaceBottomClass,
-  // category,
   type,
   limit
 }) => {
@@ -49,7 +48,6 @@ const ProductGrid = ({
 
 ProductGrid.propTypes = {
   spaceBottomClass: PropTypes.string,
-  // category: PropTypes.string,
   type: PropTypes.string,
   limit: PropTypes.number
 };

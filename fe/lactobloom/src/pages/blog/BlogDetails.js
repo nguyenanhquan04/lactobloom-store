@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; 
+import { useParams, useNavigate } from "react-router-dom"; 
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
@@ -7,12 +7,27 @@ import BlogSidebar from "../../wrappers/blog/BlogSidebar";
 import BlogComment from "../../wrappers/blog/BlogComment";
 import BlogPost from "../../wrappers/blog/BlogPost";
 import { getBlogByBlogId } from "../../utils/BlogService";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const BlogDetailsStandard = () => {
   let { blogId } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     setLoading(true);

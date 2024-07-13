@@ -4,13 +4,26 @@ import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { getAvailableVoucher, exchangeVoucher } from "../../utils/VoucherService";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const Voucher = () => {
   let { pathname } = useLocation();
   let navigate = useNavigate();
   const [vouchers, setVouchers] = useState([]);
   const authToken = Cookies.get('authToken'); // Get authToken from cookies
+
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     // Fetch vouchers from the API

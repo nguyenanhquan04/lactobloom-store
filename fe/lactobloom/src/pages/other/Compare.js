@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
@@ -9,6 +9,8 @@ import Rating from "../../components/product/sub-components/ProductRating";
 import { addToCart } from "../../store/slices/cart-slice";
 import { deleteFromCompare } from "../../store/slices/compare-slice";
 import { getImagesByProductId } from "../../utils/ImageService";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
 
 const Compare = () => {
   const dispatch = useDispatch();
@@ -18,6 +20,18 @@ const Compare = () => {
   const { cartItems } = useSelector((state) => state.cart);
 
   const [compareImages, setCompareImages] = useState({});
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
 
   useEffect(() => {
     const fetchCompareImages = async () => {

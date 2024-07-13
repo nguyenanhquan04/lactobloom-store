@@ -1,12 +1,27 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import HeroSliderOne from "../../wrappers/hero-slider/HeroSliderOne";
 import FeatureIcon from "../../wrappers/feature-icon/FeatureIcon";
 import TabProduct from "../../wrappers/product/TabProduct";
 import BlogFeatured from "../../wrappers/blog-featured/BlogFeatured";
+import Cookies from "js-cookie"; // Import js-cookie
+import {jwtDecode} from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
-const HomeFashion = () => {
+const Home = () => {
+  let navigate = useNavigate();
+    // Check for authToken cookie and redirect to homepage if it exists
+    useEffect(() => {
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
+        if (userRole !== "MEMBER") {
+          navigate("/admin");
+        } 
+      }
+    }, [navigate]);
   return (
     <Fragment>
       <SEO
@@ -24,7 +39,7 @@ const HomeFashion = () => {
         <FeatureIcon spaceTopClass="pt-100" spaceBottomClass="pb-60" />
 
         {/* tab product */}
-        <TabProduct spaceBottomClass="pb-60" category="fashion" />
+        <TabProduct spaceBottomClass="pb-60" />
 
         {/* blog featured */}
         <BlogFeatured spaceBottomClass="pb-55" />
@@ -33,4 +48,4 @@ const HomeFashion = () => {
   );
 };
 
-export default HomeFashion;
+export default Home;

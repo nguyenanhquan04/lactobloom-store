@@ -10,6 +10,7 @@ import Cookies from "js-cookie"; // Import js-cookie
 import { useDispatch } from "react-redux";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
 import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
+import {jwtDecode} from "jwt-decode";
 
 const Login = () => {
   let dispatch = useDispatch();
@@ -22,9 +23,14 @@ const Login = () => {
   // Check for authToken cookie and redirect to homepage if it exists
   useEffect(() => {
     const token = Cookies.get("authToken");
-    console.log(token);
     if (token) {
-      navigate("/"); // Redirect to homepage
+      const decodedToken = jwtDecode(token);
+      const userRole = decodedToken.role;
+      if (userRole !== "MEMBER") {
+        navigate("/admin");
+      } else {
+        navigate("/"); // Redirect to homepage if role is "MEMBER"
+      }
     }
   }, [navigate]);
 
@@ -46,10 +52,18 @@ const Login = () => {
       }); // Store the token in a cookie
       alert("Login successful");
       dispatch(deleteAllFromCart());
-      dispatch(deleteAllFromWishlist())
+      dispatch(deleteAllFromWishlist());
+      const authToken = Cookies.get("authToken");
+      const decodedToken = jwtDecode(authToken);
       // console.log("Login successful", response.data);
       // Navigate to a different page on successful login
-      navigate("/"); // Adjust the path as needed
+      const userRole = decodedToken.role;
+      console.log(userRole); // Adjust this line based on the structure of your JWT
+      if (userRole !== "MEMBER") {
+        navigate("/admin");
+      } else {
+        navigate("/"); // Redirect to homepage if role is "MEMBER"
+      }
     } catch (error) {
       if (error.response && error.response.status === 403) {
         setErrorMessage("Username or password is incorrect or does not exist");
@@ -62,13 +76,13 @@ const Login = () => {
 
   return (
     <Fragment>
-      <SEO titleTemplate="Login" description="Lactobloom Login Page." />
+      <SEO titleTemplate="Login" description="Lactobloom Đăng Nhập." />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
         <Breadcrumb
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Login", path: process.env.PUBLIC_URL + pathname },
+            { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Đăng nhập", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
         <div className="login-register-area pt-100 pb-100">
@@ -80,7 +94,7 @@ const Login = () => {
                     <Nav variant="pills" className="login-register-tab-list">
                       <Nav.Item>
                         <Nav.Link eventKey="login">
-                          <h4>Login</h4>
+                          <h4>Đăng Nhập</h4>
                         </Nav.Link>
                       </Nav.Item>
                     </Nav>
@@ -99,7 +113,7 @@ const Login = () => {
                               <input
                                 type="password"
                                 name="password"
-                                placeholder="Password"
+                                placeholder="Mật khẩu"
                                 value={loginData.password}
                                 onChange={handleLoginChange}
                               />
@@ -116,16 +130,16 @@ const Login = () => {
                                       "/forgot-password"
                                     }
                                   >
-                                    Forgot Password
+                                    Quên mật khẩu?
                                   </Link>
                                   <Link
                                     to={process.env.PUBLIC_URL + "/register"}
                                   >
-                                    Register Now
+                                    Đăng ký ngay
                                   </Link>
                                 </div>
                                 <button type="submit">
-                                  <span>Login</span>
+                                  <span>Đăng Nhập</span>
                                 </button>
                               </div>
                             </form>
