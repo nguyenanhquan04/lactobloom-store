@@ -13,6 +13,7 @@ public class VoucherDto {
     private int voucherId;
     private int point;
     private double discount;
+    private String owner;
     private LocalDate expirationDate;
     private boolean available;
 }

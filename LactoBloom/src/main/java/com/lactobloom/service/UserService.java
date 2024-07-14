@@ -3,8 +3,10 @@ package com.lactobloom.service;
 import com.lactobloom.dto.ChangePasswordDto;
 import com.lactobloom.dto.UserDto;
 import com.lactobloom.exception.ResourceNotFoundException;
+import com.lactobloom.model.Order;
 import com.lactobloom.model.Role;
 import com.lactobloom.model.User;
+import com.lactobloom.repository.OrderRepository;
 import com.lactobloom.repository.UserRepository;
 import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -70,6 +75,17 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public  UserDto addPoint(int orderId){
+        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
+                new ResourceNotFoundException("Order", "Id", orderId));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        existingUser.setPoint(existingUser.getPoint() + (int) (existingOrder.getTotalPrice()/100000));
+        return mapToDto(userRepository.save(existingUser));
+    }
+
+    @Override
     public boolean resetPassword(ChangePasswordDto.ResetPasswordRequest resetPasswordRequest){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
@@ -86,8 +102,12 @@ public class UserService implements IUserService {
     public UserDto updateUser(UserDto userDto, int id) {
         User existingUser = userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Id", id));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
         existingUser.setFullName(userDto.getFullName());
-        existingUser.setRole(Role.valueOf(userDto.getRole()));
+        if(existingUser != currentUser)
+            existingUser.setRole(Role.valueOf(userDto.getRole()));
         existingUser.setEmail(userDto.getEmail());
         existingUser.setAddress(userDto.getAddress());
         existingUser.setPhone(userDto.getPhone());
@@ -97,9 +117,10 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(int id) {
-        userRepository.findById(id).orElseThrow(() ->
+        User existingUser = userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Id", id));
-        userRepository.deleteById(id);
+        if(!existingUser.getRole().name().equals(Role.ADMIN.name()))
+            userRepository.deleteById(id);
     }
 
     @Override

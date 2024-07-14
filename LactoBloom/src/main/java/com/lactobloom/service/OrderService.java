@@ -36,9 +36,7 @@ public class OrderService implements IOrderService {
         if(email != null && !email.equals("anonymousUser")){
             user = userRepository.findByEmail(email).orElseThrow(() ->
                     new ResourceNotFoundException("User", "email", email));
-            user.setPoint(user.getPoint() + (int) (orderDto.getTotalPrice()/100000));
-            User newUser = userRepository.save(user);
-            order.setUser(newUser);
+            order.setUser(user);
         }
         if (voucherId != null) {
             Voucher existingVoucher = voucherRepository.findById(voucherId).orElseThrow(() ->
@@ -49,7 +47,6 @@ public class OrderService implements IOrderService {
                 order.setVoucher(voucher);
             }
         }
-        order.setOrderDate(orderDto.getOrderDate());
         Order newOrder = orderRepository.save(order);
         return mapToDto(newOrder);
     }
@@ -148,8 +145,9 @@ public class OrderService implements IOrderService {
         order.setAddress(orderDto.getAddress());
         order.setNote(orderDto.getNote());
         order.setShippingFee(orderDto.getShippingFee());
-        order.setTotalPrice(orderDto.getTotalPrice());
+        order.setTotalPrice(orderDto.getShippingFee());
         order.setOrderStatus(OrderStatus.PENDING);
+        order.setOrderDate(orderDto.getOrderDate());
         return order;
     }
 }
