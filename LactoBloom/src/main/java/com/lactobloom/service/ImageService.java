@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,7 @@ public class ImageService implements IImageService {
                     new ResourceNotFoundException("Product", "Id", productId));
             for (MultipartFile multipartFile : files) {
                 String fileName = multipartFile.getOriginalFilename();
+                fileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));
                 File file = this.convertToFile(multipartFile, fileName);
                 String url = this.uploadFile(file, fileName, multipartFile.getContentType());
                 file.delete();
@@ -86,9 +88,17 @@ public class ImageService implements IImageService {
 
     @Override
     public void deleteImage(int id) {
-        imageRepository.findById(id).orElseThrow(() ->
+        Image image = imageRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Image", "Id", id));
         imageRepository.deleteById(id);
+        if (isFirebaseUrl(image.getImageUrl())) {
+            try {
+                String fileName = image.getImageUrl().substring(image.getImageUrl().lastIndexOf("/") + 1, image.getImageUrl().indexOf("?"));
+                deleteFile(fileName);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete file from Firebase", e);
+            }
+        }
     }
 
     @Override
@@ -97,14 +107,27 @@ public class ImageService implements IImageService {
     }
 
     public String uploadFile(File file, String fileName, String contentType) throws IOException {
-        BlobId blobId = BlobId.of("lactobloom-68aa5.appspot.com", fileName);
+        BlobId blobId = BlobId.of("lactobloom1.appspot.com", fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
         InputStream inputStream = ImageService.class.getClassLoader().getResourceAsStream("lactobloom-firebase-adminsdk.json");
+        assert inputStream != null;
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-        String downloadUrl = "https://firebasestorage.googleapis.com/v0/b/lactobloom-68aa5.appspot.com/o/%s?alt=media";
+        String downloadUrl = "https://firebasestorage.googleapis.com/v0/b/lactobloom1.appspot.com/o/%s?alt=media";
         return String.format(downloadUrl, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+    }
+
+    public void deleteFile(String fileName) throws IOException {
+        BlobId blobId = BlobId.of("lactobloom1.appspot.com", fileName);
+        InputStream inputStream = ImageService.class.getClassLoader().getResourceAsStream("lactobloom-firebase-adminsdk.json");
+        assert inputStream != null;
+        Credentials credentials = GoogleCredentials.fromStream(inputStream);
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        boolean deleted = storage.delete(blobId);
+        if (!deleted) {
+            throw new ResourceNotFoundException("File", "FileName", fileName);
+        }
     }
 
     public File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
@@ -114,6 +137,14 @@ public class ImageService implements IImageService {
             fos.close();
         }
         return tempFile;
+    }
+
+    public String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public boolean isFirebaseUrl(String url) {
+        return url != null && url.contains("firebasestorage.googleapis.com");
     }
 
     private ImageDto mapToDto (Image image){

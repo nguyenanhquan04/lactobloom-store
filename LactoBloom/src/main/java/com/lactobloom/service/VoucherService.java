@@ -64,10 +64,12 @@ public class VoucherService implements IVoucherService {
     public VoucherDto updateVoucher(VoucherDto voucherDto, int id) {
         Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Voucher", "Id", id));
-        existingVoucher.setPoint(voucherDto.getPoint());
-        existingVoucher.setDiscount(voucherDto.getDiscount());
-        existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
-        existingVoucher.setAvailable(voucherDto.isAvailable());
+        if(existingVoucher.getUser() == null){
+            existingVoucher.setPoint(voucherDto.getPoint());
+            existingVoucher.setDiscount(voucherDto.getDiscount());
+            existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
+            existingVoucher.setAvailable(voucherDto.isAvailable());
+        }
         return mapToDto(voucherRepository.save(existingVoucher));
     }
 
@@ -79,7 +81,7 @@ public class VoucherService implements IVoucherService {
                     new ResourceNotFoundException("User", "email", email));
             Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
                     new ResourceNotFoundException("Voucher", "Id", id));
-            if(existingVoucher.getPoint() <= user.getPoint() && existingVoucher.getUser() == null){
+            if(existingVoucher.getPoint() <= user.getPoint() && existingVoucher.getUser() == null && existingVoucher.isAvailable()){
                 user.setPoint(user.getPoint() - existingVoucher.getPoint());
                 User newUser = userRepository.save(user);
                 existingVoucher.setUser(newUser);
@@ -110,6 +112,7 @@ public class VoucherService implements IVoucherService {
         voucherResponse.setVoucherId(voucher.getVoucherId());
         voucherResponse.setPoint(voucher.getPoint());
         voucherResponse.setDiscount(voucher.getDiscount());
+        voucherResponse.setOwner(voucher.getUser() != null ? voucher.getUser().getFullName() : null);
         voucherResponse.setExpirationDate(voucher.getExpirationDate());
         voucherResponse.setAvailable(voucher.isAvailable());
         return voucherResponse;

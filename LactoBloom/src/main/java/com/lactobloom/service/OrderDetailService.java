@@ -47,9 +47,12 @@ public class OrderDetailService implements IOrderDetailService {
             orderDetail.setPreOrder(true);
         }
         Product boughtProduct = productRepository.save(product);
+        orderDetail.setTotalPrice((product.getPrice() * (1 - product.getDiscount()/100)) * orderDetail.getQuantity());
         orderDetail.setOrder(existingOrder);
         orderDetail.setProduct(boughtProduct);
         OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
+        existingOrder.setTotalPrice(existingOrder.getTotalPrice() + newOrderDetail.getTotalPrice());
+        orderRepository.save(existingOrder);
         return mapToDto(newOrderDetail);
     }
 
@@ -122,8 +125,6 @@ public class OrderDetailService implements IOrderDetailService {
     private OrderDetail mapToEntity(OrderDetailDto orderDetailDto){
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setQuantity(orderDetailDto.getQuantity());
-        orderDetail.setTotalPrice(orderDetailDto.getTotalPrice());
-        orderDetail.setPreOrder(orderDetailDto.isPreOrder());
         return orderDetail;
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,7 +85,17 @@ public class BlogService implements IBlogService {
         existingBlog.setBlogCategory(blogCategory);
         existingBlog.setUser(user);
         if (multipartFile != null && !multipartFile.isEmpty()) {
+            if (imageService.isFirebaseUrl(blogDto.getImageUrl())) {
+                try {
+                    String oldFileName = blogDto.getImageUrl().substring(blogDto.getImageUrl().lastIndexOf("/") + 1, blogDto.getImageUrl().indexOf("?"));
+                    imageService.deleteFile(oldFileName);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete file from Firebase", e);
+                }
+            }
             String fileName = multipartFile.getOriginalFilename();
+            assert fileName != null;
+            fileName = UUID.randomUUID().toString().concat(imageService.getExtension(fileName));
             File file = imageService.convertToFile(multipartFile, fileName);
             String url = imageService.uploadFile(file, fileName, multipartFile.getContentType());
             file.delete();

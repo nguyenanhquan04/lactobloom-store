@@ -52,6 +52,11 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUserInfo(userDto), HttpStatus.OK);
     }
 
+    @PutMapping("/order/{orderId}/addPoint")
+    public ResponseEntity<UserDto> addPoint(@PathVariable int orderId) {
+        return new ResponseEntity<>(userService.addPoint(orderId), HttpStatus.OK);
+    }
+
     @PutMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(@RequestBody ChangePasswordDto.ResetPasswordRequest resetPasswordRequest) {
         if(userService.resetPassword(resetPasswordRequest))
