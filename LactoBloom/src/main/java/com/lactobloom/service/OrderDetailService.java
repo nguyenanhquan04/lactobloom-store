@@ -89,29 +89,6 @@ public class OrderDetailService implements IOrderDetailService {
         return mapToDto(orderDetail);
     }
 
-    @Override
-    public OrderDetailDto updateOrderDetail(OrderDetailDto orderDetailDto, int id, int orderId, int productId) {
-        OrderDetail existingOrderDetail = orderDetailRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("OrderDetail", "Id", id));
-        Order order = orderRepository.findById(orderId).orElseThrow(() ->
-                new ResourceNotFoundException("Order", "Id", orderId));
-        Product product = productRepository.findById(productId).orElseThrow(() ->
-                new ResourceNotFoundException("Product", "Id", productId));
-        existingOrderDetail.setOrder(order);
-        existingOrderDetail.setProduct(product);
-        existingOrderDetail.setQuantity(orderDetailDto.getQuantity());
-        existingOrderDetail.setTotalPrice(orderDetailDto.getTotalPrice());
-        existingOrderDetail.setPreOrder(orderDetailDto.isPreOrder());
-        return mapToDto(orderDetailRepository.save(existingOrderDetail));
-    }
-
-    @Override
-    public void deleteOrderDetail(int id) {
-        orderDetailRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("OrderDetail", "Id", id));
-        orderDetailRepository.deleteById(id);
-    }
-
     private OrderDetailDto mapToDto (OrderDetail orderDetail){
         OrderDetailDto orderDetailResponse = new OrderDetailDto();
         orderDetailResponse.setOrderDetailId(orderDetail.getOrderDetailId());

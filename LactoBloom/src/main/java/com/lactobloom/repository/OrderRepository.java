@@ -14,6 +14,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT new map(od.product.productId as productId, SUM(od.totalPrice) as totalMoney) " +
             "FROM OrderDetail od " +
+            "WHERE od.product.deleted = false " +
             "GROUP BY od.product.productId " +
             "ORDER BY SUM(od.totalPrice) DESC")
     List<Map<String, Object>> findTop5SellingProducts();
@@ -48,4 +49,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT MIN(o.orderDate) FROM Order o")
     LocalDate findEarliestOrderDate();
+
+    @Query("SELECT o FROM Order o WHERE DATE(o.orderDate) = CURRENT_DATE")
+    List<Order> findTodayOrders();
 }

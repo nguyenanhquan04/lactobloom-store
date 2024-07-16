@@ -46,20 +46,20 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductDto.ProductResponse> getAllProducts() {
-        List<Product> productList = productRepository.findAll();
+        List<Product> productList = productRepository.findByDeletedFalse();
         return productList.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
     public ProductDto.ProductResponse getProductById(int id) {
-        Product product = productRepository.findById(id).orElseThrow(() ->
+        Product product = productRepository.findByProductIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         return mapToResponse(product);
     }
 
     @Override
     public List<ProductDto.ProductResponse> get4RandomProducts() {
-        List<Product> productList = productRepository.findAll();
+        List<Product> productList = productRepository.findByDeletedFalse();
         Collections.shuffle(productList);
         return productList.stream().limit(4).map(this::mapToResponse).collect(Collectors.toList());
     }
@@ -78,7 +78,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDto.ProductResponse updateProduct(int id, int brandId, int categoryId, ProductDto.ProductRequest productRequest) {
-        Product existingProduct = productRepository.findById(id).orElseThrow(() ->
+        Product existingProduct = productRepository.findByProductIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
         Brand brand = brandRepository.findById(brandId).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", brandId));
@@ -98,37 +98,40 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(int id) {
-        productRepository.findById(id).orElseThrow(() ->
+        Product product = productRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", id));
-        productRepository.deleteById(id);
+        product.setDeleted(true);
+        productRepository.save(product);
+        for(Wishlist wishlist : wishlistRepository.findByProductProductId(id))
+            wishlistRepository.deleteById(wishlist.getWishlistId());
     }
 
     @Override
     public List<ProductDto.ProductResponse> searchProducts(String productName, Integer categoryId, Integer brandId) {
         if (categoryId != null && brandId != null) {
-            return productRepository.findByProductNameContainingIgnoreCaseAndCategoryCategoryIdAndBrandBrandId(productName, categoryId, brandId)
+            return productRepository.findByProductNameContainingIgnoreCaseAndCategoryCategoryIdAndBrandBrandIdAndDeletedFalse(productName, categoryId, brandId)
                     .stream().map(this::mapToResponse).collect(Collectors.toList());
         }
         else if (categoryId != null) {
-            return productRepository.findByProductNameContainingIgnoreCaseAndCategoryCategoryId(productName, categoryId)
+            return productRepository.findByProductNameContainingIgnoreCaseAndCategoryCategoryIdAndDeletedFalse(productName, categoryId)
                     .stream().map(this::mapToResponse).collect(Collectors.toList());
         }
         else if (brandId != null) {
-            return productRepository.findByProductNameContainingIgnoreCaseAndBrandBrandId(productName, brandId)
+            return productRepository.findByProductNameContainingIgnoreCaseAndBrandBrandIdAndDeletedFalse(productName, brandId)
                     .stream().map(this::mapToResponse).collect(Collectors.toList());
         }
-        return productRepository.findByProductNameContainingIgnoreCase(productName)
+        return productRepository.findByProductNameContainingIgnoreCaseAndDeletedFalse(productName)
                 .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
     public List<ProductDto.ProductResponse> getProductsByCategoryId(int categoryId) {
-        return productRepository.findByCategoryCategoryId(categoryId).stream().map(this::mapToResponse).collect(Collectors.toList());
+        return productRepository.findByCategoryCategoryIdAndDeletedFalse(categoryId).stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
     public List<ProductDto.ProductResponse> getProductsByBrandId(int brandId) {
-        return productRepository.findByBrandBrandId(brandId).stream().map(this::mapToResponse).collect(Collectors.toList());
+        return productRepository.findByBrandBrandIdAndDeletedFalse(brandId).stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     private ProductDto.ProductResponse mapToResponse (Product product){

@@ -50,7 +50,7 @@ public class User implements UserDetails {
     @Column(name = "Phone")
     private String phone;
 
-    @Column(name = "Address", columnDefinition = "TEXT")
+    @Column(name = "Address")
     private String address;
 
     @Column(name = "Point", columnDefinition = "INT DEFAULT 0")

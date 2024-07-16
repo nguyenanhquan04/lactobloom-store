@@ -29,13 +29,13 @@ public class BlogReviewService implements IBlogReviewService {
     private BlogRepository blogRepository;
 
     @Override
-    public BlogReviewDto saveReview(BlogReviewDto blogReviewDto, int productId) {
+    public BlogReviewDto saveReview(BlogReviewDto blogReviewDto, int blogId) {
         BlogReview blogReview = mapToEntity(blogReviewDto);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        Blog blog = blogRepository.findById(productId).orElseThrow(() ->
-                new ResourceNotFoundException("Product", "Id", productId));
+        Blog blog = blogRepository.findByBlogIdAndDeletedFalse(blogId).orElseThrow(() ->
+                new ResourceNotFoundException("Blog", "Id", blogId));
         blogReview.setUser(user);
         blogReview.setBlog(blog);
         blogReview.setReviewDate(blogReviewDto.getReviewDate());
@@ -63,7 +63,7 @@ public class BlogReviewService implements IBlogReviewService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        if( existingReview.getUser().getUserId() == user.getUserId())
+        if( existingReview.getUser() == user)
             existingReview.setComment(blogReviewDto.getComment());
         return mapToDto(blogReviewRepository.save(existingReview));
     }
@@ -82,7 +82,7 @@ public class BlogReviewService implements IBlogReviewService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        if(user.getUserId() == blogReview.getUser().getUserId())
+        if(blogReview.getUser() == user)
             blogReviewRepository.deleteById(id);
     }
 

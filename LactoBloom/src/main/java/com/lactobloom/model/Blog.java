@@ -45,6 +45,10 @@ public class Blog {
     @Column(name = "Publish_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime publishDate;
 
+    @Column(name = "Deleted", nullable = false)
+    @NotNull(message = "Deleted must not be null")
+    private boolean deleted;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "blog")
     private List<BlogReview> blogReviews;
 }

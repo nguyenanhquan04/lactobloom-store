@@ -25,7 +25,7 @@ public class BlogCategoryService implements IBlogCategoryService {
 
     @Override
     public List<BlogCategoryDto> getAllBlogCategories() {
-        List<BlogCategory> blogCategoryList = blogCategoryRepository.findAll();
+        List<BlogCategory> blogCategoryList = blogCategoryRepository.findByDeletedFalse();
         return blogCategoryList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -37,14 +37,14 @@ public class BlogCategoryService implements IBlogCategoryService {
 
     @Override
     public BlogCategoryDto getBlogCategoryById(int id) {
-        BlogCategory blogCategory = blogCategoryRepository.findById(id).orElseThrow(() ->
+        BlogCategory blogCategory = blogCategoryRepository.findByBlogCategoryIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog Category", "Id", id));
         return mapToDto(blogCategory);
     }
 
     @Override
     public BlogCategoryDto updateBlogCategory(BlogCategoryDto blogCategory, int id) {
-        BlogCategory existingBlogCategory = blogCategoryRepository.findById(id).orElseThrow(() ->
+        BlogCategory existingBlogCategory = blogCategoryRepository.findByBlogCategoryIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog Category", "Id", id));
         existingBlogCategory.setBlogCategoryName(blogCategory.getBlogCategoryName());
         return mapToDto(blogCategoryRepository.save(existingBlogCategory));
@@ -52,9 +52,10 @@ public class BlogCategoryService implements IBlogCategoryService {
 
     @Override
     public void deleteBlogCategory(int id) {
-        blogCategoryRepository.findById(id).orElseThrow(() ->
+        BlogCategory blogCategory = blogCategoryRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog Category", "Id", id));
-        blogCategoryRepository.deleteById(id);
+        blogCategory.setDeleted(true);
+        blogCategoryRepository.save(blogCategory);
     }
 
     private BlogCategoryDto mapToDto (BlogCategory blogCategory){

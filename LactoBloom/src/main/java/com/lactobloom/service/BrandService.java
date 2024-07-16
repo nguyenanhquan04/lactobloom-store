@@ -4,6 +4,7 @@ import com.lactobloom.dto.BrandDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Brand;
 import com.lactobloom.repository.BrandRepository;
+import com.lactobloom.repository.ProductRepository;
 import com.lactobloom.service.interfaces.IBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class BrandService implements IBrandService {
     @Autowired
     private BrandRepository brandRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @Override
     public BrandDto saveBrand(BrandDto brandDto) {
         Brand brand = mapToEntity(brandDto);
@@ -25,20 +29,20 @@ public class BrandService implements IBrandService {
 
     @Override
     public List<BrandDto> getAllBrands() {
-        List<Brand> brandList = brandRepository.findAll();
+        List<Brand> brandList = brandRepository.findByDeletedFalse();
         return brandList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public BrandDto getBrandById(int id) {
-        Brand brand = brandRepository.findById(id).orElseThrow(() ->
+        Brand brand = brandRepository.findByBrandIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", id));
         return mapToDto(brand);
     }
 
     @Override
     public BrandDto updateBrand(BrandDto brandDto, int id) {
-        Brand existingBrand = brandRepository.findById(id).orElseThrow(() ->
+        Brand existingBrand = brandRepository.findByBrandIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", id));
         existingBrand.setBrandName(brandDto.getBrandName());
         return mapToDto(brandRepository.save(existingBrand));
@@ -46,9 +50,14 @@ public class BrandService implements IBrandService {
 
     @Override
     public void deleteBrand(int id) {
-        brandRepository.findById(id).orElseThrow(() ->
+        Brand brand = brandRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Brand", "Id", id));
-        brandRepository.deleteById(id);
+        brand.setDeleted(true);
+        brandRepository.save(brand);
+//        for(Product product : productRepository.findByBrandBrandIdAndDeletedFalse(id)){
+//            product.setDeleted(true);
+//            productRepository.save(product);
+//        }
     }
 
     @Override

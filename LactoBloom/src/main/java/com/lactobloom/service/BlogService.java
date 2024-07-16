@@ -38,8 +38,8 @@ public class BlogService implements IBlogService {
     @Override
     public BlogDto saveBlog(MultipartFile multipartFile, BlogDto blogDto, int categoryId) throws IOException {
         Blog blog = mapToEntity(blogDto);
-        BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
-            new ResourceNotFoundException("Blog", "Id", categoryId));
+        BlogCategory blogCategory = blogCategoryRepository.findByBlogCategoryIdAndDeletedFalse(categoryId).orElseThrow(() ->
+            new ResourceNotFoundException("Blog Category", "Id", categoryId));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
@@ -56,20 +56,20 @@ public class BlogService implements IBlogService {
 
     @Override
     public List<BlogDto> getAllBlogs() {
-        List<Blog> blogList = blogRepository.findAll();
+        List<Blog> blogList = blogRepository.findByDeletedFalse();
         return blogList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public BlogDto getBlogById(int id) {
-        Blog blog = blogRepository.findById(id).orElseThrow(() ->
+        Blog blog = blogRepository.findByBlogIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
         return mapToDto(blog);
     }
 
     @Override
     public List<BlogDto> getBlogsByCategory(int blogCategoryId) {
-        List<Blog> blogList = blogRepository.findByBlogCategory_BlogCategoryId(blogCategoryId);
+        List<Blog> blogList = blogRepository.findByBlogCategory_BlogCategoryIdAndDeletedFalse(blogCategoryId);
         return blogList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -79,11 +79,7 @@ public class BlogService implements IBlogService {
                 new ResourceNotFoundException("Blog", "Id", id));
         BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Blog Category", "Id", categoryId));
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException("User", "email", email));
         existingBlog.setBlogCategory(blogCategory);
-        existingBlog.setUser(user);
         if (multipartFile != null && !multipartFile.isEmpty()) {
             if (imageService.isFirebaseUrl(blogDto.getImageUrl())) {
                 try {
@@ -110,14 +106,15 @@ public class BlogService implements IBlogService {
 
     @Override
     public void deleteBlog(int id) {
-        blogRepository.findById(id).orElseThrow(() ->
+        Blog blog = blogRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
-        blogRepository.deleteById(id);
+        blog.setDeleted(true);
+        blogRepository.save(blog);
     }
 
     @Override
     public List<BlogDto> searchBlogsByTitle(String title) {
-        List<Blog> blogList = blogRepository.findByTitleContaining(title);
+        List<Blog> blogList = blogRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(title);
         return blogList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 

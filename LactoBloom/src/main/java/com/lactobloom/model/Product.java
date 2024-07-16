@@ -53,6 +53,10 @@ public class Product {
     @NotNull(message = "Pre-order must not be null")
     private boolean preOrder;
 
+    @Column(name = "Deleted", nullable = false)
+    @NotNull(message = "Deleted must not be null")
+    private boolean deleted;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<ProductReview> productReviews;
 

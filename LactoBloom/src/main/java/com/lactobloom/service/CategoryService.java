@@ -25,20 +25,20 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryDto> getAllCategories() {
-        List<Category> categoryList = categoryRepository.findAll();
+        List<Category> categoryList = categoryRepository.findByDeletedFalse();
         return categoryList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public CategoryDto getCategoryById(int id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() ->
+        Category category = categoryRepository.findByCategoryIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", id));
         return mapToDto(category);
     }
 
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, int id) {
-        Category existingCategory = categoryRepository.findById(id).orElseThrow(() ->
+        Category existingCategory = categoryRepository.findByCategoryIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", id));
         existingCategory.setCategoryName(categoryDto.getCategoryName());
         return mapToDto(categoryRepository.save(existingCategory));
@@ -46,13 +46,16 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public void deleteCategory(int id) {
-        categoryRepository.findById(id).orElseThrow(() ->
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Category", "Id", id));
-        categoryRepository.deleteById(id);
+        category.setDeleted(true);
+        categoryRepository.save(category);
     }
 
     @Override
-    public CategoryDto findCategoryByProductId(int id) { return mapToDto(categoryRepository.findByProductsProductId(id));}
+    public CategoryDto findCategoryByProductId(int id) {
+        return mapToDto(categoryRepository.findByProductsProductId(id));
+    }
 
     private CategoryDto mapToDto (Category category){
         CategoryDto categoryResponse = new CategoryDto();
