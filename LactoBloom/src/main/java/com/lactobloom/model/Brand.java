@@ -19,6 +19,10 @@ public class Brand {
     @NotNull(message = "Brand name must not be null")
     private String brandName;
 
+    @Column(name = "Deleted", nullable = false)
+    @NotNull(message = "Deleted must not be null")
+    private boolean deleted;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "brand")
     private List<Product> products;
 }

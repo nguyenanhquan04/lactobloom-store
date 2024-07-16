@@ -44,17 +44,4 @@ public class OrderDetailController {
     public ResponseEntity<OrderDetailDto> getOrderDetailById(@PathVariable int id) {
         return new ResponseEntity<>(orderDetailService.getOrderDetailById(id), HttpStatus.OK);
     }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
-    @PutMapping("/update/{id}/order/{orderId}/product/{productId}")
-    public ResponseEntity<OrderDetailDto> updateOrderDetail(@PathVariable int id, @RequestBody OrderDetailDto orderDetailDto, @PathVariable int orderId, @PathVariable int productId) {
-        return new ResponseEntity<>(orderDetailService.updateOrderDetail(orderDetailDto, id, orderId, productId), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteOrderDetail(@PathVariable int id) {
-        orderDetailService.deleteOrderDetail(id);
-        return new ResponseEntity<>("Order detail deleted successfully!", HttpStatus.OK);
-    }
 }

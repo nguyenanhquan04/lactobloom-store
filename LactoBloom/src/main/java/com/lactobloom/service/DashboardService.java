@@ -40,6 +40,11 @@ public class DashboardService implements IDashboardService{
     }
 
     @Override
+    public List<OrderDto> getTodayOrders() {
+        return orderRepository.findTodayOrders().stream().map(orderService::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public Double getTotalRevenue() {
         return orderRepository.findTotalRevenue() == null ? 0 : orderRepository.findTotalRevenue();
     }

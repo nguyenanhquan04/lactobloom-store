@@ -29,6 +29,12 @@ public class DashboardController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
+    @GetMapping("/todayOrders")
+    public List<OrderDto> getTodayOrders() {
+        return dashboardService.getTodayOrders();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/totalRevenue")
     public double getTotalRevenue() {
         return dashboardService.getTotalRevenue();

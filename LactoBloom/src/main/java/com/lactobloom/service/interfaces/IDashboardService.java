@@ -7,6 +7,7 @@ import java.util.List;
 public interface IDashboardService {
     List<DashboardDto.ProductResponse> getTop5SellingProducts();
     List<OrderDto> get5RecentOrders();
+    List<OrderDto> getTodayOrders();
     Double getTotalRevenue();
     Double getTodayRevenue();
     Double getMonthRevenue(int month, int year);

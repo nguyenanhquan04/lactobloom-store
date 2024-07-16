@@ -5,13 +5,14 @@ USE LactoBloom;
 
 CREATE TABLE User (
     User_id INT AUTO_INCREMENT PRIMARY KEY,
-    Full_name NVARCHAR(100) NOT NULL,
+    Full_name NVARCHAR(255) NOT NULL,
     Role ENUM('MEMBER', 'STAFF', 'ADMIN') DEFAULT 'MEMBER',
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     Phone VARCHAR(15),
-    Address TEXT,
-    Point INT DEFAULT 0
+    Address NVARCHAR(255),
+    Point INT DEFAULT 0 -- ,
+--     Deleted BIT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE Token (
@@ -34,7 +35,8 @@ CREATE TABLE Otp (
 
 CREATE TABLE BlogCategory (
     Blog_category_id INT AUTO_INCREMENT PRIMARY KEY,
-    Blog_category_name NVARCHAR(255) NOT NULL
+    Blog_category_name NVARCHAR(255) NOT NULL,
+    Deleted BIT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE Blog (
@@ -46,6 +48,7 @@ CREATE TABLE Blog (
     Short_description TEXT NOT NULL,
     Content TEXT NOT NULL,
     Publish_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Deleted BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Blog_category_id) REFERENCES BlogCategory(Blog_category_id)
 );
@@ -62,12 +65,14 @@ CREATE TABLE BlogReview (
 
 CREATE TABLE Brand (
     Brand_id INT AUTO_INCREMENT PRIMARY KEY,
-    Brand_name VARCHAR(100) NOT NULL
+    Brand_name VARCHAR(100) NOT NULL,
+    Deleted BIT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE Category (
     Category_id INT AUTO_INCREMENT PRIMARY KEY,
-    Category_name NVARCHAR(100) NOT NULL
+    Category_name NVARCHAR(100) NOT NULL,
+    Deleted BIT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE Product (
@@ -81,6 +86,7 @@ CREATE TABLE Product (
     Discount DECIMAL(5, 2) NOT NULL DEFAULT 0,
     Stock INT NOT NULL,
     Pre_order BIT NOT NULL DEFAULT 0,
+    Deleted BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id),
     FOREIGN KEY (Category_id) REFERENCES Category(Category_id)
 );
@@ -118,6 +124,7 @@ CREATE TABLE Voucher (
     Discount DECIMAL(5, 2) NOT NULL,
     Expiration_date DATE NOT NULL,
     Available BIT NOT NULL DEFAULT 1,
+    -- Deleted BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (User_id) REFERENCES User(User_id)
 );
 
@@ -127,13 +134,14 @@ CREATE TABLE `Order` (
     Full_name NVARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL,
     Phone VARCHAR(15) NOT NULL,
-    Address TEXT NOT NULL,
+    Address NVARCHAR(255) NOT NULL,
     Note TEXT,
     Voucher_id INT,
     Shipping_fee DECIMAL(10, 2) NOT NULL,
     Total_price DECIMAL(15, 2) NOT NULL,
     Status ENUM('PENDING', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING',
     Order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    -- Deleted BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (User_id) REFERENCES User(User_id),
     FOREIGN KEY (Voucher_id) REFERENCES Voucher(Voucher_id)
 );
