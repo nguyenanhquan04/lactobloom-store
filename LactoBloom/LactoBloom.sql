@@ -11,8 +11,8 @@ CREATE TABLE User (
     Password VARCHAR(255) NOT NULL,
     Phone VARCHAR(15),
     Address NVARCHAR(255),
-    Point INT DEFAULT 0 -- ,
---     Deleted BIT NOT NULL DEFAULT 0
+    Point INT DEFAULT 0,
+    Deleted BIT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE Token (
@@ -22,7 +22,7 @@ CREATE TABLE Token (
     Expired BIT NOT NULL,
     Revoked BIT NOT NULL,
     User_id INT NOT NULL,
-    FOREIGN KEY (User_id) REFERENCES User(User_id)
+    FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Otp (
@@ -30,7 +30,7 @@ CREATE TABLE Otp (
     Otp INT NOT NULL,
 	Expiration_Time DATETIME DEFAULT CURRENT_TIMESTAMP,
 	User_id INT,
-	FOREIGN KEY (User_id) REFERENCES User(User_id)
+	FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE
 );
 
 CREATE TABLE BlogCategory (
@@ -49,8 +49,8 @@ CREATE TABLE Blog (
     Content TEXT NOT NULL,
     Publish_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     Deleted BIT NOT NULL DEFAULT 0,
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Blog_category_id) REFERENCES BlogCategory(Blog_category_id)
+    FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE,
+    FOREIGN KEY (Blog_category_id) REFERENCES BlogCategory(Blog_category_id) ON DELETE CASCADE
 );
 
 CREATE TABLE BlogReview (
@@ -59,8 +59,8 @@ CREATE TABLE BlogReview (
     Blog_id INT,
     Comment TEXT NOT NULL,
     Review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Blog_id) REFERENCES Blog(Blog_id)
+    FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE,
+    FOREIGN KEY (Blog_id) REFERENCES Blog(Blog_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Brand (
@@ -87,8 +87,8 @@ CREATE TABLE Product (
     Stock INT NOT NULL,
     Pre_order BIT NOT NULL DEFAULT 0,
     Deleted BIT NOT NULL DEFAULT 0,
-    FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id),
-    FOREIGN KEY (Category_id) REFERENCES Category(Category_id)
+    FOREIGN KEY (Brand_id) REFERENCES Brand(Brand_id) ON DELETE CASCADE,
+    FOREIGN KEY (Category_id) REFERENCES Category(Category_id) ON DELETE CASCADE
 );
 
 CREATE TABLE ProductReview (
@@ -98,23 +98,23 @@ CREATE TABLE ProductReview (
     Rate INT CHECK (Rate BETWEEN 1 AND 5),
     Comment TEXT NOT NULL,
     Review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
+    FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE,
+    FOREIGN KEY (Product_id) REFERENCES Product(Product_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Image (
     Image_id INT AUTO_INCREMENT PRIMARY KEY,
     Product_id INT NOT NULL,
     Image_url VARCHAR(255) NOT NULL,
-    FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
+    FOREIGN KEY (Product_id) REFERENCES Product(Product_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Wishlist (
     Wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
     User_id INT NOT NULL,
     Product_id INT NOT NULL,
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
+    FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE,
+    FOREIGN KEY (Product_id) REFERENCES Product(Product_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Voucher (
@@ -124,8 +124,8 @@ CREATE TABLE Voucher (
     Discount DECIMAL(5, 2) NOT NULL,
     Expiration_date DATE NOT NULL,
     Available BIT NOT NULL DEFAULT 1,
-    -- Deleted BIT NOT NULL DEFAULT 0,
-    FOREIGN KEY (User_id) REFERENCES User(User_id)
+    Deleted BIT NOT NULL DEFAULT 0,
+    FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE
 );
 
 CREATE TABLE `Order` (
@@ -141,9 +141,10 @@ CREATE TABLE `Order` (
     Total_price DECIMAL(15, 2) NOT NULL,
     Status ENUM('PENDING', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING',
     Order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    -- Deleted BIT NOT NULL DEFAULT 0,
-    FOREIGN KEY (User_id) REFERENCES User(User_id),
-    FOREIGN KEY (Voucher_id) REFERENCES Voucher(Voucher_id)
+    Exchange_point BIT NOT NULL DEFAULT 0,
+    Deleted BIT NOT NULL DEFAULT 0,
+    FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE,
+    FOREIGN KEY (Voucher_id) REFERENCES Voucher(Voucher_id) ON DELETE CASCADE
 );
 
 CREATE TABLE OrderDetail (
@@ -153,8 +154,8 @@ CREATE TABLE OrderDetail (
     Quantity INT NOT NULL,
     Total_price DECIMAL(10, 2) NOT NULL,
     Pre_order BIT NOT NULL DEFAULT 0,
-    FOREIGN KEY (Order_id) REFERENCES `Order`(Order_id),
-    FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
+    FOREIGN KEY (Order_id) REFERENCES `Order`(Order_id) ON DELETE CASCADE,
+    FOREIGN KEY (Product_id) REFERENCES Product(Product_id) ON DELETE CASCADE
 );
 
 -- Insert data into tables

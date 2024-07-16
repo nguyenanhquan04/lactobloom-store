@@ -41,7 +41,7 @@ public class BlogService implements IBlogService {
         BlogCategory blogCategory = blogCategoryRepository.findByBlogCategoryIdAndDeletedFalse(categoryId).orElseThrow(() ->
             new ResourceNotFoundException("Blog Category", "Id", categoryId));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         String fileName = multipartFile.getOriginalFilename();
         File file = imageService.convertToFile(multipartFile, fileName);
@@ -75,7 +75,7 @@ public class BlogService implements IBlogService {
 
     @Override
     public BlogDto updateBlog(BlogDto blogDto, int id, int categoryId, MultipartFile multipartFile) throws IOException {
-        Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
+        Blog existingBlog = blogRepository.findByBlogIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", id));
         BlogCategory blogCategory = blogCategoryRepository.findById(categoryId).orElseThrow(() ->
                 new ResourceNotFoundException("Blog Category", "Id", categoryId));

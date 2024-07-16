@@ -34,12 +34,12 @@ public class OrderService implements IOrderService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = new User();
         if(email != null && !email.equals("anonymousUser")){
-            user = userRepository.findByEmail(email).orElseThrow(() ->
+            user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                     new ResourceNotFoundException("User", "email", email));
             order.setUser(user);
         }
         if (voucherId != null) {
-            Voucher existingVoucher = voucherRepository.findById(voucherId).orElseThrow(() ->
+            Voucher existingVoucher = voucherRepository.findByVoucherIdAndDeletedFalse(voucherId).orElseThrow(() ->
                     new ResourceNotFoundException("Voucher", "Id", voucherId));
             if(existingVoucher.isAvailable() && existingVoucher.getUser().getUserId() == user.getUserId()){
                 existingVoucher.setAvailable(false);
@@ -53,14 +53,14 @@ public class OrderService implements IOrderService {
 
     @Override
     public List<OrderDto> getAllOrders() {
-        List<Order> orderList = orderRepository.findAll();
+        List<Order> orderList = orderRepository.findByDeletedFalse();
         return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDto> getOrdersByUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         List<Order> orderList = orderRepository.findByUserUserId(user.getUserId());
         return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
@@ -68,14 +68,14 @@ public class OrderService implements IOrderService {
 
     @Override
     public OrderDto getOrderById(int id) {
-        Order order = orderRepository.findById(id).orElseThrow(() ->
+        Order order = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
         return mapToDto(order);
     }
 
     @Override
     public OrderDto deliverOrder(int id) {
-        Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
+        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
         existingOrder.setOrderStatus(OrderStatus.DELIVERED);
         return mapToDto(orderRepository.save(existingOrder));
@@ -83,10 +83,10 @@ public class OrderService implements IOrderService {
 
     @Override
     public OrderDto cancelOrder(int id) {
-        Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
+        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if (existingOrder.getUser().equals(user) && existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
             long hoursBetween = ChronoUnit.HOURS.between(existingOrder.getOrderDate(), LocalDateTime.now());
@@ -102,24 +102,33 @@ public class OrderService implements IOrderService {
 
     @Override
     public OrderDto updateOrder(OrderDto orderDto, int id) {
-        Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
+        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
         existingOrder.setFullName(orderDto.getFullName());
         existingOrder.setEmail(orderDto.getEmail());
         existingOrder.setPhone(orderDto.getPhone());
         existingOrder.setAddress(orderDto.getAddress());
         existingOrder.setNote(orderDto.getNote());
-        existingOrder.setShippingFee(orderDto.getShippingFee());
-        existingOrder.setTotalPrice(orderDto.getTotalPrice());
-        existingOrder.setOrderStatus(OrderStatus.valueOf(orderDto.getStatus()));
         return mapToDto(orderRepository.save(existingOrder));
     }
 
     @Override
     public void deleteOrder(int id) {
-        orderRepository.findById(id).orElseThrow(() ->
+        Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
-        orderRepository.deleteById(id);
+        existingOrder.setDeleted(true);
+        if(existingOrder.getOrderStatus().equals(OrderStatus.PENDING)){
+            existingOrder.setOrderStatus(OrderStatus.CANCELLED);
+            User user = existingOrder.getUser();
+            user.setPoint(user.getPoint() - (int) (existingOrder.getTotalPrice()/100000));
+            userRepository.save(user);
+        }
+        Voucher voucher = existingOrder.getVoucher();
+        if(voucher != null) {
+            voucher.setDeleted(true);
+            voucherRepository.save(voucher);
+        }
+        orderRepository.save(existingOrder);
     }
 
     public OrderDto mapToDto (Order order){

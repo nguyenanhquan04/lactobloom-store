@@ -34,4 +34,8 @@ public class Voucher {
     @Column(name = "Available", nullable = false)
     @NotNull(message = "Available must not be null")
     private boolean available;
+
+    @Column(name = "Deleted", nullable = false)
+    @NotNull(message = "Deleted must not be null")
+    private boolean deleted;
 }

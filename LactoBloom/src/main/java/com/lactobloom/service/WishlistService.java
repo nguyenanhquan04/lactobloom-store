@@ -32,7 +32,7 @@ public class WishlistService implements IWishlistService {
     public WishlistDto saveWishlist(int productId) {
         Wishlist wishlist = new Wishlist();
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         Product product = productRepository.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
@@ -53,7 +53,7 @@ public class WishlistService implements IWishlistService {
     @Override
     public List<WishlistDto> getMyWishlists() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         return wishlistRepository.findByUserUserId(user.getUserId()).stream().map(this::mapToDto).collect(Collectors.toList());
     }
@@ -70,7 +70,7 @@ public class WishlistService implements IWishlistService {
         Wishlist wishlist = wishlistRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Wishlist", "Id", id));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if(user.getUserId() == wishlist.getUser().getUserId())
             wishlistRepository.deleteById(id);
@@ -79,10 +79,11 @@ public class WishlistService implements IWishlistService {
     @Override
     public void deleteUserWishlists() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         wishlistRepository.deleteByUser_UserId(user.getUserId());
     }
+
     private WishlistDto mapToDto (Wishlist wishlist){
         WishlistDto wishListResponse = new WishlistDto();
         wishListResponse.setWishlistId(wishlist.getWishlistId());

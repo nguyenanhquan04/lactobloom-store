@@ -69,7 +69,7 @@ public class ProductService implements IProductService {
         Wishlist wishlist = wishlistRepository.findById(wishlistId).orElseThrow(() ->
                 new ResourceNotFoundException("Wishlist", "Id", wishlistId));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if(wishlist.getUser() == user)
             return mapToResponse(wishlist.getProduct());
@@ -102,8 +102,7 @@ public class ProductService implements IProductService {
                 new ResourceNotFoundException("Product", "Id", id));
         product.setDeleted(true);
         productRepository.save(product);
-        for(Wishlist wishlist : wishlistRepository.findByProductProductId(id))
-            wishlistRepository.deleteById(wishlist.getWishlistId());
+        wishlistRepository.deleteByProductProductId(id);
     }
 
     @Override

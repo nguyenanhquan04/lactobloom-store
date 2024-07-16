@@ -63,6 +63,14 @@ public class Order {
     @Column(name = "Order_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime orderDate;
 
+    @Column(name = "Exchange_point", nullable = false)
+    @NotNull(message = "Exchange point must not be null")
+    private boolean exchangePoint;
+
+    @Column(name = "Deleted", nullable = false)
+    @NotNull(message = "Deleted must not be null")
+    private boolean deleted;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
     private List<OrderDetail> orderDetails;
 }

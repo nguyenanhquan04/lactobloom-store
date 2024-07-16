@@ -4,7 +4,6 @@ import com.lactobloom.dto.BrandDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Brand;
 import com.lactobloom.repository.BrandRepository;
-import com.lactobloom.repository.ProductRepository;
 import com.lactobloom.service.interfaces.IBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,9 +16,6 @@ public class BrandService implements IBrandService {
 
     @Autowired
     private BrandRepository brandRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
 
     @Override
     public BrandDto saveBrand(BrandDto brandDto) {
@@ -54,10 +50,6 @@ public class BrandService implements IBrandService {
                 new ResourceNotFoundException("Brand", "Id", id));
         brand.setDeleted(true);
         brandRepository.save(brand);
-//        for(Product product : productRepository.findByBrandBrandIdAndDeletedFalse(id)){
-//            product.setDeleted(true);
-//            productRepository.save(product);
-//        }
     }
 
     @Override

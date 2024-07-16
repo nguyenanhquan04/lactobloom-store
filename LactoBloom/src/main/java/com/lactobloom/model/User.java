@@ -59,6 +59,10 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private Otp otp;
 
+    @Column(name = "Deleted", nullable = false)
+    @NotNull(message = "Deleted must not be null")
+    private boolean deleted;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Token> tokens;
 
