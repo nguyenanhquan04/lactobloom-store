@@ -16,8 +16,11 @@ public class OrderDto {
     private String phone;
     private String address;
     private String note;
+    private double voucherDiscount;
     private double shippingFee;
     private double totalPrice;
     private String status;
     private LocalDateTime orderDate;
+    private String staffName;
+    private boolean cod;
 }

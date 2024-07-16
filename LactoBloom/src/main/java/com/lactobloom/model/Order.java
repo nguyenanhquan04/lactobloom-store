@@ -63,6 +63,14 @@ public class Order {
     @Column(name = "Order_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime orderDate;
 
+    @Column(name = "COD", nullable = false)
+    @NotNull(message = "COD must not be null")
+    private boolean cod;
+
+    @ManyToOne
+    @JoinColumn(name = "Staff_id")
+    private User staff;
+
     @Column(name = "Exchange_point", nullable = false)
     @NotNull(message = "Exchange point must not be null")
     private boolean exchangePoint;
