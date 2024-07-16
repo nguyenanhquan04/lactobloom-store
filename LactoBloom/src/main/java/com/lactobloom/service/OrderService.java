@@ -67,6 +67,15 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public List<OrderDto> getOrdersByStaff() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User staff = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        List<Order> orderList = orderRepository.findByStaffUserIdAndDeletedFalse(staff.getUserId());
+        return orderList.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public OrderDto getOrderById(int id) {
         Order order = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
@@ -77,7 +86,8 @@ public class OrderService implements IOrderService {
     public OrderDto deliverOrder(int id) {
         Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
-        existingOrder.setOrderStatus(OrderStatus.DELIVERED);
+        if(existingOrder.getOrderStatus().equals(OrderStatus.PENDING))
+            existingOrder.setOrderStatus(OrderStatus.DELIVERED);
         return mapToDto(orderRepository.save(existingOrder));
     }
 
@@ -88,22 +98,30 @@ public class OrderService implements IOrderService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        if (existingOrder.getUser().equals(user) && existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
+        if (existingOrder.getUser() == user && existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
             long hoursBetween = ChronoUnit.HOURS.between(existingOrder.getOrderDate(), LocalDateTime.now());
-            if (hoursBetween <= 24) {
+            if (hoursBetween <= 24 || existingOrder.isCod()) {
                 existingOrder.setOrderStatus(OrderStatus.CANCELLED);
                 user.setPoint(user.getPoint() - (int) (existingOrder.getTotalPrice()/100000));
                 userRepository.save(user);
                 return mapToDto(orderRepository.save(existingOrder));
             }
         }
-        return null;
+        return mapToDto(existingOrder);
     }
 
     @Override
-    public OrderDto updateOrder(OrderDto orderDto, int id) {
+    public OrderDto updateOrder(OrderDto orderDto, int id, Integer staffId) {
         Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "email", email));
+        if(staffId != null && user.getRole().equals(Role.ADMIN)){
+            User staff = userRepository.findByUserIdAndDeletedFalse(staffId).orElseThrow(() ->
+                    new ResourceNotFoundException("Staff", "Id", staffId));
+            existingOrder.setStaff(staff);
+        }
         existingOrder.setFullName(orderDto.getFullName());
         existingOrder.setEmail(orderDto.getEmail());
         existingOrder.setPhone(orderDto.getPhone());
@@ -139,10 +157,13 @@ public class OrderService implements IOrderService {
         orderResponse.setPhone(order.getPhone());
         orderResponse.setAddress(order.getAddress());
         orderResponse.setNote(order.getNote());
+        orderResponse.setVoucherDiscount(order.getVoucher() != null ? order.getVoucher().getDiscount() : 0);
         orderResponse.setShippingFee(order.getShippingFee());
         orderResponse.setTotalPrice(order.getTotalPrice());
         orderResponse.setStatus(order.getOrderStatus().name());
         orderResponse.setOrderDate(order.getOrderDate());
+        orderResponse.setStaffName(order.getStaff() != null ? order.getStaff().getFullName() : null);
+        orderResponse.setCod(order.isCod());
         return orderResponse;
     }
 
@@ -157,6 +178,7 @@ public class OrderService implements IOrderService {
         order.setTotalPrice(orderDto.getShippingFee());
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderDate(orderDto.getOrderDate());
+        order.setCod(orderDto.isCod());
         return order;
     }
 }

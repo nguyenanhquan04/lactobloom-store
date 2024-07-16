@@ -22,12 +22,16 @@ public class OrderController {
         return new ResponseEntity<>(orderService.saveOrder(orderDto, voucherId), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public List<OrderDto> getAllOrders() {return orderService.getAllOrders();}
 
     @GetMapping("/myOrders")
     public List<OrderDto> getOrdersByUser() {return orderService.getOrdersByUser();}
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
+    @GetMapping("/staffOrders")
+    public List<OrderDto> getOrdersByStaff() {return orderService.getOrdersByStaff();}
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/get/{id}")
@@ -48,8 +52,8 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<OrderDto> updateOrder(@PathVariable int id, @RequestBody OrderDto orderDto) {
-        return new ResponseEntity<>(orderService.updateOrder(orderDto, id), HttpStatus.OK);
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable int id, @RequestBody OrderDto orderDto, @RequestParam(required = false) Integer staffId) {
+        return new ResponseEntity<>(orderService.updateOrder(orderDto, id, staffId), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")

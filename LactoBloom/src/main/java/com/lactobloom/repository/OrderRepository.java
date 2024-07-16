@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByUserUserId(int userId);
+    List<Order> findByStaffUserIdAndDeletedFalse(int userId);
     List<Order> findByDeletedFalse();
     Optional<Order> findByOrderIdAndDeletedFalse(int id);
 
