@@ -36,7 +36,7 @@ public class OtpService implements IOtpService {
     private final PasswordEncoder passwordEncoder;
 
     public String verifyEmail(String email){
-        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+        User existingUser = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         existingUser.setOtp(null);
         userRepository.save(existingUser);
@@ -59,7 +59,7 @@ public class OtpService implements IOtpService {
     }
 
     public ResponseEntity<String> changePassword(String email, int otp, ChangePasswordDto.ChangePasswordRequest changePasswordRequest){
-        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+        User existingUser = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         Otp existingOtp = otpRepository.findByOtpAndUserUserId(otp, existingUser.getUserId()).orElseThrow(() ->
                 new ResourceNotFoundException("OTP", "OTP", otp));

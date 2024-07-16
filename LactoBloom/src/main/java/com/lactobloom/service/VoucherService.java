@@ -34,14 +34,14 @@ public class VoucherService implements IVoucherService {
 
     @Override
     public List<VoucherDto> getAvailableVouchers(){
-        List<Voucher> voucherList = voucherRepository.findByUserIsNullAndAvailableTrue();
+        List<Voucher> voucherList = voucherRepository.findByUserIsNullAndAvailableTrueAndDeletedFalse();
         return voucherList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<VoucherDto> getUserVouchers(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         List<Voucher> voucherList = voucherRepository.findByUserUserIdAndAvailableTrue(user.getUserId());
         return voucherList.stream().map(this::mapToDto).collect(Collectors.toList());
@@ -49,20 +49,20 @@ public class VoucherService implements IVoucherService {
 
     @Override
     public List<VoucherDto> getAllVouchers() {
-        List<Voucher> voucherList = voucherRepository.findAll();
+        List<Voucher> voucherList = voucherRepository.findByDeletedFalse();
         return voucherList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public VoucherDto getVoucherById(int id) {
-        Voucher voucher = voucherRepository.findById(id).orElseThrow(() ->
+        Voucher voucher = voucherRepository.findByVoucherIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Voucher", "Id", id));
         return mapToDto(voucher);
     }
 
     @Override
     public VoucherDto updateVoucher(VoucherDto voucherDto, int id) {
-        Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
+        Voucher existingVoucher = voucherRepository.findByVoucherIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Voucher", "Id", id));
         if(existingVoucher.getUser() == null){
             existingVoucher.setPoint(voucherDto.getPoint());
@@ -77,9 +77,9 @@ public class VoucherService implements IVoucherService {
     public boolean exchangeVoucher(int id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         if(email != null && !email.equals("anonymousUser")){
-            User user = userRepository.findByEmail(email).orElseThrow(() ->
+            User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                     new ResourceNotFoundException("User", "email", email));
-            Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
+            Voucher existingVoucher = voucherRepository.findByVoucherIdAndDeletedFalse(id).orElseThrow(() ->
                     new ResourceNotFoundException("Voucher", "Id", id));
             if(existingVoucher.getPoint() <= user.getPoint() && existingVoucher.getUser() == null && existingVoucher.isAvailable()){
                 user.setPoint(user.getPoint() - existingVoucher.getPoint());
@@ -94,16 +94,19 @@ public class VoucherService implements IVoucherService {
 
     @Override
     public void deleteVoucher(int id) {
-        voucherRepository.findById(id).orElseThrow(() ->
+        Voucher existingVoucher = voucherRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Voucher", "Id", id));
-        voucherRepository.deleteById(id);
+        existingVoucher.setDeleted(true);
+        voucherRepository.save(existingVoucher);
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void updateVoucherAvailability() {
         List<Voucher> expiredVouchers = voucherRepository.findByExpirationDateBefore(LocalDate.now());
-        for (Voucher voucher : expiredVouchers)
+        for (Voucher voucher : expiredVouchers){
             voucher.setAvailable(false);
+            voucher.setDeleted(true);
+        }
         voucherRepository.saveAll(expiredVouchers);
     }
 

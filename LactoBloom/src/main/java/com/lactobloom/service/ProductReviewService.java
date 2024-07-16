@@ -32,7 +32,7 @@ public class ProductReviewService implements IProductReviewService {
     public ProductReviewDto saveReview(ProductReviewDto productReviewDto, int productId) {
         ProductReview productReview = mapToEntity(productReviewDto);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         Product product = productRepository.findById(productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
@@ -61,7 +61,7 @@ public class ProductReviewService implements IProductReviewService {
         ProductReview existingReview = productReviewRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Review", "Id", id));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if( existingReview.getUser().getUserId() == user.getUserId()){
             existingReview.setRate(productReviewDto.getRate());
@@ -82,7 +82,7 @@ public class ProductReviewService implements IProductReviewService {
         ProductReview productReview = productReviewRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Review", "Id", id));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if(user.getUserId() == productReview.getUser().getUserId())
             productReviewRepository.deleteById(id);

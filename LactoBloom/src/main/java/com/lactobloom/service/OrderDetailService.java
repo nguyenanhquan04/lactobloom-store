@@ -36,9 +36,9 @@ public class OrderDetailService implements IOrderDetailService {
     @Override
     public OrderDetailDto saveOrderDetail(OrderDetailDto orderDetailDto, int orderId, int productId) {
         OrderDetail orderDetail = mapToEntity(orderDetailDto);
-        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
+        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
-        Product product = productRepository.findById(productId).orElseThrow(() ->
+        Product product = productRepository.findByProductIdAndDeletedFalse(productId).orElseThrow(() ->
                 new ResourceNotFoundException("Product", "Id", productId));
         orderDetail.setPreOrder(product.isPreOrder());
         product.setStock(product.getStock() - orderDetail.getQuantity());
@@ -59,7 +59,7 @@ public class OrderDetailService implements IOrderDetailService {
     @Override
     public List<OrderDetailDto> getOrderDetailsByOrderForMember(int orderId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
@@ -72,7 +72,9 @@ public class OrderDetailService implements IOrderDetailService {
 
     @Override
     public List<OrderDetailDto> getOrderDetailsByOrder(int orderId) {
-        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
+        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(orderId).orElseThrow(() ->
+                new ResourceNotFoundException("Order", "Id", orderId));
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(existingOrder.getOrderId());
         return orderDetailList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 

@@ -29,6 +29,7 @@ public class OrderController {
     @GetMapping("/myOrders")
     public List<OrderDto> getOrdersByUser() {return orderService.getOrdersByUser();}
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @GetMapping("/get/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable int id) {
         return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);

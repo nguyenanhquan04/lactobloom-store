@@ -3,11 +3,8 @@ package com.lactobloom.service;
 import com.lactobloom.dto.ChangePasswordDto;
 import com.lactobloom.dto.UserDto;
 import com.lactobloom.exception.ResourceNotFoundException;
-import com.lactobloom.model.Order;
-import com.lactobloom.model.Role;
-import com.lactobloom.model.User;
-import com.lactobloom.repository.OrderRepository;
-import com.lactobloom.repository.UserRepository;
+import com.lactobloom.model.*;
+import com.lactobloom.repository.*;
 import com.lactobloom.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,37 +24,49 @@ public class UserService implements IUserService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private WishlistRepository wishlistRepository;
+
+    @Autowired
+    private ProductReviewRepository productReviewRepository;
+
+    @Autowired
+    private VoucherRepository voucherRepository;
+
+    @Autowired
+    private BlogReviewRepository blogReviewRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findByDeletedFalse();
         return userList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<UserDto> getMembers(){
-        List<User> userList = userRepository.findByRole("MEMBER");
+        List<User> userList = userRepository.findByRoleAndDeletedFalse("MEMBER");
         return userList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<UserDto> getStaffs(){
-        List<User> userList = userRepository.findByRole("STAFF");
+        List<User> userList = userRepository.findByRoleAndDeletedFalse("STAFF");
         return userList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public UserDto getUserInfo() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         return mapToDto(user);
     }
 
     @Override
     public UserDto getUserById(int id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
+        User user = userRepository.findByUserIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Id", id));
         return mapToDto(user);
     }
@@ -65,30 +74,33 @@ public class UserService implements IUserService {
     @Override
     public UserDto updateUserInfo(UserDto userDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+        User existingUser = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         existingUser.setFullName(userDto.getFullName());
-        existingUser.setEmail(userDto.getEmail());
         existingUser.setAddress(userDto.getAddress());
         existingUser.setPhone(userDto.getPhone());
         return mapToDto(userRepository.save(existingUser));
     }
 
     @Override
-    public  UserDto addPoint(int orderId){
-        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() ->
+    public UserDto addPoint(int orderId){
+        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(orderId).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", orderId));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+        User existingUser = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
-        existingUser.setPoint(existingUser.getPoint() + (int) (existingOrder.getTotalPrice()/100000));
+        if (!existingOrder.isExchangePoint()){
+            existingOrder.setExchangePoint(true);
+            orderRepository.save(existingOrder);
+            existingUser.setPoint(existingUser.getPoint() + (int) (existingOrder.getTotalPrice()/100000));
+        }
         return mapToDto(userRepository.save(existingUser));
     }
 
     @Override
     public boolean resetPassword(ChangePasswordDto.ResetPasswordRequest resetPasswordRequest){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User existingUser = userRepository.findByEmail(email).orElseThrow(() ->
+        User existingUser = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if (passwordEncoder.matches(resetPasswordRequest.getPassword(), existingUser.getPassword())) {
             existingUser.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
@@ -100,15 +112,14 @@ public class UserService implements IUserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, int id) {
-        User existingUser = userRepository.findById(id).orElseThrow(() ->
+        User existingUser = userRepository.findByUserIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Id", id));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User currentUser = userRepository.findByEmail(email).orElseThrow(() ->
+        User currentUser = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         existingUser.setFullName(userDto.getFullName());
         if(existingUser != currentUser)
             existingUser.setRole(Role.valueOf(userDto.getRole()));
-        existingUser.setEmail(userDto.getEmail());
         existingUser.setAddress(userDto.getAddress());
         existingUser.setPhone(userDto.getPhone());
         existingUser.setPoint(userDto.getPoint());
@@ -119,18 +130,28 @@ public class UserService implements IUserService {
     public void deleteUser(int id) {
         User existingUser = userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Id", id));
-        if(!existingUser.getRole().name().equals(Role.ADMIN.name()))
-            userRepository.deleteById(id);
+        if(!existingUser.getRole().name().equals(Role.ADMIN.name())){
+            existingUser.setDeleted(true);
+            userRepository.save(existingUser);
+            wishlistRepository.deleteByUser_UserId(id);
+            productReviewRepository.deleteByUser_UserId(id);
+            blogReviewRepository.deleteByUser_UserId(id);
+            List<Voucher> voucherList = voucherRepository.findByUserUserId(id);
+            for(Voucher voucher : voucherList){
+                voucher.setDeleted(true);
+                voucherRepository.save(voucher);
+            }
+        }
     }
 
     @Override
     public List<UserDto> searchUsersByFullName(String fullName) {
-        return userRepository.findByFullNameContaining(fullName).stream().map(this::mapToDto).collect(Collectors.toList());
+        return userRepository.findByFullNameContainingAndDeletedFalse(fullName).stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public UserDto findByEmail(String email) {
-        User user= userRepository.findByEmail(email).orElseThrow(() ->
+        User user= userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Email", email));
         return mapToDto(user);
     }

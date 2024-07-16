@@ -32,7 +32,7 @@ public class BlogReviewService implements IBlogReviewService {
     public BlogReviewDto saveReview(BlogReviewDto blogReviewDto, int blogId) {
         BlogReview blogReview = mapToEntity(blogReviewDto);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         Blog blog = blogRepository.findByBlogIdAndDeletedFalse(blogId).orElseThrow(() ->
                 new ResourceNotFoundException("Blog", "Id", blogId));
@@ -61,7 +61,7 @@ public class BlogReviewService implements IBlogReviewService {
         BlogReview existingReview = blogReviewRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Review", "Id", id));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if( existingReview.getUser() == user)
             existingReview.setComment(blogReviewDto.getComment());
@@ -80,7 +80,7 @@ public class BlogReviewService implements IBlogReviewService {
         BlogReview blogReview = blogReviewRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Review", "Id", id));
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "email", email));
         if(blogReview.getUser() == user)
             blogReviewRepository.deleteById(id);

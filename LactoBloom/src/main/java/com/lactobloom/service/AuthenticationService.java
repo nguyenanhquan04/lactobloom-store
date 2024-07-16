@@ -2,6 +2,7 @@ package com.lactobloom.service;
 
 import com.lactobloom.config.JwtService;
 import com.lactobloom.dto.AuthenticationDto;
+import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.Role;
 import com.lactobloom.model.Token;
 import com.lactobloom.model.TokenType;
@@ -48,7 +49,7 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
+        var user = repository.findByEmailAndDeletedFalse(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user, user.getUserId());
         revokeAllUserTokens(user);
