@@ -97,7 +97,7 @@ public class OrderService implements IOrderService {
                 total += orderDetail.getTotalPrice();
             if(existingOrder.getVoucher() != null)
                 existingOrder.setTotalPrice(total * (1 - existingOrder.getVoucher().getDiscount()/100));
-            existingOrder.setTotalPrice(total);
+            else existingOrder.setTotalPrice(total);
         }
         return mapToDto(orderRepository.save(existingOrder));
     }
