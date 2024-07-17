@@ -48,10 +48,7 @@ public class OrderDetailService implements IOrderDetailService {
         orderDetail.setTotalPrice((product.getPrice() * (1 - product.getDiscount()/100)) * orderDetail.getQuantity());
         orderDetail.setOrder(existingOrder);
         orderDetail.setProduct(boughtProduct);
-        OrderDetail newOrderDetail = orderDetailRepository.save(orderDetail);
-        existingOrder.setTotalPrice(existingOrder.getTotalPrice() + newOrderDetail.getTotalPrice());
-        orderRepository.save(existingOrder);
-        return mapToDto(newOrderDetail);
+        return mapToDto(orderDetailRepository.save(orderDetail));
     }
 
     @Override
