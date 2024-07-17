@@ -39,6 +39,11 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
     }
 
+    @PutMapping("/{orderId}/total")
+    public ResponseEntity<OrderDto> calculateTotalPrice(@PathVariable int orderId) {
+        return new ResponseEntity<>(orderService.calculateTotalPrice(orderId), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     @PutMapping("/deliver/{id}")
     public ResponseEntity<OrderDto> deliverOrder(@PathVariable int id) {

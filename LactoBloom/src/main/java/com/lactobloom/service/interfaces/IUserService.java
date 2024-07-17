@@ -12,7 +12,6 @@ public interface IUserService {
     UserDto getUserById(int id);
     UserDto getUserInfo();
     UserDto updateUserInfo (UserDto userDto);
-    UserDto addPoint(int orderId);
     boolean resetPassword(ChangePasswordDto.ResetPasswordRequest resetPasswordRequest);
     UserDto updateUser(UserDto userDto, int id);
     void deleteUser(int id);

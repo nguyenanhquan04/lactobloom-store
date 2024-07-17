@@ -3,6 +3,7 @@ package com.lactobloom.service;
 import com.lactobloom.dto.OrderDto;
 import com.lactobloom.exception.ResourceNotFoundException;
 import com.lactobloom.model.*;
+import com.lactobloom.repository.OrderDetailRepository;
 import com.lactobloom.repository.OrderRepository;
 import com.lactobloom.repository.UserRepository;
 import com.lactobloom.repository.VoucherRepository;
@@ -26,6 +27,9 @@ public class OrderService implements IOrderService {
     private UserRepository userRepository;
 
     @Autowired
+    private OrderDetailRepository orderDetailRepository;
+
+    @Autowired
     private VoucherRepository voucherRepository;
 
     @Override
@@ -41,7 +45,7 @@ public class OrderService implements IOrderService {
         if (voucherId != null) {
             Voucher existingVoucher = voucherRepository.findByVoucherIdAndDeletedFalse(voucherId).orElseThrow(() ->
                     new ResourceNotFoundException("Voucher", "Id", voucherId));
-            if(existingVoucher.isAvailable() && existingVoucher.getUser().getUserId() == user.getUserId()){
+            if(existingVoucher.isAvailable() && existingVoucher.getUser() == user){
                 existingVoucher.setAvailable(false);
                 Voucher voucher = voucherRepository.save(existingVoucher);
                 order.setVoucher(voucher);
@@ -83,11 +87,29 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public OrderDto calculateTotalPrice(int orderId) {
+        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(orderId).orElseThrow(() ->
+                new ResourceNotFoundException("Order", "Id", orderId));
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderOrderId(orderId);
+        double total = existingOrder.getTotalPrice();
+        if(total == existingOrder.getShippingFee()){
+            for(OrderDetail orderDetail : orderDetailList)
+                total += orderDetail.getTotalPrice();
+            existingOrder.setTotalPrice(total * (1 - existingOrder.getVoucher().getDiscount()/100));
+        }
+        return mapToDto(orderRepository.save(existingOrder));
+    }
+
+    @Override
     public OrderDto deliverOrder(int id) {
         Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
-        if(existingOrder.getOrderStatus().equals(OrderStatus.PENDING))
+        if(existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
             existingOrder.setOrderStatus(OrderStatus.DELIVERED);
+            User existingUser = existingOrder.getUser();
+            existingUser.setPoint(existingUser.getPoint() + (int) (existingOrder.getTotalPrice()/100000));
+            userRepository.save(existingUser);
+        }
         return mapToDto(orderRepository.save(existingOrder));
     }
 
@@ -102,8 +124,6 @@ public class OrderService implements IOrderService {
             long hoursBetween = ChronoUnit.HOURS.between(existingOrder.getOrderDate(), LocalDateTime.now());
             if (hoursBetween <= 24 || existingOrder.isCod()) {
                 existingOrder.setOrderStatus(OrderStatus.CANCELLED);
-                user.setPoint(user.getPoint() - (int) (existingOrder.getTotalPrice()/100000));
-                userRepository.save(user);
                 return mapToDto(orderRepository.save(existingOrder));
             }
         }
@@ -135,12 +155,8 @@ public class OrderService implements IOrderService {
         Order existingOrder = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Order", "Id", id));
         existingOrder.setDeleted(true);
-        if(existingOrder.getOrderStatus().equals(OrderStatus.PENDING)){
+        if(existingOrder.getOrderStatus().equals(OrderStatus.PENDING))
             existingOrder.setOrderStatus(OrderStatus.CANCELLED);
-            User user = existingOrder.getUser();
-            user.setPoint(user.getPoint() - (int) (existingOrder.getTotalPrice()/100000));
-            userRepository.save(user);
-        }
         Voucher voucher = existingOrder.getVoucher();
         if(voucher != null) {
             voucher.setDeleted(true);

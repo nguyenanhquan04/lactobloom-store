@@ -21,9 +21,6 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
     private WishlistRepository wishlistRepository;
 
     @Autowired
@@ -80,24 +77,6 @@ public class UserService implements IUserService {
         existingUser.setAddress(userDto.getAddress());
         existingUser.setPhone(userDto.getPhone());
         return mapToDto(userRepository.save(existingUser));
-    }
-
-    @Override
-    public UserDto addPoint(int orderId){
-        Order existingOrder = orderRepository.findByOrderIdAndDeletedFalse(orderId).orElseThrow(() ->
-                new ResourceNotFoundException("Order", "Id", orderId));
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!existingOrder.isExchangePoint() && email != null && !email.equals("anonymousUser")){
-            User existingUser = userRepository.findByEmailAndDeletedFalse(email).orElseThrow(() ->
-                    new ResourceNotFoundException("User", "email", email));
-            if(existingOrder.getVoucher() != null)
-                existingOrder.setTotalPrice(existingOrder.getTotalPrice() * (1 - existingOrder.getVoucher().getDiscount()/100));
-            existingOrder.setExchangePoint(true);
-            orderRepository.save(existingOrder);
-            existingUser.setPoint(existingUser.getPoint() + (int) (existingOrder.getTotalPrice()/100000));
-            return mapToDto(userRepository.save(existingUser));
-        }
-        return null;
     }
 
     @Override

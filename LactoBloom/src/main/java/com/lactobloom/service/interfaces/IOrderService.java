@@ -11,6 +11,7 @@ public interface IOrderService {
     List<OrderDto> getOrdersByUser();
     List<OrderDto> getOrdersByStaff();
     OrderDto getOrderById(int id);
+    OrderDto calculateTotalPrice (int id);
     OrderDto deliverOrder(int id);
     OrderDto cancelOrder(int id);
     OrderDto updateOrder(OrderDto orderDto, int id, Integer staffId);
