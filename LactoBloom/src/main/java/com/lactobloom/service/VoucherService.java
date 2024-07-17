@@ -105,7 +105,6 @@ public class VoucherService implements IVoucherService {
         List<Voucher> expiredVouchers = voucherRepository.findByExpirationDateBefore(LocalDate.now());
         for (Voucher voucher : expiredVouchers){
             voucher.setAvailable(false);
-            voucher.setDeleted(true);
         }
         voucherRepository.saveAll(expiredVouchers);
     }
