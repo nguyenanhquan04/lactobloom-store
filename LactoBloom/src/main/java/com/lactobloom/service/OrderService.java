@@ -95,7 +95,9 @@ public class OrderService implements IOrderService {
         if(total == existingOrder.getShippingFee()){
             for(OrderDetail orderDetail : orderDetailList)
                 total += orderDetail.getTotalPrice();
-            existingOrder.setTotalPrice(total * (1 - existingOrder.getVoucher().getDiscount()/100));
+            if(existingOrder.getVoucher() != null)
+                existingOrder.setTotalPrice(total * (1 - existingOrder.getVoucher().getDiscount()/100));
+            existingOrder.setTotalPrice(total);
         }
         return mapToDto(orderRepository.save(existingOrder));
     }
