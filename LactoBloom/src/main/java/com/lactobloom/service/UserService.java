@@ -43,13 +43,13 @@ public class UserService implements IUserService {
 
     @Override
     public List<UserDto> getMembers(){
-        List<User> userList = userRepository.findByRoleAndDeletedFalse("MEMBER");
+        List<User> userList = userRepository.findByRoleAndDeletedFalse(Role.MEMBER);
         return userList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<UserDto> getStaffs(){
-        List<User> userList = userRepository.findByRoleAndDeletedFalse("STAFF");
+        List<User> userList = userRepository.findByRoleAndDeletedFalse(Role.STAFF);
         return userList.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
