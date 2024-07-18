@@ -137,6 +137,7 @@ const Cart = () => {
                                     }
                                   >
                                     {cartItem.productName}
+                                    {cartItem.preOrder ? "(Đặt trước)" : ""}
                                   </Link>
                                 </td>
 
@@ -183,7 +184,7 @@ const Cart = () => {
                                         }))
                                       }
                                       disabled={
-                                        cartItem.preOrder === false &&
+                                        // cartItem.preOrder === false &&
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=

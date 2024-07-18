@@ -5,6 +5,8 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode"; // Import jwtDecode correctly
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import ProductManagement from "./ProductManagement";
 import UserManagement from "./UserManagement";
 import BlogManagement from "./BlogManagement";
@@ -13,9 +15,12 @@ import CategoryManagement from "./CategoryManagement";
 import OrderManagement from "./OrderManagement";
 import Dashboard from "./Dashboard";
 import VoucherManagement from "./VoucherManagement";
+import BlogCategoryManagement from "./BlogCategoryManagement";
 
 const Sidebar = ({ onSelect, role }) => {
   let navigate = useNavigate();
+  const [isProductMenuOpen, setIsProductMenuOpen] = useState(false); // State for product submenu
+  const [isBlogMenuOpen, setIsBlogMenuOpen] = useState(false); // State for blog submenu
 
   useEffect(() => {
     const token = Cookies.get("authToken");
@@ -24,35 +29,131 @@ const Sidebar = ({ onSelect, role }) => {
     } 
   }, [navigate]);
 
+  const toggleProductMenu = () => {
+    setIsProductMenuOpen(!isProductMenuOpen); // Toggle product submenu
+  };
+
+  const toggleBlogMenu = () => {
+    setIsBlogMenuOpen(!isBlogMenuOpen); // Toggle blog submenu
+  };
+
+  // return (
+  //   <div className="col-lg-2">
+  //     <div className="sidebar">
+  //       <ul className="nav flex-column">
+  //       <li className="nav-item">
+  //           <Link className="sidebar-link" onClick={() => onSelect("dashboard")}>
+  //             Biểu đồ
+  //           </Link>
+  //         </li>
+  //         <li className="nav-item">
+  //           <Link className="sidebar-link" onClick={() => onSelect("product")}>
+  //             Quản lý sản phẩm
+  //           </Link>
+  //         </li>
+  //         <li className="nav-item">
+  //           <Link className="sidebar-link" onClick={() => onSelect("blog")}>
+  //             Quản lý bài viết
+  //           </Link>
+  //         </li>
+  //         <li className="nav-item">
+  //           <Link className="sidebar-link" onClick={() => onSelect("category")}>
+  //             Quản lý danh mục
+  //           </Link>
+  //         </li>
+  //         <li className="nav-item">
+  //           <Link className="sidebar-link" onClick={() => onSelect("brand")}>
+  //             Quản lý thương hiệu
+  //           </Link>
+  //         </li>
+  //         <li className="nav-item">
+  //           <Link className="sidebar-link" onClick={() => onSelect("order")}>
+  //             Quản lý đơn hàng
+  //           </Link>
+  //         </li>
+  //         <li className="nav-item">
+  //           <Link className="sidebar-link" onClick={() => onSelect("voucher")}>
+  //             Quản lý Voucher
+  //           </Link>
+  //         </li>
+  //         {role === "ADMIN" && (
+  //           <li className="nav-item">
+  //             <Link className="sidebar-link" onClick={() => onSelect("user")}>
+  //               Quản lý người dùng
+  //             </Link>
+  //           </li>
+  //         )}
+  //       </ul>
+  //     </div>
+  //   </div>
+  // );
+
+
   return (
     <div className="col-lg-2">
       <div className="sidebar">
         <ul className="nav flex-column">
-        <li className="nav-item">
+          <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("dashboard")}>
               Biểu đồ
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="sidebar-link" onClick={() => onSelect("product")}>
+            <Link className="sidebar-link" onClick={toggleProductMenu}>
               Quản lý sản phẩm
+              <FontAwesomeIcon 
+                icon={isProductMenuOpen ? faChevronUp : faChevronDown} 
+                className={`dropdown-icon ${isProductMenuOpen ? 'rotate' : ''}`} 
+              />
             </Link>
+            {isProductMenuOpen && (
+              <ul className="nav flex-column submenu">
+                <li className="nav-item">
+                  <Link className="sidebar-link" onClick={() => onSelect("product")}>
+                    Sản phẩm
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="sidebar-link" onClick={() => onSelect("category")}>
+                    Danh mục
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="sidebar-link" onClick={() => onSelect("brand")}>
+                    Thương hiệu
+                  </Link>
+                </li>
+              </ul>
+            )}
           </li>
           <li className="nav-item">
+            <Link className="sidebar-link" onClick={toggleBlogMenu}>
+              Quản lý bài viết
+              <FontAwesomeIcon 
+                icon={isBlogMenuOpen ? faChevronUp : faChevronDown} 
+                className={`dropdown-icon ${isBlogMenuOpen ? 'rotate' : ''}`} 
+              />
+            </Link>
+            {isBlogMenuOpen && (
+              <ul className="nav flex-column submenu">
+                <li className="nav-item">
+                  <Link className="sidebar-link" onClick={() => onSelect("blog")}>
+                    Bài Viết
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="sidebar-link" onClick={() => onSelect("blog-category")}>
+                    Danh mục
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </li>
+          {/* <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("blog")}>
               Quản lý bài viết
             </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="sidebar-link" onClick={() => onSelect("category")}>
-              Quản lý danh mục
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="sidebar-link" onClick={() => onSelect("brand")}>
-              Quản lý thương hiệu
-            </Link>
-          </li>
+          </li> */}
           <li className="nav-item">
             <Link className="sidebar-link" onClick={() => onSelect("order")}>
               Quản lý đơn hàng
@@ -105,6 +206,8 @@ const Admin = () => {
         return <CategoryManagement />;
       case "brand":
         return <BrandManagement />;
+        case "blog-category":
+        return <BlogCategoryManagement />;
       case "order":
         return <OrderManagement />;
       case "user":
@@ -124,7 +227,7 @@ const Admin = () => {
         <Breadcrumb
           pages={[
             { label: "Trang Chủ", path: process.env.PUBLIC_URL + "/" },
-            { label: "Admin", path: process.env.PUBLIC_URL + pathname },
+            { label: "Quản Lý", path: process.env.PUBLIC_URL + pathname },
           ]}
         />
         <div className="row">

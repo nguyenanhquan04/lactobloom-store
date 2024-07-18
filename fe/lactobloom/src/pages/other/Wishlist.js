@@ -114,7 +114,7 @@ console.log("Auth Token:", authToken);
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Đang tải...</div>;
   }
 
   return (
@@ -214,7 +214,7 @@ console.log("Auth Token:", authToken);
                                 </td>
 
                                 <td className="product-wishlist-cart">
-                                  {wishlistItem.stock && wishlistItem.stock > 0 ? (
+                                  {wishlistItem.stock && wishlistItem.stock > 0 && wishlistItem.preOrder === false ? (
                                     <button
                                       onClick={() =>
                                         dispatch(addToCart(wishlistItem))
@@ -236,11 +236,11 @@ console.log("Auth Token:", authToken);
                                       }
                                     >
                                       {cartItem !== undefined &&
-                                      cartItem.quantity > 0
+                                      cartItem.quantity > 0 && cartItem.preOrder === false
                                         ? "Đã thêm"
                                         : "Thêm vào giỏ"}
                                     </button>
-                                  ) : wishlistItem.stock <= 0 && wishlistItem.preOrder && authToken ? (
+                                  ) : wishlistItem.stock > 0 && wishlistItem.preOrder && authToken ? (
                                     <button
                                       onClick={() => dispatch(addToCart(wishlistItem))}
                                       className={
@@ -254,12 +254,12 @@ console.log("Auth Token:", authToken);
                                       title={
                                         wishlistItem !== undefined
                                           ? "Đã thêm vào giỏ hàng"
-                                          : "Pre Order"
+                                          : "Đặt trước"
                                       }
                                     >
                                       {cartItem !== undefined && cartItem.quantity > 0
                                         ? "Đã thêm"
-                                        : "Pre Order"}
+                                        : "Đặt trước"}
                                     </button>
                                   ) : (
                                     <button disabled className="active">

@@ -11,6 +11,7 @@ import CategoryForm from './form/CategoryForm'; // Make sure to import your Cate
 
 const CategoryManagement = () => {
   const [categories, setCategories] = useState([]);
+  const [productCounts, setProductCounts] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
@@ -19,17 +20,26 @@ const CategoryManagement = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/category/all');
-        setCategories(response.data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-
     fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/category/all');
+      const categoriesData = response.data;
+      setCategories(categoriesData);
+
+      // Fetch product count for each category
+      const counts = {};
+      for (const category of categoriesData) {
+        const countResponse = await axios.get(`http://localhost:8080/product/category/${category.categoryId}`);
+        counts[category.categoryId] = countResponse.data.length;
+      }
+      setProductCounts(counts);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
@@ -45,6 +55,9 @@ const CategoryManagement = () => {
           },
         });
         setCategories(categories.filter(category => category.categoryId !== categoryId));
+        const updatedCounts = { ...productCounts };
+        delete updatedCounts[categoryId];
+        setProductCounts(updatedCounts);
       } catch (error) {
         console.error('Error deleting category:', error);
       }
@@ -68,15 +81,6 @@ const CategoryManagement = () => {
     await fetchCategories();
   };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/category/all');
-      setCategories(response.data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -94,7 +98,7 @@ const CategoryManagement = () => {
 
   return (
     <div className="category-management-container">
-      <h1>Quản lý danh mục</h1>
+      <h1>Quản lý danh mục sản phẩm</h1>
       <Grid container spacing={0} alignItems="center" className="category-management-controls">
         <Grid item xs={12} md={9}>
           <TextField
@@ -122,7 +126,8 @@ const CategoryManagement = () => {
             <TableRow>
               <TableCell className="category-management-id-cell">ID</TableCell>
               <TableCell>Tên</TableCell>
-              <TableCell className="actions-cell">Thao tác</TableCell>
+              <TableCell>Số lượng sản phẩm</TableCell> {/* New column for product count */}
+              <TableCell className="actions-cell">Thao tác</TableCell>              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -130,6 +135,7 @@ const CategoryManagement = () => {
               <TableRow key={category.categoryId}>
                 <TableCell className="category-management-id-cell">{category.categoryId}</TableCell>
                 <TableCell>{category.categoryName}</TableCell>
+                <TableCell>{productCounts[category.categoryId] || 0} sản phẩm</TableCell> {/* Display product count */}
                 <TableCell className="category-management-actions">
                   <IconButton onClick={() => handleOpenForm('edit', category)}>
                     <EditIcon />
@@ -138,6 +144,7 @@ const CategoryManagement = () => {
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
+               
               </TableRow>
             ))}
           </TableBody>

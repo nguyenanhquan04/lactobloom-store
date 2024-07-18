@@ -402,8 +402,8 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
           </div>
           <div className="col-md-7 col-sm-12 col-xs-12">
             <div className="product-details-content quickview-content">
-              {(product.stock <= 0 && product.preOrder && authToken) ?
-                <h2>{product.productName} (Pre Order)</h2> 
+              {(product.stock > 0 && product.preOrder && authToken) ?
+                <h2>{product.productName} (Đặt trước)</h2> 
                 : <h2>{product.productName}</h2>}
               <div className="product-details-price">
                 {discountedPrice !== null ? (
@@ -453,15 +453,15 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                   />
                   <button
                     onClick={() => {
-                      if ((product.stock <= 0 && product.preOrder && authToken)) {
-                        setQuantityCount(quantityCount + 1);
-                      } else {
+                      // if ((product.stock <= 0 && product.preOrder && authToken)) {
+                      //   setQuantityCount(quantityCount + 1);
+                      // } else {
                         setQuantityCount(
                           quantityCount < product.stock - productCartQty
                             ? quantityCount + 1
                             : quantityCount
                         );
-                      }
+                      // }
                     }}
                     className="inc qtybutton"
                   >
@@ -469,7 +469,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                   </button>
                 </div>
                 <div className="pro-details-cart btn-hover">
-                  {product.stock && product.stock > 0 ? (
+                  {product.stock && product.stock > 0 && product.preOrder === false ? (
                     <button
                       onClick={() =>
                         dispatch(addToCart({
@@ -482,7 +482,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                       Thêm vào giỏ
                     </button>
                   ) : (
-                    product.preOrder && authToken ? (
+                   product.stock > 0 && product.preOrder && authToken ? (
                       <button
                         onClick={() =>
                           dispatch(addToCart({
@@ -491,6 +491,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                             preOrder: true
                           }))
                         }
+                        disabled={productCartQty >= product.stock}
                       >
                         Đặt trước
                       </button>

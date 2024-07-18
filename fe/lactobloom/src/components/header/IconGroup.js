@@ -363,7 +363,7 @@ const IconGroup = ({ iconWhiteClass }) => {
                 {isAdmin && (
                   <li>
                     <Link to={process.env.PUBLIC_URL + "/admin"}>
-                      Admin Page
+                      Trang quản lý
                     </Link>
                   </li>
                 )}

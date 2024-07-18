@@ -10,6 +10,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Cookies from "js-cookie";
 import OrderForm from './form/OrderForm'; // Ensure this path is correct
+import {jwtDecode} from "jwt-decode"; // Import jwtDecode correctly
+
 
 const translateStatus = (status) => {
   switch (status.toLowerCase()) {
@@ -36,15 +38,29 @@ const OrderManagement = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       const token = Cookies.get("authToken");
+      const decodedToken = jwtDecode(token);
+
       try {
-        const response = await axios.get('http://localhost:8080/order/all', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        // Sort orders by orderDate in descending order
-        const sortedOrders = response.data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-        setOrders(sortedOrders);
+        let response;
+        if (decodedToken.role === 'ADMIN') {
+          response = await axios.get('http://localhost:8080/order/all', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } else if (decodedToken.role === 'STAFF') {
+          response = await axios.get('http://localhost:8080/order/staffOrders', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        }
+
+        if (response) {
+          // Sort orders by orderDate in descending order
+          const sortedOrders = response.data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+          setOrders(sortedOrders);
+        }
       } catch (error) {
         console.error('Error fetching orders:', error);
       }
@@ -181,7 +197,8 @@ const OrderManagement = () => {
               <TableCell>Email</TableCell>
               <TableCell>Số điện thoại</TableCell>
               <TableCell>Địa chỉ</TableCell>
-              <TableCell>Tổng giá trị đơn hàng</TableCell>
+              <TableCell>Giá trị đơn hàng</TableCell>
+              <TableCell>Phương thức thanh toán</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Ngày đặt</TableCell>
               <TableCell>Thao tác</TableCell>
@@ -196,6 +213,7 @@ const OrderManagement = () => {
                 <TableCell>{order.phone}</TableCell>
                 <TableCell>{order.address}</TableCell>
                 <TableCell>{order.totalPrice.toLocaleString("vi-VN")}</TableCell>
+                <TableCell>{order.cod ? "Thanh toán COD" : "Chuyển khoản ngân hàng"}</TableCell>
                 <TableCell>{translateStatus(order.status)}</TableCell>
                 <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                 <TableCell className="order-management-actions">
