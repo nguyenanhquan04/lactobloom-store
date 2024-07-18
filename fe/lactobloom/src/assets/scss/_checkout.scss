@@ -299,3 +299,31 @@
     }
   }
 }
+
+.payment-method {
+  margin-top: 20px;
+  ul {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    &:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+  }
+}
+.error-text {
+  color: red;
+  font-size: 15px;
+  margin-top: 5px;
+}

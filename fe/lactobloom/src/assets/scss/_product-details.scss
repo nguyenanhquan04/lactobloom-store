@@ -798,3 +798,30 @@
     }
   }
 }
+
+
+.product-description {
+  max-width: 600px; /* Adjust the max-width as needed */
+  margin: 0 auto;
+}
+
+.product-full-desc {
+  overflow: hidden;
+  max-height: 200px; /* Adjust the max-height to set the visible area */
+  transition: max-height 0.3s ease;
+}
+
+.product-full-desc.expanded {
+  max-height: none;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-size: 1rem;
+  margin-top: 10px;
+}

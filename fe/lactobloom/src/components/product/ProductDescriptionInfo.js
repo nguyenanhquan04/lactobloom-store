@@ -378,8 +378,8 @@ const ProductDescriptionInfo = ({
 
   return (
     <div className="product-details-content ml-70">
-      {(product.stock <= 0 && product.preOrder && authToken) ?
-      <h2>{product.productName} (Pre Order)</h2> 
+      {(product.stock >= 0 && product.preOrder && authToken) ?
+      <h2>{product.productName} (Đặt trước)</h2> 
       : <h2>{product.productName}</h2>}
       <div className="product-details-price">
         {discountedPrice !== null ? (
@@ -412,19 +412,6 @@ const ProductDescriptionInfo = ({
         <p>{product.description}</p>
       </div>
 
-      {product.affiliateLink ? (
-        <div className="pro-details-quality">
-          <div className="pro-details-cart btn-hover ml-0">
-            <a
-              href={product.affiliateLink}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Mua ngay
-            </a>
-          </div>
-        </div>
-      ) : (
         <div className="pro-details-quality">
           <div className="cart-plus-minus">
             <button
@@ -460,7 +447,7 @@ const ProductDescriptionInfo = ({
             </button>
           </div>
           <div className="pro-details-cart btn-hover">
-            {product.stock && product.stock > 0 ? (
+            {product.stock && product.stock > 0 && product.preOrder === false ? (
               <button
                 onClick={() =>
                   dispatch(
@@ -474,7 +461,7 @@ const ProductDescriptionInfo = ({
               >
                 Thêm vào giỏ
               </button>
-            ) : product.stock <= 0 && product.preOrder && authToken ? (
+            ) : product.stock > 0 && product.preOrder && authToken ? (
               <button
                 onClick={() =>
                   dispatch(
@@ -484,8 +471,9 @@ const ProductDescriptionInfo = ({
                     })
                   )
                 }
+                disabled={productCartQty >= product.stock}
               >
-                Pre Order
+                Đặt trước
               </button>
             ) : (
               <button disabled>Hết hàng</button>
@@ -520,7 +508,6 @@ const ProductDescriptionInfo = ({
             </button>
           </div>
         </div>
-      )}
       {category && (
         <div className="pro-details-meta">
           <span>Danh mục:</span>
@@ -541,6 +528,10 @@ const ProductDescriptionInfo = ({
           </ul>
         </div>
       )}
+
+  <div className="pro-details-meta">
+  <h4>{product.stock >= 0 && product.preOrder && authToken ? `Số sản phẩm cho phép đặt trước: ${product.stock}` : `Số sản phẩm còn lại: ${product.stock}`}</h4>
+        </div>
     </div>
   );
 };

@@ -81,7 +81,7 @@ const ShopCategoryAndBrand = ({
   return (
     <div>
       <div className="sidebar-widget">
-        <h4 className="pro-sidebar-title">Danh mục</h4>
+        <h3 className="pro-sidebar-title">Danh mục</h3>
         <div className="sidebar-widget-list mt-30">
           <ul>
             <li>
@@ -123,7 +123,7 @@ const ShopCategoryAndBrand = ({
       </div>
 
       <div className="sidebar-widget mt-50">
-        <h4 className="pro-sidebar-title">Thương hiệu</h4>
+        <h3 className="pro-sidebar-title">Thương hiệu</h3>
         <div className="sidebar-widget-list mt-25">
           <ul>
             <li>

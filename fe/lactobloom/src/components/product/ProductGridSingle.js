@@ -308,20 +308,7 @@ const ProductGridSingle = ({
               </button>
             </div>
             <div className="pro-same-action pro-cart">
-              {product.affiliateLink ? (
-                <a
-                  href={product.affiliateLink}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {" "}
-                  Buy now{" "}
-                </a>
-              ) : product.variation && product.variation.length >= 1 ? (
-                <Link to={`${process.env.PUBLIC_URL}/product/${product.productId}`}>
-                  Select Option
-                </Link>
-              ) : product.stock && product.stock > 0 ? (
+              {product.preOrder === false && product.stock && product.stock > 0 ? (
                 <button
                   onClick={() => dispatch(addToCart(product))}
                   className={
@@ -340,7 +327,7 @@ const ProductGridSingle = ({
                     ? "Đã thêm"
                     : "Thêm vào giỏ"}
                 </button>
-              ) : product.stock <= 0 && product.preOrder && authToken ? (
+              ) : product.stock > 0 && product.preOrder && authToken ? (
                 <button
                   onClick={() => dispatch(addToCart(product))}
                   className={
@@ -350,14 +337,14 @@ const ProductGridSingle = ({
                   }
                   disabled={cartItem !== undefined && cartItem.quantity > 0}
                   title={
-                    cartItem !== undefined ? "Đã thêm vào giỏ hàng" : "Pre Order"
+                    cartItem !== undefined ? "Đã thêm vào giỏ hàng" : "Đặt trước"
                   }
                 >
                   {" "}
                   <i className="pe-7s-cart"></i>{" "}
                   {cartItem !== undefined && cartItem.quantity > 0
                     ? "Đã thêm"
-                    : "Pre Order"}
+                    : "Đặt trước"}
                 </button>
               ) : (
                 <button disabled className="active">

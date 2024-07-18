@@ -55,15 +55,15 @@ const Voucher = () => {
   return (
     <Fragment>
       <SEO
-        titleTemplate="Voucher"
+        titleTemplate="Mã giảm giá"
         description="Lactobloom Voucher Exchange."
       />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Voucher", path: process.env.PUBLIC_URL + pathname }
+            { label: "Trang chủ", path: process.env.PUBLIC_URL + "/" },
+            { label: "Mã giảm giá", path: process.env.PUBLIC_URL + pathname }
           ]} 
         />
 
@@ -73,15 +73,15 @@ const Voucher = () => {
             vouchers.map((voucher) => (
               <div key={voucher.voucherId} className="voucher">
                 <div className="voucher-details">
-                  <h3>Discount {voucher.discount}%</h3>
-                  <p>Expire Date: {voucher.expirationDate}</p>
-                  <p>Point To Exchange: {voucher.point}</p>
+                  <h3>Giảm giá {voucher.discount}%</h3>
+                  <p>Ngày hết hạn: {voucher.expirationDate}</p>
+                  <p>Số điểm cần: {voucher.point}</p>
                 </div>
                 <button className="redeem-button" onClick={() => handleExchange(voucher.voucherId)}>Đổi</button>
               </div>
             ))
           ) : (
-            <h1>No vouchers available</h1>
+            <h1>Không có mã giảm giá</h1>
           )}
         </div>
       </LayoutOne>

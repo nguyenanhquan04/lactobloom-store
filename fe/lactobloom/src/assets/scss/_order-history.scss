@@ -211,15 +211,33 @@
     }
   }
   
-  .order-status-pending {
-    color: black;
+  
+  
+  .filter-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
   }
   
-  .order-status-delivered {
-    color: green;
+  .filter-status label {
+    font-weight: bold;
+    margin-right: 10px;
   }
   
-  .order-status-canceled {
-    color: red;
+  .filter-status select {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+  }
+  
+  .filter-status select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .filter-status select option {
+    padding: 5px 10px;
   }
   

@@ -3,7 +3,7 @@ import React from "react";
 const ShopSearch = ({ searchTerm, handleSearchChange, handleSubmit }) => {
   return (
     <div className="sidebar-widget">
-      <h4 className="pro-sidebar-title">Tìm Kiếm</h4>
+      <h3 className="pro-sidebar-title">Tìm Kiếm</h3>
       <div className="pro-sidebar-search mb-50 mt-25">
         <form className="pro-sidebar-search-form" onSubmit={handleSubmit}>
           <input 

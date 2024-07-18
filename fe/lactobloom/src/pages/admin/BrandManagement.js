@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 import BrandForm from './form/BrandForm'; // Make sure to import your BrandForm component
 
 const BrandManagement = () => {
@@ -17,12 +17,27 @@ const BrandManagement = () => {
   const [openForm, setOpenForm] = useState(false);
   const [formMode, setFormMode] = useState('add'); // 'add' or 'edit'
   const [selectedBrand, setSelectedBrand] = useState(null);
+  const [productCounts, setProductCounts] = useState({}); // State to store product counts
 
   // Define fetchBrands function
   const fetchBrands = async () => {
     try {
       const response = await axios.get('http://localhost:8080/brand/all');
-      setBrands(response.data);
+      const brandsData = response.data;
+      setBrands(brandsData);
+
+      // Fetch product counts for each brand
+      const counts = {};
+      for (const brand of brandsData) {
+        try {
+          const productResponse = await axios.get(`http://localhost:8080/product/brand/${brand.brandId}`);
+          counts[brand.brandId] = productResponse.data.length;
+        } catch (error) {
+          console.error(`Error fetching products for brand ${brand.brandId}:`, error);
+          counts[brand.brandId] = 0;
+        }
+      }
+      setProductCounts(counts);
     } catch (error) {
       console.error('Error fetching brands:', error);
     }
@@ -46,6 +61,9 @@ const BrandManagement = () => {
           },
         });
         setBrands(brands.filter(brand => brand.brandId !== brandId));
+        const updatedCounts = { ...productCounts };
+        delete updatedCounts[brandId];
+        setProductCounts(updatedCounts);
       } catch (error) {
         console.error('Error deleting brand:', error);
       }
@@ -114,6 +132,7 @@ const BrandManagement = () => {
             <TableRow>
               <TableCell className="brand-management-id-cell">ID</TableCell>
               <TableCell>Tên</TableCell>
+              <TableCell>Số lượng sản phẩm</TableCell> {/* New Column */}
               <TableCell className="actions-cell">Thao tác</TableCell>
             </TableRow>
           </TableHead>
@@ -122,6 +141,7 @@ const BrandManagement = () => {
               <TableRow key={brand.brandId}>
                 <TableCell className="brand-management-id-cell">{brand.brandId}</TableCell>
                 <TableCell>{brand.brandName}</TableCell>
+                <TableCell>{productCounts[brand.brandId] || 0} sản phẩm</TableCell> {/* Display product count */}
                 <TableCell className="brand-management-actions">
                   <IconButton onClick={() => handleOpenForm('edit', brand)}>
                     <EditIcon />

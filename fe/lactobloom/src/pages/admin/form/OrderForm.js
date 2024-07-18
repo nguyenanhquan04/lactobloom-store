@@ -203,7 +203,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
                 <TableBody>
                   {orderDetails.map((detail) => (
                     <TableRow key={detail.orderDetailId}>
-                      <TableCell>{detail.productName}</TableCell>
+                      <TableCell>{detail.productName}{detail.preOrder ? " (Đặt trước)": ""}</TableCell>
                       <TableCell>{detail.quantity}</TableCell>
                       <TableCell>{detail.totalPrice.toLocaleString("vi-VN") + " VND"}</TableCell>
                     </TableRow>

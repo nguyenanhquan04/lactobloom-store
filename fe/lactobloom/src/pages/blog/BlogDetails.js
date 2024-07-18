@@ -63,7 +63,7 @@ const BlogDetailsStandard = () => {
         {/* breadcrumb */}
         <Breadcrumb 
           pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Trang chủ", path: process.env.PUBLIC_URL + "/" },
             { label: "Blog Post", path: process.env.PUBLIC_URL + "/blog-details/" + blogId }
           ]} 
         />
