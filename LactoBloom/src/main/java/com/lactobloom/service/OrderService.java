@@ -109,8 +109,10 @@ public class OrderService implements IOrderService {
         if(existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
             existingOrder.setOrderStatus(OrderStatus.DELIVERED);
             User existingUser = existingOrder.getUser();
-            existingUser.setPoint(existingUser.getPoint() + (int) (existingOrder.getTotalPrice()/100000));
-            userRepository.save(existingUser);
+            if(existingUser != null){
+                existingUser.setPoint(existingUser.getPoint() + (int) (existingOrder.getTotalPrice()/100000));
+                userRepository.save(existingUser);
+            }
         }
         return mapToDto(orderRepository.save(existingOrder));
     }
