@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
 import {
   Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
@@ -18,13 +19,33 @@ const OrderForm = ({ onSave, initialOrder }) => {
     orderDate: ''
   });
   const [orderDetails, setOrderDetails] = useState([]);
+  const [staffList, setStaffList] = useState([]);
+  const [selectedStaffId, setSelectedStaffId] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    const token = Cookies.get('authToken');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setIsAdmin(decodedToken.role === 'ADMIN');
+      fetchStaffList(token);
+    }
     if (initialOrder) {
       setOrder(initialOrder);
       fetchOrderDetails(initialOrder.orderId);
     }
   }, [initialOrder]);
+
+  useEffect(() => {
+    if (order.staffName && staffList.length > 0) {
+      const matchedStaff = staffList.find(staff => staff.fullName === order.staffName);
+      if (matchedStaff) {
+        setSelectedStaffId(matchedStaff.userId);
+      } else {
+        setSelectedStaffId('');
+      }
+    }
+  }, [order.staffName, staffList]);
 
   const fetchOrderDetails = async (orderId) => {
     const token = Cookies.get('authToken');
@@ -40,6 +61,19 @@ const OrderForm = ({ onSave, initialOrder }) => {
     }
   };
 
+  const fetchStaffList = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:8080/user/staffs', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setStaffList(response.data);
+    } catch (error) {
+      console.error('Error fetching staff list:', error);
+    }
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setOrder({
@@ -48,17 +82,17 @@ const OrderForm = ({ onSave, initialOrder }) => {
     });
   };
 
-  const handleStatusChange = (event) => {
-    setOrder({
-      ...order,
-      status: event.target.value
-    });
+  const handleStaffChange = (event) => {
+    setSelectedStaffId(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = Cookies.get('authToken');
-    const url = `http://localhost:8080/order/update/${order.orderId}`;
+    let url = `http://localhost:8080/order/update/${order.orderId}`;
+    if (selectedStaffId) {
+      url += `?staffId=${selectedStaffId}`;
+    }
     
     try {
       await axios.put(url, order, {
@@ -158,13 +192,13 @@ const OrderForm = ({ onSave, initialOrder }) => {
             disabled
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <FormControl variant="outlined" fullWidth>
             <InputLabel>Trạng thái</InputLabel>
             <Select
               name="status"
               value={order.status}
-              onChange={handleStatusChange}
+              onChange={handleChange}
               label="Status"
               required
               disabled
@@ -172,6 +206,25 @@ const OrderForm = ({ onSave, initialOrder }) => {
               <MenuItem value="PENDING">Đang giao</MenuItem>
               <MenuItem value="DELIVERED">Đã giao</MenuItem>
               <MenuItem value="CANCELLED">Đã hủy</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel>Nhân viên xử lý</InputLabel>
+            <Select
+              name="staffId"
+              value={selectedStaffId}
+              onChange={handleStaffChange}
+              label="Nhân viên xử lý"
+              required
+              disabled={!isAdmin}
+            >
+              {staffList.map((staff) => (
+                <MenuItem key={staff.userId} value={staff.userId}>
+                  {staff.fullName}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Grid>
