@@ -31,50 +31,8 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
             </Link>
           </li>
           <li>
-            <Link>
-              {t("pages")}
-              {sidebarMenu ? (
-                <span>
-                  <i className="fa fa-angle-right"></i>
-                </span>
-              ) : (
-                <i className="fa fa-angle-down" />
-              )}
-            </Link>
-            <ul className="submenu">
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/cart"}>
-                  {t("cart")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/checkout"}>
-                  {t("checkout")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/wishlist"}>
-                  {t("wishlist")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/compare"}>
-                  {t("compare")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                  {t("my_account")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/login"}>
-                  {t("login")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/register"}>
-                  {t("register")}
+                <Link to={process.env.PUBLIC_URL + "/voucher"}>
+                  Mã giảm giá
                 </Link>
               </li>
               <li>
@@ -82,39 +40,6 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                   {t("about_us")}
                 </Link>
               </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/contact"}>
-                  {t("contact_us")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/voucher"}>
-                  Voucher
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/order-history"}>
-                Lịch sử mua hàng
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/checkout-result"}>
-                  Kết quả thanh toán
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/not-found"}>
-                  {t("404_page")}
-                </Link>
-              </li>
-            </ul>
-          </li>
-          
-          <li>
-            <Link to={process.env.PUBLIC_URL + "/contact"}>
-              {t("contact_us")}
-            </Link>
-          </li>
         </ul>
       </nav>
     </div>

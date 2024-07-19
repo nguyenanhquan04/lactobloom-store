@@ -207,7 +207,6 @@ import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
 
 const IconGroup = ({ iconWhiteClass }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleClick = (e) => {
     e.currentTarget.nextSibling.classList.toggle("active");
@@ -222,7 +221,6 @@ const IconGroup = ({ iconWhiteClass }) => {
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems } = useSelector((state) => state.cart);
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [authToken, setAuthToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [fullName, setFullName] = useState("");
@@ -255,17 +253,6 @@ const IconGroup = ({ iconWhiteClass }) => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (searchTerm) {
-      navigate(`/shop?search=${searchTerm}`);
-    }
-  };
-
   const handleLogout = () => {
     const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất?");
     if (confirmLogout) {
@@ -280,24 +267,6 @@ const IconGroup = ({ iconWhiteClass }) => {
     <div className={clsx("header-right-wrap", iconWhiteClass)}>
       {!isAdmin && (
         <>
-          <div className="same-style header-search d-none d-lg-block">
-            <button className="search-active" onClick={(e) => handleClick(e)}>
-              <i className="pe-7s-search" />
-            </button>
-            <div className="search-content">
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
-                <button className="button-search" disabled={!searchTerm}>
-                  <i className="pe-7s-search" />
-                </button>
-              </form>
-            </div>
-          </div>
           <div className="same-style header-compare">
             <Link to={process.env.PUBLIC_URL + "/compare"}>
               <i className="pe-7s-shuffle" />

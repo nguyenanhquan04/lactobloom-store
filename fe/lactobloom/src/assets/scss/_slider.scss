@@ -51,6 +51,7 @@
 
   &.slider-height-1.bg-purple {
     position: relative; /* Ensure proper positioning for child elements */
+    background: url('../../../public/assets/img/background.jpg') no-repeat center center/cover;
 
     .container {
       padding-left: 0;

@@ -218,12 +218,14 @@ const OrderManagement = () => {
                 <TableCell>{order.staffName ?? "Chưa có"}</TableCell>
                 <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                 <TableCell className="order-management-actions">
-                  <IconButton onClick={() => handleEdit(order)}>
-                    <EditIcon />
-                  </IconButton>
                   <IconButton onClick={() => handleDelete(order.orderId)}>
                     <DeleteIcon />
                   </IconButton>
+                  {order.status === 'PENDING' && (
+                  <IconButton onClick={() => handleEdit(order)}>
+                    <EditIcon />
+                  </IconButton>
+                )}
                   {order.status === 'PENDING' && (
                     <IconButton onClick={() => handleDeliver(order.orderId)}>
                       <CheckCircleIcon/>
