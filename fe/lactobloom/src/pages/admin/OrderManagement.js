@@ -194,12 +194,13 @@ const OrderManagement = () => {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Họ tên</TableCell>
-              <TableCell>Email</TableCell>
+              
               <TableCell>Số điện thoại</TableCell>
               <TableCell>Địa chỉ</TableCell>
               <TableCell>Giá trị đơn hàng</TableCell>
               <TableCell>Phương thức thanh toán</TableCell>
               <TableCell>Trạng thái</TableCell>
+              <TableCell>Nhân viên xử lý</TableCell>
               <TableCell>Ngày đặt</TableCell>
               <TableCell>Thao tác</TableCell>
             </TableRow>
@@ -209,12 +210,12 @@ const OrderManagement = () => {
               <TableRow key={order.orderId}>
                 <TableCell>{order.orderId}</TableCell>
                 <TableCell>{order.fullName}</TableCell>
-                <TableCell>{order.email}</TableCell>
                 <TableCell>{order.phone}</TableCell>
                 <TableCell>{order.address}</TableCell>
-                <TableCell>{order.totalPrice.toLocaleString("vi-VN")}</TableCell>
+                <TableCell>{order.totalPrice.toLocaleString("vi-VN") + " VND"}</TableCell>
                 <TableCell>{order.cod ? "Thanh toán COD" : "Chuyển khoản ngân hàng"}</TableCell>
                 <TableCell>{translateStatus(order.status)}</TableCell>
+                <TableCell>{order.staffName ?? "Chưa có"}</TableCell>
                 <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                 <TableCell className="order-management-actions">
                   <IconButton onClick={() => handleEdit(order)}>
