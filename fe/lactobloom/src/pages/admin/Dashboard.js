@@ -20,7 +20,8 @@ import {
   Tooltip,
   Legend,
   BarChart,
-  Bar
+  Bar, 
+  ResponsiveContainer
 } from 'recharts';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import axios from 'axios';
@@ -35,7 +36,9 @@ const Dashboard = () => {
   const [salesByMonth, setSalesByMonth] = useState([]);
   const [salesByDate, setSalesByDate] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [months, setMonths] = useState([]);
+  const [numberOfProducts, setNumberOfProducts] = useState([]);
+  const [numberOfMembers, setNumberOfMembers] = useState([]);
+  const [numberOfTodayOrders, setNumberOfTodayOrders] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -43,7 +46,9 @@ const Dashboard = () => {
     fetchRecentOrders();
     fetchRevenueData();
     fetchSalesData();
-    fetchAvailableMonths();
+    fetchNumberOfProducts();
+    fetchNumberOfMembers();
+    fetchNumberOfTodayOrders();
   }, []);
 
   useEffect(() => {
@@ -148,20 +153,42 @@ const Dashboard = () => {
     }
   };
 
-  const fetchAvailableMonths = async () => {
+  const fetchNumberOfProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/product/all');
+      setNumberOfProducts(response.data.length); 
+    } catch (error) {
+      console.error('Error fetching number of products:', error);
+    }
+  };
+
+  const fetchNumberOfMembers = async () => {
     const token = Cookies.get('authToken');
     try {
-      const response = await axios.get('http://localhost:8080/dashboard/availableMonths', {
+      const response = await axios.get('http://localhost:8080/user/members', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setMonths(response.data); // Assume the response is an array of months (e.g., ["01", "02", "03", ..., "12"])
+      setNumberOfMembers(response.data.length); 
     } catch (error) {
-      console.error('Error fetching available months:', error);
+      console.error('Error fetching number of members:', error);
     }
   };
 
+  const fetchNumberOfTodayOrders = async () => {
+    const token = Cookies.get('authToken');
+    try {
+      const response = await axios.get('http://localhost:8080/dashboard/todayOrders', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setNumberOfTodayOrders(response.data.length);
+    } catch (error) {
+      console.error('Error fetching number of today orders:', error);
+    }
+  };
   const fetchSalesByDate = async () => {
     const token = Cookies.get('authToken');
     try {
@@ -180,10 +207,6 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error fetching sales by date:', error);
     }
-  };
-
-  const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
   };
 
   const toggleDrawer = () => {
@@ -217,7 +240,7 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Doanh Thu Hôm Nay
+                  Doanh Thu Trong Ngày
                 </Typography>
                 <Box display="flex" justifyContent="center" alignItems="center" height={150}>
                   <Typography variant="h4">
@@ -232,7 +255,7 @@ const Dashboard = () => {
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Doanh Thu Tháng
+                  Doanh Thu Trong Tháng
                 </Typography>
                 <Box display="flex" justifyContent="center" alignItems="center" height={150}>
                   <Typography variant="h4">
@@ -243,43 +266,96 @@ const Dashboard = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={7}>
+          <Grid item xs={12} md={6} lg={4}>
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Doanh Thu Năm Nay
+                  Tổng Sản Phẩm Shop
                 </Typography>
-                <BarChart width={600} height={300} data={salesByMonth}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip formatter={(value, name) => name === 'Doanh Thu' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
-                  <Legend />
-                  <Bar dataKey="Doanh Thu" fill="#8884d8" />
-                  <Bar dataKey="Số Đơn Hàng" fill="#82ca9d" />
-                </BarChart>
+                <Box display="flex" justifyContent="center" alignItems="center" height={150}>
+                  <Typography variant="h4">
+                    {numberOfProducts} sản phẩm
+                  </Typography>
+                </Box>
               </CardContent>
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={7}>
+          <Grid item xs={12} md={6} lg={4}>
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Doanh Thu Tháng Này
+                  Số Thành Viên
                 </Typography>
-                <LineChart width={600} height={300} data={salesByDate}>
+                <Box display="flex" justifyContent="center" alignItems="center" height={150}>
+                  <Typography variant="h4">
+                    {numberOfMembers} thành viên
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Số Đơn Hàng Trong Ngày
+                </Typography>
+                <Box display="flex" justifyContent="center" alignItems="center" height={150}>
+                  <Typography variant="h4">
+                    {numberOfTodayOrders} đơn hàng
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={6}>
+        <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Doanh Thu Trong Năm
+            </Typography>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <BarChart data={salesByMonth}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
+                  <Tooltip formatter={(value, name) => name === 'Doanh Thu' ? (value * 1000000).toLocaleString("vi-VN") + " VND" : value} />
+                  <Legend />
+                  <Bar dataKey="Doanh Thu" fill="#8884d8" />
+                  <Bar dataKey="Số Đơn Hàng" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Grid item xs={12} md={6} lg={6}>
+        <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Doanh Thu Trong Tháng
+            </Typography>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <LineChart data={salesByDate}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis label={{ value: 'Doanh thu (triệu)', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip formatter={(value, name) => name === 'Doanh Thu' ? (value*1000000).toLocaleString("vi-VN") + " VND" : value} />
+                  <Tooltip formatter={(value, name) => name === 'Doanh Thu' ? (value * 1000000).toLocaleString("vi-VN") + " VND" : value} />
                   <Legend />
                   <Line type="monotone" dataKey="Doanh Thu" stroke="#8884d8" />
                   <Line type="monotone" dataKey="Số Đơn Hàng" stroke="#82ca9d" />
                 </LineChart>
-              </CardContent>
-            </Card>
-          </Grid>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </Grid>
 
           <Grid item xs={12} md={6} lg={6}>
             <Card sx={{ backgroundColor: '#f5f5f5', boxShadow: 3 }}>

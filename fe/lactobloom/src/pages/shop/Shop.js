@@ -93,6 +93,7 @@ const ShopGridStandard = () => {
               <div className="col-lg-9 order-1 order-lg-2">
                 <ShopTopbar
                   getLayout={setLayout}
+                  getFilterSortParams={products}
                   productCount={products.length}
                   sortedProductCount={currentData.length}
                 />

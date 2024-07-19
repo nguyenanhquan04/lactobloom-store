@@ -112,8 +112,8 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
               label="Available"
               required
             >
-              <MenuItem value="true">Yes</MenuItem>
-              <MenuItem value="false">No</MenuItem>
+              <MenuItem value="true">Khả dụng</MenuItem>
+              <MenuItem value="false">Không khả dụng</MenuItem>
             </Select>
           </FormControl>
         </Grid>

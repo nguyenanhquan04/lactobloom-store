@@ -8,21 +8,11 @@ const ShopTopAction = ({
   productCount,
   sortedProductCount
 }) => {
+  console.log("getFilterSortParams: ", getFilterSortParams); // Add this line for debugging
+
   return (
     <div className="shop-top-bar mb-35">
       <div className="select-shoing-wrap">
-        <div className="shop-select">
-          <select
-            onChange={e => getFilterSortParams("filterSort", e.target.value)}
-          >
-            <option value="default">Mặc định</option>
-            <option value="priceHighToLow">Giá - Cao đến Thấp </option>
-            <option value="priceLowToHigh">Giá - Thấp đến Cao </option>
-          </select>
-        </div>
-        <p>
-          Có {sortedProductCount} trong {productCount} kết quả
-        </p>
       </div>
 
       <div className="shop-tab">
@@ -42,14 +32,6 @@ const ShopTopAction = ({
         >
           <i className="fa fa-th" />
         </button>
-        {/* <button
-          onClick={e => {
-            getLayout("list");
-            setActiveLayout(e);
-          }}
-        >
-          <i className="fa fa-list-ul" />
-        </button> */}
       </div>
     </div>
   );

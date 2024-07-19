@@ -1,35 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button,
-  TextField, IconButton, TablePagination, MenuItem, Select, FormControl, InputLabel, Grid, Dialog, DialogTitle, DialogContent, DialogActions
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Cookies from 'js-cookie';
-import VoucherForm from './form/VoucherForm'; // Import the VoucherForm component
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  IconButton,
+  TablePagination,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Cookies from "js-cookie";
+import VoucherForm from "./form/VoucherForm"; // Import the VoucherForm component
 
 const VoucherManagement = () => {
   const [vouchers, setVouchers] = useState([]);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
-  const [selectedAvailability, setSelectedAvailability] = useState('all');
+  const [selectedAvailability, setSelectedAvailability] = useState("all");
   const [editVoucher, setEditVoucher] = useState(null);
   const [open, setOpen] = useState(false); // State to handle dialog open/close
 
   useEffect(() => {
     const fetchVouchers = async () => {
-      const token = Cookies.get('authToken');
+      const token = Cookies.get("authToken");
       try {
-        const response = await axios.get('http://localhost:8080/voucher/all', {
+        const response = await axios.get("http://localhost:8080/voucher/all", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log(response.data);
         setVouchers(response.data);
       } catch (error) {
-        console.error('Error fetching vouchers:', error);
+        console.error("Error fetching vouchers:", error);
       }
     };
 
@@ -41,17 +60,22 @@ const VoucherManagement = () => {
   };
 
   const handleDelete = async (voucherId) => {
-    const token = Cookies.get('authToken');
-    if (window.confirm('Bạn có chắc muốn xóa voucher này?')) {
+    const token = Cookies.get("authToken");
+    if (window.confirm("Bạn có chắc muốn xóa voucher này?")) {
       try {
-        await axios.delete(`http://localhost:8080/voucher/delete/${voucherId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setVouchers(vouchers.filter(voucher => voucher.voucherId !== voucherId));
+        await axios.delete(
+          `http://localhost:8080/voucher/delete/${voucherId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setVouchers(
+          vouchers.filter((voucher) => voucher.voucherId !== voucherId)
+        );
       } catch (error) {
-        console.error('Error deleting voucher:', error);
+        console.error("Error deleting voucher:", error);
       }
     }
   };
@@ -88,16 +112,16 @@ const VoucherManagement = () => {
   const handleSave = () => {
     // Fetch updated vouchers after saving
     const fetchVouchers = async () => {
-      const token = Cookies.get('authToken');
+      const token = Cookies.get("authToken");
       try {
-        const response = await axios.get('http://localhost:8080/voucher/all', {
+        const response = await axios.get("http://localhost:8080/voucher/all", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         setVouchers(response.data);
       } catch (error) {
-        console.error('Error fetching vouchers:', error);
+        console.error("Error fetching vouchers:", error);
       }
     };
 
@@ -105,20 +129,31 @@ const VoucherManagement = () => {
     handleClose();
   };
 
-  const filteredVouchers = vouchers.filter(voucher =>
+  const filteredVouchers = vouchers.filter((voucher) =>
     voucher.point.toString().includes(searchValue)
   );
 
-  const displayedVouchers = selectedAvailability === 'all'
-    ? filteredVouchers
-    : filteredVouchers.filter(voucher => voucher.available.toString() === selectedAvailability);
+  const displayedVouchers =
+    selectedAvailability === "all"
+      ? filteredVouchers
+      : filteredVouchers.filter(
+          (voucher) => voucher.available.toString() === selectedAvailability
+        );
 
-  const paginatedVouchers = displayedVouchers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const paginatedVouchers = displayedVouchers.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <div className="voucher-management-container">
       <h1>Quản lý Voucher</h1>
-      <Grid container spacing={0} alignItems="center" className="voucher-management-controls">
+      <Grid
+        container
+        spacing={0}
+        alignItems="center"
+        className="voucher-management-controls"
+      >
         <Grid item xs={12} md={9}>
           <TextField
             label="Tìm Voucher"
@@ -139,7 +174,11 @@ const VoucherManagement = () => {
           </Button>
         </Grid>
       </Grid>
-      <FormControl variant="outlined" fullWidth className="voucher-management-availability-select">
+      <FormControl
+        variant="outlined"
+        fullWidth
+        className="voucher-management-availability-select"
+      >
         <InputLabel>Khả dụng</InputLabel>
         <Select
           value={selectedAvailability}
@@ -151,7 +190,10 @@ const VoucherManagement = () => {
           <MenuItem value="false">Không khả dụng</MenuItem>
         </Select>
       </FormControl>
-      <TableContainer component={Paper} className="voucher-management-table-container">
+      <TableContainer
+        component={Paper}
+        className="voucher-management-table-container"
+      >
         <Table className="voucher-management-table">
           <TableHead>
             <TableRow>
@@ -160,6 +202,7 @@ const VoucherManagement = () => {
               <TableCell>Giảm giá (%)</TableCell>
               <TableCell>Ngày hết hạn</TableCell>
               <TableCell>Trạng thái</TableCell>
+              <TableCell>Chủ sở hữu</TableCell>
               <TableCell>Thao tác</TableCell>
             </TableRow>
           </TableHead>
@@ -170,14 +213,19 @@ const VoucherManagement = () => {
                 <TableCell>{voucher.point}</TableCell>
                 <TableCell>{voucher.discount}</TableCell>
                 <TableCell>{voucher.expirationDate}</TableCell>
-                <TableCell>{voucher.available ? 'Khả dụng' : 'Không khả dụng'}</TableCell>
+                <TableCell>
+                  {voucher.available ? "Khả dụng" : "Không khả dụng"}
+                </TableCell>
+                <TableCell>{voucher.owner ?? "Không"}</TableCell>
                 <TableCell className="voucher-management-actions">
-                  <IconButton onClick={() => handleEditVoucher(voucher)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(voucher.voucherId)}>
+                <IconButton onClick={() => handleDelete(voucher.voucherId)}>
                     <DeleteIcon />
                   </IconButton>
+                  {voucher.owner ? null : (
+                    <IconButton onClick={() => handleEditVoucher(voucher)}>
+                      <EditIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -195,12 +243,16 @@ const VoucherManagement = () => {
         />
       </TableContainer>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>{editVoucher ? 'Cập nhật Voucher' : 'Thêm Voucher'}</DialogTitle>
+        <DialogTitle>
+          {editVoucher ? "Cập nhật Voucher" : "Thêm Voucher"}
+        </DialogTitle>
         <DialogContent>
           <VoucherForm onSave={handleSave} initialVoucher={editVoucher} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Hủy</Button>
+          <Button onClick={handleClose} color="secondary">
+            Hủy
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
