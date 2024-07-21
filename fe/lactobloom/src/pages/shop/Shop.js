@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect, useCallback } from "react";
-import axios from "axios";
+
 import Paginator from "react-hooks-paginator";
 import { useLocation, useNavigate } from "react-router-dom";
 import SEO from "../../components/seo";
@@ -11,6 +11,7 @@ import ShopSearch from "../../components/product/ShopSearch";
 import ShopCategoryAndBrand from "../../components/product/ShopCategoryAndBrand";
 import Cookies from "js-cookie"; // Import js-cookie
 import {jwtDecode} from "jwt-decode";
+import { searchProducts } from "../../utils/ProductService";
 
 const ShopGridStandard = () => {
   const [layout, setLayout] = useState("grid three-column");
@@ -45,7 +46,7 @@ const ShopGridStandard = () => {
         brandId: selectedBrand?.toString() || ""
       };
 
-      const response = await axios.get("http://localhost:8080/product/search", { params });
+      const response = await searchProducts({params});
       setProducts(response.data);
     } catch (error) {
       console.error("There was an error fetching the products: ", error);
@@ -93,7 +94,6 @@ const ShopGridStandard = () => {
               <div className="col-lg-9 order-1 order-lg-2">
                 <ShopTopbar
                   getLayout={setLayout}
-                  getFilterSortParams={products}
                   productCount={products.length}
                   sortedProductCount={currentData.length}
                 />

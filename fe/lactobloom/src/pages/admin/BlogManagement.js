@@ -9,6 +9,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from "js-cookie";
 import BlogForm from './form/BlogForm';
+import { getAllBlogCategories } from '../../utils/BlogCategoryService';
+import { deleteBlogByBlogId, getAllBlogs } from '../../utils/BlogService';
 
 const BlogManagement = () => {
   const [blogs, setBlogs] = useState([]);
@@ -23,7 +25,7 @@ const BlogManagement = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/blog-category/all');
+        const response = await getAllBlogCategories();
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -32,7 +34,7 @@ const BlogManagement = () => {
 
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/blog/all');
+        const response = await getAllBlogs();
         setBlogs(response.data);
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -51,11 +53,7 @@ const BlogManagement = () => {
     const token = Cookies.get("authToken");
     if (window.confirm('Bạn có chắc muốn xóa Blog?')) {
       try {
-        await axios.delete(`http://localhost:8080/blog/delete/${blogId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await deleteBlogByBlogId(token, blogId);
         setBlogs(blogs.filter(blog => blog.blogId !== blogId));
       } catch (error) {
         console.error('Error deleting blog:', error);
@@ -94,7 +92,7 @@ const BlogManagement = () => {
   const handleSave = () => {
     setOpen(false);
     // Refresh blogs list
-    axios.get('http://localhost:8080/blog/all')
+    getAllBlogs()
       .then(response => setBlogs(response.data))
       .catch(error => console.error('Error fetching blogs:', error));
   };

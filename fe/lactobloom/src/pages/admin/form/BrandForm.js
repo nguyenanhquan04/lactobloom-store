@@ -4,6 +4,7 @@ import {
   Button, TextField, Grid
 } from '@mui/material';
 import Cookies from 'js-cookie';
+import { saveBrand, updateBrandByBrandId } from '../../../utils/BrandService';
 
 const BrandForm = ({ onSave, initialBrand }) => {
   const [brand, setBrand] = useState({
@@ -29,23 +30,11 @@ const BrandForm = ({ onSave, initialBrand }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = Cookies.get('authToken');
-    const url = initialBrand 
-      ? `http://localhost:8080/brand/update/${initialBrand.brandId}`
-      : `http://localhost:8080/brand/save`;
-    
     try {
       if (initialBrand) {
-        await axios.put(url, brand, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await updateBrandByBrandId(token, brand, initialBrand.brandId);
       } else {
-        await axios.post(url, brand, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await saveBrand(token, brand);
       }
       onSave();
     } catch (error) {

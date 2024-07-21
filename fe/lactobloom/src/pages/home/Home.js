@@ -13,6 +13,7 @@ const Home = () => {
   let navigate = useNavigate();
     // Check for authToken cookie and redirect to homepage if it exists
     useEffect(() => {
+      
       const token = Cookies.get("authToken");
       if (token) {
         const decodedToken = jwtDecode(token);

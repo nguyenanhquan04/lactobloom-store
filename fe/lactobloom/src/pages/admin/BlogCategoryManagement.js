@@ -8,6 +8,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import BlogCategoryForm from './form/BlogCategoryForm'; // Import your BlogCategoryForm component
+import { deleteBlogCategory, getAllBlogCategories } from '../../utils/BlogCategoryService';
+import { getBlogByBlogCategoryId } from '../../utils/BlogService';
 
 const BlogCategoryManagement = () => {
   const [blogCategories, setBlogCategories] = useState([]);
@@ -22,11 +24,11 @@ const BlogCategoryManagement = () => {
   useEffect(() => {
     const fetchBlogCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/blog-category/all');
+        const response = await getAllBlogCategories();
         setBlogCategories(response.data);
         const counts = {};
         for (const category of response.data) {
-          const postsResponse = await axios.get(`http://localhost:8080/blog/blogCategory/${category.blogCategoryId}`);
+          const postsResponse = await getBlogByBlogCategoryId(category.blogCategoryId);
           counts[category.blogCategoryId] = postsResponse.data.length;
         }
         setPostCounts(counts);
@@ -46,11 +48,7 @@ const BlogCategoryManagement = () => {
     const token = Cookies.get("authToken");
     if (window.confirm('Bạn có chắc muốn xóa danh mục này?')) {
       try {
-        await axios.delete(`http://localhost:8080/blog-category/delete/${blogCategoryId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await deleteBlogCategory(token, blogCategoryId);
         setBlogCategories(blogCategories.filter(blogCategory => blogCategory.blogCategoryId !== blogCategoryId));
         const updatedCounts = { ...postCounts };
         delete updatedCounts[blogCategoryId];
@@ -80,11 +78,11 @@ const BlogCategoryManagement = () => {
 
   const fetchBlogCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/blog-category/all');
+      const response = await getAllBlogCategories();
       setBlogCategories(response.data);
       const counts = {};
       for (const category of response.data) {
-        const postsResponse = await axios.get(`http://localhost:8080/blog/blogCategory/${category.blogCategoryId}`);
+        const postsResponse = await getBlogByBlogCategoryId(category.blogCategoryId);
         counts[category.blogCategoryId] = postsResponse.data.length;
       }
       setPostCounts(counts);

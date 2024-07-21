@@ -200,8 +200,8 @@ import clsx from "clsx";
 import MenuCart from "./sub-components/MenuCart";
 import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode'; // Fixed import syntax
-import axios from "axios"; // Đã thêm axios import
-import { logOut } from "../../utils/UserService";
+ // Đã thêm axios import
+import { logOut, userInfo } from "../../utils/UserService";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
 import { deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
 
@@ -242,11 +242,7 @@ const IconGroup = ({ iconWhiteClass }) => {
 
   const fetchUserInfo = async (token) => {
     try {
-      const response = await axios.get("http://localhost:8080/user/info", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await userInfo(token);
       setFullName(response.data.fullName);
     } catch (error) {
       console.error("Failed to fetch user info:", error);

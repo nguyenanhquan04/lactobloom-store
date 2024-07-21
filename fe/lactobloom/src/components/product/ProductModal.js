@@ -231,7 +231,7 @@
 // export default ProductModal;
 import { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { EffectFade, Thumbs } from 'swiper';
+import { EffectFade, Thumbs } from "swiper";
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -242,12 +242,23 @@ import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import Cookies from "js-cookie";
-import axios from "axios";
+
 import { getProductReviewByProductId } from "../../utils/ProductReviewService";
 import { getCategoryByProductId } from "../../utils/CategoryService";
 import { getBrandByProductId } from "../../utils/BrandService";
+import { myWishlist, saveWishlist } from "../../utils/WishlistService";
+import { getImagesByProductId } from "../../utils/ImageService";
 
-function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscountedPrice, show, onHide, wishlistItem, compareItem }) {
+function ProductModal({
+  product,
+  discountedPrice,
+  finalProductPrice,
+  finalDiscountedPrice,
+  show,
+  onHide,
+  wishlistItem,
+  compareItem,
+}) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.cart);
@@ -266,7 +277,10 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
     getProductReviewByProductId(product.productId)
       .then((response) => {
         const reviews = response.data;
-        const totalRating = reviews.reduce((acc, review) => acc + review.rate, 0);
+        const totalRating = reviews.reduce(
+          (acc, review) => acc + review.rate,
+          0
+        );
         const avgRating = reviews.length ? totalRating / reviews.length : 0;
         setAverageRating(avgRating);
       })
@@ -291,14 +305,12 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
       });
 
     if (authToken) {
-      axios.get("http://localhost:8080/wishlist/myWishlist", {
-        headers: {
-          Authorization: `Bearer ${authToken}`
-        }
-      })
+      myWishlist(authToken)
         .then((response) => {
           const wishlistData = response.data;
-          setIsProductInWishlist(wishlistData.some(item => item.productId === product.productId));
+          setIsProductInWishlist(
+            wishlistData.some((item) => item.productId === product.productId)
+          );
         })
         .catch((error) => {
           console.error("Error fetching wishlist data:", error);
@@ -306,24 +318,19 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
     }
 
     // Fetch images from the API
-    axios.get(`http://localhost:8080/image/get/product/${product.productId}`)
+    getImagesByProductId(product.productId)
       .then((response) => {
         setImages(response.data);
       })
       .catch((error) => {
         console.error("Error fetching product images:", error);
       });
-
   }, [product.productId, authToken]);
 
   const handleWishlistClick = async () => {
     if (authToken) {
       try {
-        await axios.post(`http://localhost:8080/wishlist/save/product/${product.productId}`, {}, {
-          headers: {
-            Authorization: `Bearer ${authToken}`
-          }
-        });
+        await saveWishlist(authToken, product.productId);
         dispatch(addToWishlist(product));
         setIsProductInWishlist(true);
       } catch (error) {
@@ -340,7 +347,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
     loop: true,
     effect: "fade",
     fadeEffect: {
-      crossFade: true
+      crossFade: true,
     },
     thumbs: { swiper: thumbsSwiper },
     modules: [EffectFade, Thumbs],
@@ -354,7 +361,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
     freeMode: true,
     loop: true,
     slideToClickedSlide: true,
-    navigation: true
+    navigation: true,
   };
 
   const onCloseModal = () => {
@@ -363,7 +370,11 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
   };
 
   return (
-    <Modal show={show} onHide={onCloseModal} className="product-quickview-modal-wrapper">
+    <Modal
+      show={show}
+      onHide={onCloseModal}
+      className="product-quickview-modal-wrapper"
+    >
       <Modal.Header closeButton></Modal.Header>
 
       <div className="modal-body">
@@ -389,11 +400,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                 {images.map((img, i) => (
                   <SwiperSlide key={i}>
                     <div className="single-image">
-                      <img
-                        src={img.imageUrl}
-                        className="img-fluid"
-                        alt=""
-                      />
+                      <img src={img.imageUrl} className="img-fluid" alt="" />
                     </div>
                   </SwiperSlide>
                 ))}
@@ -402,19 +409,27 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
           </div>
           <div className="col-md-7 col-sm-12 col-xs-12">
             <div className="product-details-content quickview-content">
-              {(product.stock > 0 && product.preOrder && authToken) ?
-                <h2>{product.productName} (Đặt trước)</h2> 
-                : <h2>{product.productName}</h2>}
+              {product.stock > 0 && product.preOrder && authToken ? (
+                <h2>{product.productName} (Đặt trước)</h2>
+              ) : (
+                <h2>{product.productName}</h2>
+              )}
               <div className="product-details-price">
                 {discountedPrice !== null ? (
                   <Fragment>
-                    <span>{(finalDiscountedPrice || 0).toLocaleString("vi-VN") + " VND"}</span>{" "}
+                    <span>
+                      {(finalDiscountedPrice || 0).toLocaleString("vi-VN") +
+                        " VND"}
+                    </span>{" "}
                     <span className="old">
-                      {(finalProductPrice || 0).toLocaleString("vi-VN") + " VND"}
+                      {(finalProductPrice || 0).toLocaleString("vi-VN") +
+                        " VND"}
                     </span>
                   </Fragment>
                 ) : (
-                  <span>{(finalProductPrice || 0).toLocaleString("vi-VN") + " VND"} </span>
+                  <span>
+                    {(finalProductPrice || 0).toLocaleString("vi-VN") + " VND"}{" "}
+                  </span>
                 )}
               </div>
               {averageRating && averageRating > 0 ? (
@@ -439,7 +454,9 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                 <div className="cart-plus-minus">
                   <button
                     onClick={() =>
-                      setQuantityCount(quantityCount > 1 ? quantityCount - 1 : 1)
+                      setQuantityCount(
+                        quantityCount > 1 ? quantityCount - 1 : 1
+                      )
                     }
                     className="dec qtybutton"
                   >
@@ -456,11 +473,11 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                       // if ((product.stock <= 0 && product.preOrder && authToken)) {
                       //   setQuantityCount(quantityCount + 1);
                       // } else {
-                        setQuantityCount(
-                          quantityCount < product.stock - productCartQty
-                            ? quantityCount + 1
-                            : quantityCount
-                        );
+                      setQuantityCount(
+                        quantityCount < product.stock - productCartQty
+                          ? quantityCount + 1
+                          : quantityCount
+                      );
                       // }
                     }}
                     className="inc qtybutton"
@@ -469,42 +486,50 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                   </button>
                 </div>
                 <div className="pro-details-cart btn-hover">
-                  {product.stock && product.stock > 0 && product.preOrder === false ? (
+                  {product.stock &&
+                  product.stock > 0 &&
+                  product.preOrder === false ? (
                     <button
                       onClick={() =>
-                        dispatch(addToCart({
-                          ...product,
-                          quantity: quantityCount,
-                        }))
+                        dispatch(
+                          addToCart({
+                            ...product,
+                            quantity: quantityCount,
+                          })
+                        )
                       }
                       disabled={productCartQty >= product.stock}
                     >
                       Thêm vào giỏ
                     </button>
-                  ) : (
-                   product.stock > 0 && product.preOrder && authToken ? (
-                      <button
-                        onClick={() =>
-                          dispatch(addToCart({
+                  ) : product.stock > 0 && product.preOrder && authToken ? (
+                    <button
+                      onClick={() =>
+                        dispatch(
+                          addToCart({
                             ...product,
                             quantity: quantityCount,
-                            preOrder: true
-                          }))
-                        }
-                        disabled={productCartQty >= product.stock}
-                      >
-                        Đặt trước
-                      </button>
-                    ) : (
-                      <button disabled>Hết hàng</button>
-                    )
+                            preOrder: true,
+                          })
+                        )
+                      }
+                      disabled={productCartQty >= product.stock}
+                    >
+                      Đặt trước
+                    </button>
+                  ) : (
+                    <button disabled>Hết hàng</button>
                   )}
                 </div>
                 <div className="pro-details-wishlist">
                   <button
                     className={wishlistItem !== undefined ? "active" : ""}
                     disabled={wishlistItem !== undefined}
-                    title={wishlistItem !== undefined ? "Đã thêm vào yêu thích" : "Thêm vào yêu thích"}
+                    title={
+                      wishlistItem !== undefined
+                        ? "Đã thêm vào yêu thích"
+                        : "Thêm vào yêu thích"
+                    }
                     onClick={handleWishlistClick}
                   >
                     <i className="pe-7s-like" />
@@ -514,7 +539,11 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                   <button
                     className={compareItem !== undefined ? "active" : ""}
                     disabled={compareItem !== undefined}
-                    title={compareItem !== undefined ? "Đã thêm vào so sánh" : "Thêm vào so sánh"}
+                    title={
+                      compareItem !== undefined
+                        ? "Đã thêm vào so sánh"
+                        : "Thêm vào so sánh"
+                    }
                     onClick={() => dispatch(addToCompare(product))}
                   >
                     <i className="pe-7s-shuffle" />
@@ -526,7 +555,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                   <span>Danh mục: </span>
                   <ul>
                     <li>
-                    <Link>{category.categoryName}</Link>
+                      <Link>{category.categoryName}</Link>
                     </li>
                   </ul>
                 </div>
@@ -535,7 +564,7 @@ function ProductModal({ product, discountedPrice, finalProductPrice, finalDiscou
                 <div className="pro-details-category">
                   <span>Thương hiệu: </span>
                   <ul>
-                  <Link>{brand.brandName}</Link>
+                    <Link>{brand.brandName}</Link>
                   </ul>
                 </div>
               )}
@@ -584,7 +613,7 @@ ProductModal.propTypes = {
   show: PropTypes.bool,
   onHide: PropTypes.func,
   wishlistItem: PropTypes.object,
-  compareItem: PropTypes.object
+  compareItem: PropTypes.object,
 };
 
 export default ProductModal;

@@ -5,6 +5,9 @@ import {
   Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
 import Cookies from 'js-cookie';
+import { getOrderProducts } from '../../../utils/OrderDetailService';
+import { getAllStaffs } from '../../../utils/UserService';
+import { updateOrder } from '../../../utils/OrderService';
 
 const OrderForm = ({ onSave, initialOrder }) => {
   const [order, setOrder] = useState({
@@ -50,11 +53,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
   const fetchOrderDetails = async (orderId) => {
     const token = Cookies.get('authToken');
     try {
-      const response = await axios.get(`http://localhost:8080/order-detail/order/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await getOrderProducts(token, orderId);
       setOrderDetails(response.data);
     } catch (error) {
       console.error('Error fetching order details:', error);
@@ -63,11 +62,7 @@ const OrderForm = ({ onSave, initialOrder }) => {
 
   const fetchStaffList = async (token) => {
     try {
-      const response = await axios.get('http://localhost:8080/user/staffs', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await getAllStaffs(token);
       setStaffList(response.data);
     } catch (error) {
       console.error('Error fetching staff list:', error);
@@ -88,18 +83,9 @@ const OrderForm = ({ onSave, initialOrder }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = Cookies.get('authToken');
-    let url = `http://localhost:8080/order/update/${order.orderId}`;
-    if (selectedStaffId) {
-      url += `?staffId=${selectedStaffId}`;
-    }
-    
+    const token = Cookies.get('authToken');    
     try {
-      await axios.put(url, order, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await updateOrder(token, order, order.orderId, selectedStaffId);
       onSave();
     } catch (error) {
       console.error('Error updating order:', error);

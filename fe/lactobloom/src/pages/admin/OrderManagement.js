@@ -11,6 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Cookies from "js-cookie";
 import OrderForm from './form/OrderForm'; // Ensure this path is correct
 import {jwtDecode} from "jwt-decode"; // Import jwtDecode correctly
+import { deleteOrderByOrderId, deliverOrderByOrderId, getAllOrders, getStaffOrders } from '../../utils/OrderService';
 
 
 const translateStatus = (status) => {
@@ -43,17 +44,9 @@ const OrderManagement = () => {
       try {
         let response;
         if (decodedToken.role === 'ADMIN') {
-          response = await axios.get('http://localhost:8080/order/all', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          response = await getAllOrders(token);
         } else if (decodedToken.role === 'STAFF') {
-          response = await axios.get('http://localhost:8080/order/staffOrders', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          response = await getStaffOrders(token);
         }
 
         if (response) {
@@ -73,11 +66,7 @@ const OrderManagement = () => {
     const token = Cookies.get("authToken");
     if (window.confirm('Bạn có chắc muốn xóa đơn hàng này?')) {
       try {
-        await axios.delete(`http://localhost:8080/order/delete/${orderId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await deleteOrderByOrderId(token, orderId);
         setOrders(orders.filter(order => order.orderId !== orderId));
       } catch (error) {
         console.error('Error deleting order:', error);
@@ -115,11 +104,7 @@ const OrderManagement = () => {
     const fetchOrders = async () => {
       const token = Cookies.get("authToken");
       try {
-        const response = await axios.get('http://localhost:8080/order/all', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await getAllOrders(token);
         // Sort orders by orderDate in descending order
         const sortedOrders = response.data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
         setOrders(sortedOrders);
@@ -133,11 +118,7 @@ const OrderManagement = () => {
   const handleDeliver = async (orderId) => {
     const token = Cookies.get("authToken");
     try {
-      await axios.put(`http://localhost:8080/order/deliver/${orderId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await deliverOrderByOrderId(token, orderId);
       setOrders(orders.map(order => 
         order.orderId === orderId ? { ...order, status: 'DELIVERED' } : order
       ));

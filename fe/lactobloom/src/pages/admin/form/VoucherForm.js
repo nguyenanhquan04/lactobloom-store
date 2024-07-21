@@ -4,6 +4,7 @@ import {
   Button, TextField, Grid, Select, MenuItem, InputLabel, FormControl
 } from '@mui/material';
 import Cookies from 'js-cookie';
+import { saveVoucher, updateVoucherByVoucherId } from '../../../utils/VoucherService';
 
 const VoucherForm = ({ onSave, initialVoucher }) => {
   const [voucher, setVoucher] = useState({
@@ -34,10 +35,6 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = Cookies.get('authToken');
-    const url = initialVoucher 
-      ? `http://localhost:8080/voucher/update/${initialVoucher.voucherId}`
-      : 'http://localhost:8080/voucher/save';
-
     const voucherData = {
       point: voucher.point,
       discount: voucher.discount,
@@ -47,17 +44,9 @@ const VoucherForm = ({ onSave, initialVoucher }) => {
 
     try {
       if (initialVoucher) {
-        await axios.put(url, voucherData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await updateVoucherByVoucherId(token, voucherData, initialVoucher.voucherId);
       } else {
-        await axios.post(url, voucherData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await saveVoucher(token, voucherData);
       }
       onSave();
     } catch (error) {

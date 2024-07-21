@@ -8,6 +8,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import BrandForm from './form/BrandForm'; // Make sure to import your BrandForm component
+import { deleteBrandByBrandId, getAllBrands } from '../../utils/BrandService';
+import { getProductsByBrandId } from '../../utils/ProductService';
 
 const BrandManagement = () => {
   const [brands, setBrands] = useState([]);
@@ -22,7 +24,7 @@ const BrandManagement = () => {
   // Define fetchBrands function
   const fetchBrands = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/brand/all');
+      const response = await getAllBrands();
       const brandsData = response.data;
       setBrands(brandsData);
 
@@ -30,7 +32,7 @@ const BrandManagement = () => {
       const counts = {};
       for (const brand of brandsData) {
         try {
-          const productResponse = await axios.get(`http://localhost:8080/product/brand/${brand.brandId}`);
+          const productResponse = await getProductsByBrandId(brand.brandId);
           counts[brand.brandId] = productResponse.data.length;
         } catch (error) {
           console.error(`Error fetching products for brand ${brand.brandId}:`, error);
@@ -55,11 +57,7 @@ const BrandManagement = () => {
     const token = Cookies.get("authToken");
     if (window.confirm('Bạn có chắc muốn xóa thương hiệu này?')) {
       try {
-        await axios.delete(`http://localhost:8080/brand/delete/${brandId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await deleteBrandByBrandId(token, brandId);
         setBrands(brands.filter(brand => brand.brandId !== brandId));
         const updatedCounts = { ...productCounts };
         delete updatedCounts[brandId];

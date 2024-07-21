@@ -10,6 +10,8 @@ import ImageIcon from '@mui/icons-material/Image';
 import Cookies from 'js-cookie';
 import ProductForm from './form/ProductForm';
 import ImageForm from './form/ImageForm';
+import { getAllBrands } from '../../utils/BrandService';
+import { deleteProductByProductId, getAllProducts } from '../../utils/ProductService';
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
@@ -26,7 +28,7 @@ const ProductManagement = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/brand/all');
+        const response = await getAllBrands();
         setBrands(response.data);
       } catch (error) {
         console.error('Error fetching brands:', error);
@@ -35,7 +37,7 @@ const ProductManagement = () => {
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/product/all');
+        const response = await getAllProducts();
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -54,11 +56,7 @@ const ProductManagement = () => {
     const token = Cookies.get('authToken');
     if (window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
       try {
-        await axios.delete(`http://localhost:8080/product/delete/${productId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await deleteProductByProductId(token, productId);
         setProducts(products.filter((product) => product.productId !== productId));
       } catch (error) {
         console.error('Error deleting product:', error);
@@ -96,7 +94,7 @@ const ProductManagement = () => {
 
   const handleSave = () => {
     // Refresh the product list
-    axios.get('http://localhost:8080/product/all')
+    getAllProducts()
       .then((response) => {
         setProducts(response.data);
       })
