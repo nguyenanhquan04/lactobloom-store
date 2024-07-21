@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import {
   Table,
   TableBody,
@@ -26,6 +26,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Cookies from "js-cookie";
 import VoucherForm from "./form/VoucherForm"; // Import the VoucherForm component
+import { deleteVoucherByVoucherId, getAllVouchers } from "../../utils/VoucherService";
 
 const VoucherManagement = () => {
   const [vouchers, setVouchers] = useState([]);
@@ -40,12 +41,7 @@ const VoucherManagement = () => {
     const fetchVouchers = async () => {
       const token = Cookies.get("authToken");
       try {
-        const response = await axios.get("http://localhost:8080/voucher/all", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log(response.data);
+        const response = await getAllVouchers(token);
         setVouchers(response.data);
       } catch (error) {
         console.error("Error fetching vouchers:", error);
@@ -63,14 +59,7 @@ const VoucherManagement = () => {
     const token = Cookies.get("authToken");
     if (window.confirm("Bạn có chắc muốn xóa voucher này?")) {
       try {
-        await axios.delete(
-          `http://localhost:8080/voucher/delete/${voucherId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        await deleteVoucherByVoucherId(token, voucherId);
         setVouchers(
           vouchers.filter((voucher) => voucher.voucherId !== voucherId)
         );
@@ -114,11 +103,7 @@ const VoucherManagement = () => {
     const fetchVouchers = async () => {
       const token = Cookies.get("authToken");
       try {
-        const response = await axios.get("http://localhost:8080/voucher/all", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await getAllVouchers(token);
         setVouchers(response.data);
       } catch (error) {
         console.error("Error fetching vouchers:", error);

@@ -6,6 +6,9 @@ import {
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Cookies from 'js-cookie';
+import { getAllBrands, getBrandByProductId } from '../../../utils/BrandService';
+import { getAllCategories, getCategoryByProductId } from '../../../utils/CategoryService';
+import { saveProduct, updateProductByProductId } from '../../../utils/ProductService';
 
 
 const ProductForm = ({ onSave, initialProduct }) => {
@@ -26,9 +29,9 @@ const ProductForm = ({ onSave, initialProduct }) => {
   useEffect(() => {
     const fetchBrandsAndCategories = async () => {
       try {
-        const brandsResponse = await axios.get('http://localhost:8080/brand/all');
+        const brandsResponse = await getAllBrands();
         setBrands(brandsResponse.data);
-        const categoriesResponse = await axios.get('http://localhost:8080/category/all');
+        const categoriesResponse = await getAllCategories();
         setCategories(categoriesResponse.data);
       } catch (error) {
         console.error('Error fetching brands and categories:', error);
@@ -38,8 +41,8 @@ const ProductForm = ({ onSave, initialProduct }) => {
     const fetchProductData = async () => {
       if (initialProduct) {
         try {
-          const brandResponse = await axios.get(`http://localhost:8080/brand/getByProductId/${initialProduct.productId}`);
-          const categoryResponse = await axios.get(`http://localhost:8080/category/getByProductId/${initialProduct.productId}`);
+          const brandResponse = await getBrandByProductId(initialProduct.productId);
+          const categoryResponse = await getCategoryByProductId(initialProduct.productId);
           setProduct({
             ...initialProduct,
             brandId: brandResponse.data.brandId,
@@ -75,23 +78,11 @@ const ProductForm = ({ onSave, initialProduct }) => {
     event.preventDefault();
     const token = Cookies.get('authToken');
     const { brandId, categoryId } = product;
-    const url = initialProduct 
-      ? `http://localhost:8080/product/update/${initialProduct.productId}/brand/${brandId}/category/${categoryId}`
-      : `http://localhost:8080/product/save/brand/${brandId}/category/${categoryId}`;
-    
     try {
       if (initialProduct) {
-        await axios.put(url, product, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await updateProductByProductId(token, product, initialProduct.productId, brandId, categoryId);
       } else {
-        await axios.post(url, product, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await saveProduct(token, product, brandId, categoryId);
       }
       onSave();
     } catch (error) {

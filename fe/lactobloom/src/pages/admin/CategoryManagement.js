@@ -8,6 +8,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import CategoryForm from './form/CategoryForm'; // Make sure to import your CategoryForm component
+import { deleteCategorydByCategoryId, getAllCategories } from '../../utils/CategoryService';
+import { getProductsByCategoryId } from '../../utils/ProductService';
 
 const CategoryManagement = () => {
   const [categories, setCategories] = useState([]);
@@ -25,14 +27,14 @@ const CategoryManagement = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/category/all');
+      const response = await getAllCategories();
       const categoriesData = response.data;
       setCategories(categoriesData);
 
       // Fetch product count for each category
       const counts = {};
       for (const category of categoriesData) {
-        const countResponse = await axios.get(`http://localhost:8080/product/category/${category.categoryId}`);
+        const countResponse = await getProductsByCategoryId(category.categoryId);
         counts[category.categoryId] = countResponse.data.length;
       }
       setProductCounts(counts);
@@ -49,11 +51,7 @@ const CategoryManagement = () => {
     const token = Cookies.get("authToken");
     if (window.confirm('Bạn có chắc muốn xóa danh mục này?')) {
       try {
-        await axios.delete(`http://localhost:8080/category/delete/${categoryId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await deleteCategorydByCategoryId(token, categoryId);
         setCategories(categories.filter(category => category.categoryId !== categoryId));
         const updatedCounts = { ...productCounts };
         delete updatedCounts[categoryId];

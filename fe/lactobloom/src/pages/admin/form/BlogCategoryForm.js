@@ -4,6 +4,7 @@ import {
   Button, TextField, Grid
 } from '@mui/material';
 import Cookies from 'js-cookie';
+import { saveBlogCategory, updateBlogCategoryByBlogCategoryId } from '../../../utils/BlogCategoryService';
 
 const BlogCategoryForm = ({ onSave, initialCategory }) => {
   const [blogCategory, setBlogCategory] = useState({
@@ -29,23 +30,11 @@ const BlogCategoryForm = ({ onSave, initialCategory }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = Cookies.get('authToken');
-    const url = initialCategory 
-      ? `http://localhost:8080/blog-category/update/${initialCategory.blogCategoryId}`
-      : `http://localhost:8080/blog-category/save`;
-    
     try {
       if (initialCategory) {
-        await axios.put(url, blogCategory, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await updateBlogCategoryByBlogCategoryId(token, blogCategory, initialCategory.blogCategoryId);
       } else {
-        await axios.post(url, blogCategory, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await saveBlogCategory(token, blogCategory);
       }
       onSave();
     } catch (error) {

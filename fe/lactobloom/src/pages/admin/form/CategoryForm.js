@@ -4,6 +4,7 @@ import {
   Button, TextField, Grid
 } from '@mui/material';
 import Cookies from 'js-cookie';
+import { saveCategory, updateCategoryByCategoryId } from '../../../utils/CategoryService';
 
 const CategoryForm = ({ onSave, initialCategory }) => {
   const [category, setCategory] = useState({
@@ -28,24 +29,12 @@ const CategoryForm = ({ onSave, initialCategory }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = Cookies.get('authToken');
-    const url = initialCategory 
-      ? `http://localhost:8080/category/update/${initialCategory.categoryId}`
-      : `http://localhost:8080/category/save`;
-    
+    const token = Cookies.get('authToken');    
     try {
       if (initialCategory) {
-        await axios.put(url, category, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await updateCategoryByCategoryId(token, category, initialCategory.categoryId);
       } else {
-        await axios.post(url, category, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await saveCategory(token, category);
       }
       onSave();
     } catch (error) {

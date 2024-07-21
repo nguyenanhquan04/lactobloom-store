@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
-import axios from "axios";
+
 import Swiper, { SwiperSlide } from "../../components/swiper";
 import SectionTitle from "../../components/section-title/SectionTitle";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
+import { get4RandomProducts } from "../../utils/ProductService";
 
 const settings = {
   loop: false,
@@ -38,7 +39,7 @@ const RelatedProductSlider = ({ spaceBottomClass }) => {
   useEffect(() => {
     const fetchRandomProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/product/random");
+        const response = await get4RandomProducts();
         setRandomProducts(response.data);
       } catch (error) {
         console.error("Error fetching random products", error);

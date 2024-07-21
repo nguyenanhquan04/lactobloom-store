@@ -3,13 +3,8 @@ import PropTypes from "prop-types";
 import { setActiveLayout } from "../../helpers/product";
 
 const ShopTopAction = ({
-  getLayout,
-  getFilterSortParams,
-  productCount,
-  sortedProductCount
+  getLayout
 }) => {
-  console.log("getFilterSortParams: ", getFilterSortParams); // Add this line for debugging
-
   return (
     <div className="shop-top-bar mb-35">
       <div className="select-shoing-wrap">

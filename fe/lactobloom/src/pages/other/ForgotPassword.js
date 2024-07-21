@@ -2,12 +2,13 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
-import axios from "axios";
+
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Cookies from "js-cookie"; // Import js-cookie
 import {jwtDecode} from "jwt-decode";
+import { changePassword, verifyEmail } from "../../utils/OtpService";
 
 const ForgotPassword = () => {
   const { pathname } = useLocation();
@@ -70,9 +71,7 @@ const ForgotPassword = () => {
   const handleSendOtp = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `http://localhost:8080/otp/verifyEmail/${formData.email}`
-      );
+      const response = await verifyEmail(formData.email);
       if (response.status === 200) {
         setOtpSent(true);
         setCountdown(60);
@@ -101,13 +100,12 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `http://localhost:8080/otp/changePassword/${formData.email}/${formData.otp}`,
+      const response = await changePassword(formData.email, formData.otp, 
         {
           password: formData.password,
           repeatPassword: formData.reenterPassword
         }
-      );
+      )
 
       if (response.status === 200) {
         setSuccessMessage("Password successfully changed! Back to login in 5s.");

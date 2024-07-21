@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getBlogReviewByBlogId, saveBlogReview } from "../../utils/BlogReviewService";
-import axios from "axios";
+import { deleteBlogReview, getBlogReviewByBlogId, saveBlogReview, updateBlogReview } from "../../utils/BlogReviewService";
+
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -107,12 +107,7 @@ const BlogComment = () => {
     };
 
     try {
-      const response = await axios.put(
-        `http://localhost:8080/blog-review/update/${reviewId}`,
-        { comment: editedComment },
-        config
-      );
-      console.log("Comment updated:", response.data);
+      const response = await updateBlogReview(reviewId, { comment: editedComment }, config);
       setComments(comments.map(comment => comment.reviewId === reviewId ? response.data : comment));
       setEditCommentId(null);
       setEditedComment("");
@@ -130,8 +125,7 @@ const BlogComment = () => {
     };
 
     try {
-      await axios.delete(`http://localhost:8080/blog-review/deleteMyReview/${reviewId}`, config);
-      console.log(`Deleted comment with ID: ${reviewId}`);
+      await deleteBlogReview(reviewId, config);
       setComments(comments.filter((comment) => comment.reviewId !== reviewId));
     } catch (error) {
       console.error("Error deleting the comment:", error);

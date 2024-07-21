@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import axios from "axios";
+
 import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
@@ -13,6 +13,7 @@ import { addToCompare } from "../../store/slices/compare-slice";
 import { getImagesByProductId } from "../../utils/ImageService";
 import { getProductReviewByProductId } from "../../utils/ProductReviewService";
 import Cookies from "js-cookie";
+import { myWishlist, saveWishlist } from "../../utils/WishlistService";
 
 const ProductGridListSingle = ({
   product,
@@ -59,11 +60,7 @@ const ProductGridListSingle = ({
       try {
         const token = Cookies.get("authToken");
         setAuthToken(token);
-        const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await myWishlist(token);
         setWishlistData(response.data);
         response.data.forEach((item) => {
           if (item.productId === product.productId) {
@@ -87,11 +84,7 @@ const ProductGridListSingle = ({
   const handleWishlistClick = async (product) => {
     if (authToken) {
       try {
-        await axios.post(`http://localhost:8080/wishlist/save/product/${product.productId}`, {}, {
-          headers: {
-            Authorization: `Bearer ${authToken}`
-          }
-        });
+        await saveWishlist(authToken, product.productId);
         dispatch(addToWishlist(product));
       } catch (error) {
         console.error("Error saving to wishlist:", error);

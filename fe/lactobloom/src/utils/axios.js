@@ -1,11 +1,3 @@
-// import axios from "axios";
-
-// const request = axios.create({
-//     baseURL: 'http://localhost:8080/'
-// });
-
-// export default request;
-
 // utils/axios.js
 import axios from 'axios';
 import { getToken } from './auth'; // Adjust the import path as needed

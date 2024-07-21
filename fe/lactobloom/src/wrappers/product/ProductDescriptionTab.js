@@ -5,10 +5,12 @@ import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import StarRating from "../../components/star-rating/StarRating";
 import {
+  deleteProductReview,
   getProductReviewByProductId,
   saveProductReview,
+  updateProductReview,
 } from "../../utils/ProductReviewService";
-import axios from "axios";
+
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -81,7 +83,6 @@ const ProductDescriptionTab = ({
 
     try {
       const response = await saveProductReview(productId, reviewData, config);
-      console.log("Review submitted:", response.data);
       setNewReview({ comment: "", rating: 0 });
       getProductReviewByProductId(productId)
         .then((response) => {
@@ -118,12 +119,7 @@ const ProductDescriptionTab = ({
     };
 
     try {
-      const response = await axios.put(
-        `http://localhost:8080/product-review/update/${reviewId}`,
-        { comment: editedReview.comment, rate: editedReview.rating },
-        config
-      );
-      console.log("Review updated:", response.data);
+      const response = await updateProductReview(reviewId, { comment: editedReview.comment, rate: editedReview.rating }, config);
       setReviews(
         reviews.map((review) =>
           review.reviewId === reviewId ? response.data : review
@@ -145,11 +141,7 @@ const ProductDescriptionTab = ({
     };
 
     try {
-      await axios.delete(
-        `http://localhost:8080/product-review/deleteMyReview/${reviewId}`,
-        config
-      );
-      console.log(`Deleted review with ID: ${reviewId}`);
+      await deleteProductReview(reviewId, config);
       setReviews(reviews.filter((review) => review.reviewId !== reviewId));
     } catch (error) {
       console.error("Error deleting the review:", error);

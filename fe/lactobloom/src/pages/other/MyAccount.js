@@ -9,7 +9,7 @@ import { jwtDecode } from "jwt-decode"; // Corrected import statement
 import {
   userInfo,
   updateUserInfo,
-  changePassword,
+  resetPassword,
 } from "../../utils/UserService";
 
 const MyAccount = () => {
@@ -88,7 +88,7 @@ const MyAccount = () => {
     const token = Cookies.get("authToken");
 
     try {
-      const response = await changePassword(
+      const response = await resetPassword(
         {
           password: oldPassword,
           newPassword,

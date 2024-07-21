@@ -194,8 +194,9 @@ import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist, addToWishlistFormAPI } from "../../store/slices/wishlist-slice";
 import { getImagesByProductId } from "../../utils/ImageService";
-import axios from "axios";
+
 import Cookies from "js-cookie";
+import { myWishlist, saveWishlist } from "../../utils/WishlistService";
 
 const ProductGridSingle = ({
   product,
@@ -232,11 +233,7 @@ const ProductGridSingle = ({
         const token = Cookies.get("authToken");
         setAuthToken(token);
         if (token) {
-          const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
+          const response = await myWishlist(token);
           const wishlistData = response.data;
           setIsProductInWishlist(wishlistData.some(item => item.productId === product.productId));
         }
@@ -252,11 +249,7 @@ const ProductGridSingle = ({
   const handleWishlistClick = async () => {
     if (authToken) {
       try {
-        await axios.post(`http://localhost:8080/wishlist/save/product/${product.productId}`, {}, {
-          headers: {
-            Authorization: `Bearer ${authToken}`
-          }
-        });
+        await saveWishlist(authToken, product.productId);
         dispatch(addToWishlist(product));
         setIsProductInWishlist(true);
       } catch (error) {

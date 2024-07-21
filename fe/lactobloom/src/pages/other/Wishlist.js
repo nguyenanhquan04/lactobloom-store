@@ -7,10 +7,12 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlistFormAPI, deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice";
-import axios from "axios";
+
 import { getImagesByProductId } from "../../utils/ImageService";
 import Cookies from "js-cookie"; // Import js-cookie
 import {jwtDecode} from "jwt-decode";
+import { deleteWishlist, myWishlist } from "../../utils/WishlistService";
+import { getProductByProductId } from "../../utils/ProductService";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -42,15 +44,11 @@ const Wishlist = () => {
     const fetchWishlistItems = async () => {
       if (authToken) {
         try {
-          const response = await axios.get("http://localhost:8080/wishlist/myWishlist", {
-            headers: {
-              Authorization: `Bearer ${authToken}`
-            }
-          });
+          const response = await myWishlist(authToken);
           const wishlistData = response.data;
 
           const productPromises = wishlistData.map(async item => {
-            const productResponse = await axios.get(`http://localhost:8080/product/get/${item.productId}`);
+            const productResponse = await getProductByProductId(item.productId);
             return {
               ...productResponse.data,
               wishlistId: item.wishlistId // Adding the wishlistId from the wishlist API response
@@ -75,10 +73,6 @@ const Wishlist = () => {
     const fetchWishlistImages = async () => {
       const imagesMap = {};
       for (const wishlistItem of wishlistItems) {
-        console.log("Stock:", wishlistItem.stock);
-console.log("Pre Order:", wishlistItem.preOrder);
-console.log("Auth Token:", authToken);
-
         try {
           const response = await getImagesByProductId(wishlistItem.productId);
           imagesMap[wishlistItem.productId] = response.data.length > 0 ? response.data[0].imageUrl : "/assets/img/no-image.png";
@@ -98,11 +92,7 @@ console.log("Auth Token:", authToken);
   const handleRemoveFromWishlist = async (wishlistId, productId) => {
     if (authToken) {
       try {
-        await axios.delete(`http://localhost:8080/wishlist/delete/${wishlistId}`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`
-          }
-        });
+        await deleteWishlist(authToken, wishlistId);
         setWishlistItems(wishlistItems.filter(item => item.productId !== productId));
         dispatch(deleteFromWishlist(productId));
       } catch (error) {

@@ -4,6 +4,7 @@ import {
   Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import Cookies from 'js-cookie';
+import { updateUserByUserId } from '../../../utils/UserService';
 
 const UserForm = ({ onSave, initialUser }) => {
   const [user, setUser] = useState({
@@ -32,14 +33,9 @@ const UserForm = ({ onSave, initialUser }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const token = Cookies.get('authToken');
-    const url = `http://localhost:8080/user/update/${user.userId}`;
 
     try {
-      await axios.put(url, user, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await updateUserByUserId(token, user, user.userId);
       onSave();
     } catch (error) {
       console.error('Error updating user:', error);
