@@ -128,6 +128,10 @@ public class OrderService implements IOrderService {
             long hoursBetween = ChronoUnit.HOURS.between(existingOrder.getOrderDate(), LocalDateTime.now());
             if (hoursBetween <= 24 || existingOrder.isCod()) {
                 existingOrder.setOrderStatus(OrderStatus.CANCELLED);
+                if (existingOrder.getVoucher()!=null){
+                    existingOrder.getVoucher().setAvailable(true);
+                    voucherRepository.save(existingOrder.getVoucher());
+                }
                 return mapToDto(orderRepository.save(existingOrder));
             }
         }

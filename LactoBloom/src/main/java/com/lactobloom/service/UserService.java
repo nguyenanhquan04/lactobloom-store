@@ -27,6 +27,9 @@ public class UserService implements IUserService {
     private ProductReviewRepository productReviewRepository;
 
     @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
     private VoucherRepository voucherRepository;
 
     @Autowired
@@ -118,6 +121,11 @@ public class UserService implements IUserService {
             wishlistRepository.deleteByUser_UserId(id);
             productReviewRepository.deleteByUser_UserId(id);
             blogReviewRepository.deleteByUser_UserId(id);
+            List<Order> orderList = orderRepository.findByUserUserId(id);
+            for(Order order : orderList){
+                order.setDeleted(true);
+                orderRepository.save(order);
+            }
             List<Voucher> voucherList = voucherRepository.findByUserUserId(id);
             for(Voucher voucher : voucherList){
                 voucher.setDeleted(true);
