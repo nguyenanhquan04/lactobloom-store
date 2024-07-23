@@ -243,10 +243,6 @@ const ProductDescriptionInfo = ({
           </ul>
         </div>
       )}
-
-  <div className="pro-details-meta">
-  <h4>{product.stock >= 0 && product.preOrder && authToken ? `Số sản phẩm cho phép đặt trước: ${product.stock}` : `Số sản phẩm còn lại: ${product.stock}`}</h4>
-        </div>
     </div>
   );
 };

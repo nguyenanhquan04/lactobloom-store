@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import {
   Button,
   TextField,
@@ -9,13 +8,14 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { Editor } from "@tinymce/tinymce-react";
 import Cookies from "js-cookie";
 import { useDropzone } from "react-dropzone";
-import { getAllBlogCategories, getBlogCategoryByBlogId } from "../../../utils/BlogCategoryService";
+import {
+  getAllBlogCategories,
+  getBlogCategoryByBlogId,
+} from "../../../utils/BlogCategoryService";
 import { saveBlog, updateBlogByBlogId } from "../../../utils/BlogService";
-
 const BlogForm = ({ onSave, initialBlog }) => {
   const [blog, setBlog] = useState({
     blogCategoryId: "",
@@ -42,7 +42,9 @@ const BlogForm = ({ onSave, initialBlog }) => {
     const fetchBlogData = async () => {
       if (initialBlog) {
         try {
-          const categoryResponse = await getBlogCategoryByBlogId(initialBlog.blogId);
+          const categoryResponse = await getBlogCategoryByBlogId(
+            initialBlog.blogId
+          );
           const publishDate = new Date(
             new Date(initialBlog.publishDate).getTime() + 7 * 60 * 60 * 1000
           )
@@ -71,11 +73,10 @@ const BlogForm = ({ onSave, initialBlog }) => {
     }));
   };
 
-  const handleEditorChange = (event, editor) => {
-    const data = editor.getData();
+  const handleEditorChange = (content) => {
     setBlog((prevBlog) => ({
       ...prevBlog,
-      content: data,
+      content: content,
     }));
   };
 
@@ -95,7 +96,7 @@ const BlogForm = ({ onSave, initialBlog }) => {
     const blogCategoryId = blogCategories.find(
       (blogCategory) => blogCategory.blogCategoryId === blog.blogCategoryId
     )?.blogCategoryId;
-    
+
     const formData = new FormData();
     const formData2 = new FormData();
     formData.append("title", blog.title);
@@ -108,6 +109,7 @@ const BlogForm = ({ onSave, initialBlog }) => {
       formData2.append("title", blog.title);
       formData2.append("shortDescription", blog.shortDescription);
       formData2.append("content", blog.content);
+      console.log(blog.content);
       formData2.append("publishDate", blog.publishDate);
       formData2.append("file", file);
       formData2.append("imageUrl", blog.imageUrl);
@@ -115,13 +117,19 @@ const BlogForm = ({ onSave, initialBlog }) => {
       formData2.append("title", blog.title);
       formData2.append("shortDescription", blog.shortDescription);
       formData2.append("content", blog.content);
+      console.log(blog.content);
       formData2.append("publishDate", blog.publishDate);
       formData2.append("imageUrl", blog.imageUrl);
     }
 
     try {
       if (initialBlog) {
-        await updateBlogByBlogId(token, formData2, initialBlog.blogId, blogCategoryId);
+        await updateBlogByBlogId(
+          token,
+          formData2,
+          initialBlog.blogId,
+          blogCategoryId
+        );
       } else {
         await saveBlog(token, formData, blogCategoryId);
       }
@@ -212,10 +220,18 @@ const BlogForm = ({ onSave, initialBlog }) => {
           />
         </Grid>
         <Grid item xs={12}>
-          <CKEditor
-            editor={ClassicEditor}
-            data={blog.content || ""}
-            onChange={handleEditorChange}
+          <Editor
+            apiKey="36mfugt4eg3kx7ijc7n42t12i9py5q635msod4bu5jybwe6e"
+            init={{
+              height: 500,
+              menubar: false,
+              plugins:
+                "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown",
+              toolbar:
+                "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+            }}
+            value={blog.content || ""}
+            onEditorChange={handleEditorChange}
           />
         </Grid>
         <Grid item xs={12}>
@@ -227,7 +243,7 @@ const BlogForm = ({ onSave, initialBlog }) => {
             type="datetime-local"
             value={blog.publishDate || ""}
             onChange={handleChange}
-            required
+            disabled
           />
         </Grid>
         <Grid item xs={12}>
