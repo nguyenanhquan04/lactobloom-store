@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
   Button, TextField, Grid, Select, MenuItem, InputLabel, FormControl
 } from '@mui/material';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Editor } from '@tinymce/tinymce-react'; // Import TinyMCE Editor
 import Cookies from 'js-cookie';
 import { getAllBrands, getBrandByProductId } from '../../../utils/BrandService';
 import { getAllCategories, getCategoryByProductId } from '../../../utils/CategoryService';
@@ -66,11 +64,10 @@ const ProductForm = ({ onSave, initialProduct }) => {
     }));
   };
 
-  const handleLongDescriptionChange = (event, editor) => {
-    const data = editor.getData();
+  const handleLongDescriptionChange = (content) => {
     setProduct(prevProduct => ({
       ...prevProduct,
-      longDescription: data
+      longDescription: content
     }));
   };
 
@@ -152,10 +149,18 @@ const ProductForm = ({ onSave, initialProduct }) => {
           />
         </Grid>
         <Grid item xs={12}>
-          <CKEditor
-            editor={ClassicEditor}
-            data={product.longDescription || ''}
-            onChange={handleLongDescriptionChange}
+        <Editor
+            apiKey="36mfugt4eg3kx7ijc7n42t12i9py5q635msod4bu5jybwe6e"
+            init={{
+              height: 500,
+              menubar: false,
+              plugins:
+                "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown",
+              toolbar:
+                "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+            }}
+            value={product.longDescription || ""}
+            onEditorChange={handleLongDescriptionChange}
           />
         </Grid>
         <Grid item xs={12} sm={4}>
