@@ -38,7 +38,7 @@ public class Blog {
     @NotNull(message = "Short description must not be null")
     private String shortDescription;
 
-    @Column(name = "Content", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "Content", columnDefinition = "LONGTEXT", nullable = false)
     @NotNull(message = "Content must not be null")
     private String content;
 

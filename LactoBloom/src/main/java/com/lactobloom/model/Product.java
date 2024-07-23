@@ -33,7 +33,7 @@ public class Product {
     @NotNull(message = "Description must not be null")
     private String description;
 
-    @Column(name = "Long_description", columnDefinition = "TEXT")
+    @Column(name = "Long_description", columnDefinition = "LONGTEXT")
     @NotNull(message = "Long description must not be null")
     private String longDescription;
 
