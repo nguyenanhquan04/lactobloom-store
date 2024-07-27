@@ -23,6 +23,9 @@ public class Voucher {
     @JoinColumn(name = "User_id")
     private User user;
 
+    @OneToOne(mappedBy = "voucher")
+    private Order order;
+
     @Column(name = "Discount", columnDefinition = "DECIMAL(5, 2) DEFAULT 0", nullable = false)
     @NotNull(message = "Discount must not be null")
     private double discount;

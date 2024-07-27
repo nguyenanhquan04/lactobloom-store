@@ -53,8 +53,8 @@ public class OtpService implements IOtpService {
                 .expirationTime(new Date(System.currentTimeMillis() + 60 * 5 * 1000))
                 .user(existingUser)
                 .build();
-        emailService.sendSimpleMessage(mailDto);
         otpRepository.save(otp);
+        emailService.sendSimpleMessage(mailDto);
         return "Email sent for verification";
     }
 

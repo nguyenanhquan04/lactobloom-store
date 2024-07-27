@@ -14,8 +14,6 @@ public class PaymentController extends HttpServlet {
     @Autowired
     private PaymentService paymentService;
 
-    // Api: localhost:8080/payment/create-payment?amount=(insert total price)
-    // or: localhost:8080/payment/create-payment?amount=(insert total price)&bankCode=NCB(can replace another bank code)
     @GetMapping("/create-payment")
     public ResponseEntity<?> createPayment(HttpServletRequest request) {
         return new ResponseEntity<>(paymentService.createPayment(request), HttpStatus.OK);

@@ -29,7 +29,7 @@ CREATE TABLE Otp (
 	Otp_id INT AUTO_INCREMENT PRIMARY KEY,
     Otp INT NOT NULL,
 	Expiration_Time DATETIME DEFAULT CURRENT_TIMESTAMP,
-	User_id INT,
+	User_id INT NOT NULL,
 	FOREIGN KEY (User_id) REFERENCES User(User_id) ON DELETE CASCADE
 );
 
@@ -136,7 +136,7 @@ CREATE TABLE `Order` (
     Phone VARCHAR(15) NOT NULL,
     Address NVARCHAR(255) NOT NULL,
     Note TEXT,
-    Voucher_id INT,
+    Voucher_id INT UNIQUE,
     Shipping_fee DECIMAL(10, 2) NOT NULL,
     Total_price DECIMAL(15, 2) NOT NULL,
     Status ENUM('PENDING', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING',

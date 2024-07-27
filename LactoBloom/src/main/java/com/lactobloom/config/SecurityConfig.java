@@ -59,8 +59,6 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .oauth2Login(withDefaults())
-//                .formLogin(withDefaults());
                 .logout(logout ->
                         logout.logoutUrl("/auth/logout")
                                 .addLogoutHandler(logoutHandler)

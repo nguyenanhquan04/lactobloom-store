@@ -43,8 +43,8 @@ public class Order {
     @Column(name = "Note", columnDefinition = "TEXT")
     private String note;
 
-    @ManyToOne
-    @JoinColumn(name = "Voucher_id")
+    @OneToOne
+    @JoinColumn(name = "Voucher_id", unique = true)
     private Voucher voucher;
 
     @Column(name = "Shipping_fee", columnDefinition = "DECIMAL(10, 2) DEFAULT 0", nullable = false)

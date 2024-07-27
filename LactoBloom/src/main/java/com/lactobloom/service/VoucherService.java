@@ -122,7 +122,6 @@ public class VoucherService implements IVoucherService {
 
     private Voucher mapToEntity(VoucherDto voucherDto){
         Voucher voucher = new Voucher();
-        voucher.setVoucherId(voucherDto.getVoucherId());
         voucher.setPoint(voucherDto.getPoint());
         voucher.setDiscount(voucherDto.getDiscount());
         voucher.setExpirationDate(voucherDto.getExpirationDate());
