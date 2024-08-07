@@ -83,8 +83,8 @@ public class PaymentService {
         String transactionId = request.getParameter("vnp_TxnRef");
         boolean isSuccess = "00".equals(status);
         updateTransactionState(transactionId, isSuccess);
-//        String redirectUrl = "http://localhost:3000/checkout-result?transactionId=" + transactionId;
-        String redirectUrl = "https://lactobloom-store.vercel.app/checkout-result?transactionId=" + transactionId;
+        String redirectUrl = "http://localhost:5173/checkout-result?transactionId=" + transactionId;
+//        String redirectUrl = "https://lactobloom-store.vercel.app/checkout-result?transactionId=" + transactionId;
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header("Location", redirectUrl)
                 .build();
